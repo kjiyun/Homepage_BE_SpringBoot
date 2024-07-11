@@ -50,10 +50,10 @@ jobs:
           docker push ${{ secrets.DOCKER_REPO }}/kahlua-web
       ## docker compose up
       - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST_ID }}
-          username: ec2-user
+          username: ${{ secrets.USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             sudo docker rm -f $(docker ps -qa)
