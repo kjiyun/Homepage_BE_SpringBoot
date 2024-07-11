@@ -27,7 +27,7 @@ public class Ticket extends BaseEntity {
     private String phone_num; // 구매자 번호
 
     @OneToMany(mappedBy = "ticket")
-    private List<Participants> member;  // 참석 인원
+    private List<Participants> members;  // 참석 인원
 
     private String reservation_id; // 예약 번호
 

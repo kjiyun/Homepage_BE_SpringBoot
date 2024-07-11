@@ -1,6 +1,7 @@
 package kahlua.KahluaProject.domain.ticket;
 
 import jakarta.persistence.*;
+import kahlua.KahluaProject.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Participants {
+public class Participants extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,6 @@ public class Participants {
     private String phone_num;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "ticket_id")
     private Ticket ticket;
 }
