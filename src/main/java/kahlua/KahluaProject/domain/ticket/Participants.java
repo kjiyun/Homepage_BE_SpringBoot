@@ -25,6 +25,6 @@ public class Participants extends BaseEntity {
     private String phone_num;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_id")
+    @JoinColumn(name = "ticket_id", nullable = false)
     private Ticket ticket;
 }
