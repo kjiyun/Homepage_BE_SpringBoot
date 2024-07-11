@@ -45,5 +45,5 @@ public class Ticket extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status;  // 결제 상태 (대기, 종료)
+    private Status status;  // 결제 상태 (대기, 종료, 취소)
 }
