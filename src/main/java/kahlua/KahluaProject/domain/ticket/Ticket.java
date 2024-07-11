@@ -42,4 +42,8 @@ public class Ticket extends BaseEntity {
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Participants> members;  // 참석 인원 (일반)
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;  // 결제 상태 (대기, 종료, 취소)
 }
