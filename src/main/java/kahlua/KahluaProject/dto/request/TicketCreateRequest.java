@@ -18,5 +18,5 @@ public class TicketCreateRequest {
     private String major;
     private String student_id;
     private Meeting meeting;
-    private List<Participants> members;
+    private List<ParticipantsCreateRequest> members;
 }
