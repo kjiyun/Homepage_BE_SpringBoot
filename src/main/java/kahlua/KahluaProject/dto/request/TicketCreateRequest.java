@@ -16,7 +16,7 @@ public class TicketCreateRequest {
     private String phone_num;
     private Type type;
     private String major;
-    private String student_id;
+    private String studentId;
     private Meeting meeting;
     private List<ParticipantsCreateRequest> members;
 }

@@ -18,10 +18,10 @@ public class TicketCreateResponse {
     private Long id;
     private String buyer;
     private String phone_num;
-    private String reservation_id;
+    private String reservationId;
     private Type type;
     private String major;
-    private String student_id;
+    private String studentId;
     private Meeting meeting;
     private List<Participants> members;
     private Status status;

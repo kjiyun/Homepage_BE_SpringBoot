@@ -8,7 +8,6 @@ import lombok.*;
 @Entity
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Participants extends BaseEntity {
@@ -27,4 +26,8 @@ public class Participants extends BaseEntity {
     @JoinColumn(name = "ticket_id", nullable = false)
     @JsonBackReference
     private Ticket ticket;
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
 }

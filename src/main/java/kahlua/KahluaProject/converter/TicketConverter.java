@@ -8,38 +8,39 @@ import kahlua.KahluaProject.dto.response.TicketCreateResponse;
 
 public class TicketConverter {
 
-    public static Ticket toTicket(TicketCreateRequest ticketCreateRequest, String reservation_id) {
+    public static Ticket toTicket(TicketCreateRequest ticketCreateRequest, String reservationId) {
         Ticket ticket;
         ticket = Ticket.builder()
                 .buyer(ticketCreateRequest.getBuyer())
                 .phone_num(ticketCreateRequest.getPhone_num())
-                .reservation_id(reservation_id)
+                .reservationId(reservationId)
                 .type(ticketCreateRequest.getType())
                 .major(ticketCreateRequest.getMajor())
-                .student_id(ticketCreateRequest.getStudent_id())
+                .studentId(ticketCreateRequest.getStudentId())
                 .meeting(ticketCreateRequest.getMeeting())
                 .build();
 
+
         for (ParticipantsCreateRequest participantsCreateRequest : ticketCreateRequest.getMembers()) {
-            Participants participants = new Participants();
-            participants.setName(participantsCreateRequest.getName());
-            participants.setPhone_num(participantsCreateRequest.getPhone_num());
+            Participants participants = Participants.builder()
+                    .name(participantsCreateRequest.getName())
+                    .phone_num(participantsCreateRequest.getPhone_num())
+                    .build();
             ticket.addMembers(participants);
         }
-
 
         return ticket;
     }
 
-    public static TicketCreateResponse toTicketCreateResponse(Ticket ticket, String reservation_id) {
+    public static TicketCreateResponse toTicketCreateResponse(Ticket ticket, String reservationId) {
         return TicketCreateResponse.builder()
                 .id(ticket.getId())
                 .buyer(ticket.getBuyer())
                 .phone_num(ticket.getPhone_num())
-                .reservation_id(reservation_id)
+                .reservationId(reservationId)
                 .type(ticket.getType())
                 .major(ticket.getMajor())
-                .student_id(ticket.getStudent_id())
+                .studentId(ticket.getStudentId())
                 .meeting(ticket.getMeeting())
                 .members(ticket.getMembers())
                 .status(ticket.getStatus())

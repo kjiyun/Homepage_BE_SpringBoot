@@ -23,13 +23,23 @@ public class TicketService {
     @Transactional
     public TicketCreateResponse createTicket(TicketCreateRequest ticketCreateRequest) {
 
-        String reservation_id = generateReservationId();
+        String reservationId = uniqueReservationId();
 
-        Ticket ticket = TicketConverter.toTicket(ticketCreateRequest, reservation_id);
+        Ticket ticket = TicketConverter.toTicket(ticketCreateRequest, reservationId);
         ticketRepository.save(ticket);
 
-        TicketCreateResponse ticketCreateResponse = TicketConverter.toTicketCreateResponse(ticket, reservation_id);
+        TicketCreateResponse ticketCreateResponse = TicketConverter.toTicketCreateResponse(ticket, reservationId);
         return ticketCreateResponse;
+    }
+
+    //예약번호가 기존 예약번호와 일치하면 안되므로 중복되는지 확인하는 기능
+    public String uniqueReservationId() {
+        String reservationId;
+        do {
+            reservationId = generateReservationId();
+        } while(ticketRepository.existsByReservationId(reservationId));
+
+        return reservationId;
     }
 
     public String generateReservationId() {
@@ -46,6 +56,7 @@ public class TicketService {
         }
 
         Collections.shuffle(idList);
+
 
         return String.join("", idList);
     }

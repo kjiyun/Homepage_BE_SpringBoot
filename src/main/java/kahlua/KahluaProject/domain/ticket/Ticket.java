@@ -26,8 +26,7 @@ public class Ticket extends BaseEntity {
     @Column(nullable = false)
     private String phone_num; // 구매자 번호
 
-    @Setter
-    private String reservation_id; // 예약 번호
+    private String reservationId; // 예약 번호
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -35,7 +34,7 @@ public class Ticket extends BaseEntity {
 
     private String major; // 학과 (신입생)
 
-    private String student_id; // 학번 (신입생)
+    private String studentId; // 학번 (신입생)
 
     @Enumerated(EnumType.STRING)
     private Meeting meeting; // 가능한 뒷풀이 참석 날짜 (신입생)
