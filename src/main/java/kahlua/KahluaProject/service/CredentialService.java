@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
-
 @Service
 @RequiredArgsConstructor
 public class CredentialService {
@@ -20,11 +18,11 @@ public class CredentialService {
     private final CredentialRepository credentialRepository;
 
     public Credential createCredential(SignUpRequest signUpRequest) {
-        if(!signUpRequest.password().equals(signUpRequest.passwordCheck())) {
+        if(!signUpRequest.getPassword().equals(signUpRequest.getPasswordCheck())) {
             throw new  GeneralException(ErrorStatus.PASSWORD_NOT_MATCH);
         }
 
-        String hashedPassword = passwordEncoder.encode(signUpRequest.password());
+        String hashedPassword = passwordEncoder.encode(signUpRequest.getPassword());
         Credential credential = Credential.builder()
                 .hashedPassword(hashedPassword)
                 .build();

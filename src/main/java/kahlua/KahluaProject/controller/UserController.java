@@ -1,8 +1,10 @@
 package kahlua.KahluaProject.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kahlua.KahluaProject.apipayload.ApiResponse;
+import kahlua.KahluaProject.converter.UserConverter;
 import kahlua.KahluaProject.domain.user.User;
-import kahlua.KahluaProject.dto.response.UserResponse;
 import kahlua.KahluaProject.security.AuthDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+@Tag(name = "사용자", description = "사용자와 관련된 API")
 @RestController
 @RequestMapping("/v1/user")
 @RequiredArgsConstructor
 public class UserController {
 
     @GetMapping("")
+    @Operation(summary = "사용자 정보 조회", description = "사용자의 정보를 조회")
     public ResponseEntity<?> getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -34,6 +38,6 @@ public class UserController {
 
         AuthDetails authDetails = (AuthDetails) principal;
         User user = authDetails.getUser();
-        return ResponseEntity.ok().body(ApiResponse.onSuccess(UserResponse.of(user)));
+        return ResponseEntity.ok().body(ApiResponse.onSuccess(UserConverter.toUserResDto(user)));
     }
 }

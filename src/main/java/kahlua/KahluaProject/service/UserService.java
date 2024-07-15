@@ -9,29 +9,23 @@ import kahlua.KahluaProject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static kahlua.KahluaProject.domain.user.UserType.ADMIN;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
 
-    public void checkAdmin(User user) {
-        if(!user.getUserType().equals(ADMIN)) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
-    }
-
-
     public User createUser(Credential credential, SignUpRequest signUpRequest) {
-        User user = signUpRequest.from(credential);
-        //usertype 예외처리 필요
+        userRepository.findByEmail(signUpRequest.getEmail()).ifPresent(existingUser -> {
+            throw new GeneralException(ErrorStatus.ALREADY_EXIST_USER);
+        });
+        User user = signUpRequest.toUser(credential);
         return userRepository.save(user);
     }
 
 
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 }

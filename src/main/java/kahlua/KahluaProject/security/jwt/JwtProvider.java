@@ -7,16 +7,19 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.domain.user.User;
+import kahlua.KahluaProject.dto.response.TokenResponse;
+import kahlua.KahluaProject.exception.GeneralException;
+import kahlua.KahluaProject.redis.RedisClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Key;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -25,10 +28,14 @@ public class JwtProvider {
     @Value("${jwt.secret}")
     private String secretKey;
     private Key key;
-    @Value("${jwt.token.access-expiration-time}")
-    private long expirationTime;
 
-    private final Set<String> invalidTokens = Collections.synchronizedSet(new HashSet<>());
+    @Value("${jwt.token.access-expiration-time}")
+    private long accessTokenExpirationTime;
+
+    @Value("${jwt.token.refresh-expiration-time}")
+    private long refreshTokenExpirationTime;
+
+    private final RedisClient redisClient;
 
     @PostConstruct
     protected void init() {
@@ -36,20 +43,48 @@ public class JwtProvider {
         key = Keys.hmacShaKeyFor(secretKeyBytes);
     }
 
-    public String generateToken(User user) {
+    public String createAccessToken(User user) {
+        Claims claims = getClaims(user);
         Date now = new Date();
         return Jwts.builder()
-                .setSubject(user.getEmail())
+                .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + expirationTime))
+                .setExpiration(new Date(now.getTime() + accessTokenExpirationTime))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public boolean validateToken(String token) {
-        if (invalidTokens.contains(token)) {
-            return false;
+    private String createRefreshToken(User user) {
+        Claims claims = getClaims(user);
+        Date now = new Date();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + refreshTokenExpirationTime))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public TokenResponse createToken(User user) {
+        return TokenResponse.builder()
+                .accessToken(createAccessToken(user))
+                .refreshToken(createRefreshToken(user))
+                .build();
+    }
+
+    public TokenResponse recreate(User user, String refreshToken) {
+        String accessToken = createAccessToken(user);
+
+        if(getExpirationTime(refreshToken) <= getExpirationTime(accessToken)) {
+            refreshToken = createRefreshToken(user);
         }
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -69,7 +104,32 @@ public class JwtProvider {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration().getTime();
     }
 
-    public void invalidateToken(String token) {
-        invalidTokens.add(token);
+    private Claims getClaims(User user) {
+        return Jwts.claims().setSubject(user.getEmail());
+    }
+
+    public String resolveRefreshToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
+    public String resolveAccessToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
+    @Transactional
+    public void invalidateTokens(String refreshToken, String accessToken) {
+        if (!validateToken(refreshToken)) {
+            throw new GeneralException(ErrorStatus.TOKEN_INVALID);
+        }
+        redisClient.deleteValue(getEmail(refreshToken));
+        redisClient.setValue(accessToken, "logout", getExpirationTime(accessToken));
     }
 }

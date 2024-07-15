@@ -4,7 +4,6 @@ import kahlua.KahluaProject.security.ExceptionFilter;
 import kahlua.KahluaProject.security.jwt.JwtAccessDeniedHandler;
 import kahlua.KahluaProject.security.jwt.JwtAuthenticationHandler;
 import kahlua.KahluaProject.security.jwt.JwtFilter;
-import kahlua.KahluaProject.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +18,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -32,7 +30,6 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
-    private final JwtProvider jwtProvider;
     private final ExceptionFilter exceptionFilter;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationHandler jwtAuthenticationEntryPoint;
@@ -68,16 +65,10 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-
-        // 인증정보 주고받도록 허용
         config.setAllowCredentials(true);
-        // 허용할 주소
         config.setAllowedOrigins(List.of("*"));
-        // 허용하고자 하는 HTTP Method
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        // 허용할 헤더 정보
         config.setAllowedHeaders(List.of("*"));
-        // 노출시킬 헤더 정보
         config.setExposedHeaders(List.of("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
