@@ -32,7 +32,7 @@ public class SignUpRequest {
         return User.builder()
                 .credential(credential)
                 .email(this.email)
-                .userType(UserType.valueOf(this.userType))
+                .userType(UserType.GENERAL)
                 .build();
     }
 }
