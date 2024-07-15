@@ -25,23 +25,19 @@ public class Apply extends BaseEntity{
 
     private String birth_date;
 
-    /*@Enumerated(EnumType.STRING)
-    private Gender gender;*/
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     private String address;
 
-    /*@Enumerated(EnumType.STRING)
-    private Major major;*/
-    private String major;
+    @Enumerated(EnumType.STRING)
+    private Major major;
 
-    /*@Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private Preference first_preference;
 
     @Enumerated(EnumType.STRING)
-    private Preference second_preference;*/
-    private String first_preference;
-    private String second_preference;
+    private Preference second_preference;
 
     private String experience_and_reason;
 

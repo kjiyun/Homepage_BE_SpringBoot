@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class ApplyGetResponse {
+public class ApplyItemResponse {
 
     private Long id;
     private String name;
@@ -25,11 +25,4 @@ public class ApplyGetResponse {
 
     private Preference first_preference;
     private Preference second_preference;
-
-    private String experience_and_reason;
-    private String play_instrument;
-    private String motive;
-    private String finish_time;
-    private Boolean meeting;
-    private String readiness;
 }
