@@ -1,24 +1,20 @@
 package kahlua.KahluaProject.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import kahlua.KahluaProject.domain.user.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import kahlua.KahluaProject.domain.user.UserType;
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public record UserResponse(
-        Long id,
+@Getter
+public class UserResponse {
 
-        String email,
+    @Schema(description = "아이디")
+    private Long id;
 
-        UserType role
-) {
-    public static UserResponse of(User user) {
-        return UserResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .role(user.getUserType())
-                .build();
-    }
+    @Schema(description = "이메일(아이디)")
+    private String email;
+
+    @Schema(description = "권한")
+    private UserType role;
 }
