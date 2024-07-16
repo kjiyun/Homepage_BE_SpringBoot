@@ -15,7 +15,6 @@ public class Participants extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="participants_id")
-
     private Long id;
 
     private String name;
@@ -27,7 +26,10 @@ public class Participants extends BaseEntity {
     @JsonBackReference
     private Ticket ticket;
 
-    public void setTicket(Ticket ticket) {
+    @Builder
+    public Participants(String name, String phone_num, Ticket ticket) {
+        this.name = name;
+        this.phone_num = phone_num;
         this.ticket = ticket;
     }
 }

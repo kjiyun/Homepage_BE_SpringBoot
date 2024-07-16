@@ -1,14 +1,15 @@
-package kahlua.KahluaProject.dto.request;
+package kahlua.KahluaProject.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
-public class ParticipantsCreateRequest {
+@Builder
+public class ParticipantsResponse {
 
+    private Long id;
     private String name;
     private String phone_num;
 }

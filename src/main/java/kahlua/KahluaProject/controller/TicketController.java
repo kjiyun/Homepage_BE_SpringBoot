@@ -3,12 +3,10 @@ package kahlua.KahluaProject.controller;
 import kahlua.KahluaProject.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.request.TicketCreateRequest;
 import kahlua.KahluaProject.dto.response.TicketCreateResponse;
+import kahlua.KahluaProject.dto.response.TicketGetResponse;
 import kahlua.KahluaProject.service.TicketService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,5 +19,11 @@ public class TicketController {
     public ApiResponse<TicketCreateResponse> createTicketFrom(@RequestBody TicketCreateRequest ticketCreateRequest) {
         TicketCreateResponse ticketCreateResponse = ticketService.createTicket(ticketCreateRequest);
         return ApiResponse.onSuccess(ticketCreateResponse);
+    }
+
+    @GetMapping("/{ticketId}")
+    public ApiResponse<TicketGetResponse> viewTicketForm(@PathVariable(name = "ticketId") Long ticketId) {
+        TicketGetResponse ticketGetResponse = ticketService.viewTicket(ticketId);
+        return ApiResponse.onSuccess(ticketGetResponse);
     }
 }

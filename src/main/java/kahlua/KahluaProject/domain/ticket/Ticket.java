@@ -5,9 +5,6 @@ import jakarta.persistence.*;
 import kahlua.KahluaProject.domain.BaseEntity;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Builder
 @Getter
@@ -39,11 +36,6 @@ public class Ticket extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Meeting meeting; // 가능한 뒷풀이 참석 날짜 (신입생)
 
-    @Builder.Default
-    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<Participants> members = new ArrayList<>();  // 참석 인원 (일반)
-
     @Enumerated(EnumType.STRING)
     private Status status;  // 결제 상태 (대기, 종료, 취소)
 
@@ -52,10 +44,5 @@ public class Ticket extends BaseEntity {
         if (status == null) {
             status = Status.WAIT;  // default 값 설정
         }
-    }
-
-    public void addMembers(Participants participants) {
-        members.add(participants);
-        participants.setTicket(this);
     }
 }

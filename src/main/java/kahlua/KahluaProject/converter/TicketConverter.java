@@ -4,8 +4,17 @@ import kahlua.KahluaProject.domain.ticket.Participants;
 import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.dto.request.ParticipantsCreateRequest;
 import kahlua.KahluaProject.dto.request.TicketCreateRequest;
+import kahlua.KahluaProject.dto.response.ParticipantsResponse;
 import kahlua.KahluaProject.dto.response.TicketCreateResponse;
+import kahlua.KahluaProject.dto.response.TicketGetResponse;
+import kahlua.KahluaProject.repository.ParticipantsRepository;
+import kahlua.KahluaProject.repository.TicketRepository;
+import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+//@Component
 public class TicketConverter {
 
     public static Ticket toTicket(TicketCreateRequest ticketCreateRequest, String reservationId) {
@@ -20,19 +29,10 @@ public class TicketConverter {
                 .meeting(ticketCreateRequest.getMeeting())
                 .build();
 
-
-        for (ParticipantsCreateRequest participantsCreateRequest : ticketCreateRequest.getMembers()) {
-            Participants participants = Participants.builder()
-                    .name(participantsCreateRequest.getName())
-                    .phone_num(participantsCreateRequest.getPhone_num())
-                    .build();
-            ticket.addMembers(participants);
-        }
-
         return ticket;
     }
 
-    public static TicketCreateResponse toTicketCreateResponse(Ticket ticket, String reservationId) {
+    public static TicketCreateResponse toTicketCreateResponse(Ticket ticket, String reservationId, List<Participants> members) {
         return TicketCreateResponse.builder()
                 .id(ticket.getId())
                 .buyer(ticket.getBuyer())
@@ -42,7 +42,30 @@ public class TicketConverter {
                 .major(ticket.getMajor())
                 .studentId(ticket.getStudentId())
                 .meeting(ticket.getMeeting())
-                .members(ticket.getMembers())
+                .members(members)
+                .status(ticket.getStatus())
+                .build();
+    }
+
+    public static TicketGetResponse toTicketGetResponse(Ticket ticket, List<Participants> participants) {
+        List<ParticipantsResponse> memberResponses = participants.stream()
+                .map(member -> ParticipantsResponse.builder()
+                        .id(member.getId())
+                        .name(member.getName())
+                        .phone_num(member.getPhone_num())
+                        .build())
+                .collect(Collectors.toList());
+
+        return TicketGetResponse.builder()
+                .id(ticket.getId())
+                .buyer(ticket.getBuyer())
+                .phone_num(ticket.getPhone_num())
+                .reservationId(ticket.getReservationId())
+                .type(ticket.getType())
+                .major(ticket.getMajor())
+                .studentId(ticket.getStudentId())
+                .meeting(ticket.getMeeting())
+                .members(memberResponses)
                 .status(ticket.getStatus())
                 .build();
     }

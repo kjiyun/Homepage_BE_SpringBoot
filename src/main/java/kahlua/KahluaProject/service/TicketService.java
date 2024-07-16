@@ -1,10 +1,17 @@
 package kahlua.KahluaProject.service;
 
 import jakarta.transaction.Transactional;
+import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.TicketConverter;
+import kahlua.KahluaProject.domain.ticket.Participants;
 import kahlua.KahluaProject.domain.ticket.Ticket;
+import kahlua.KahluaProject.dto.request.ParticipantsCreateRequest;
 import kahlua.KahluaProject.dto.request.TicketCreateRequest;
+import kahlua.KahluaProject.dto.response.ParticipantsResponse;
 import kahlua.KahluaProject.dto.response.TicketCreateResponse;
+import kahlua.KahluaProject.dto.response.TicketGetResponse;
+import kahlua.KahluaProject.exception.GeneralException;
+import kahlua.KahluaProject.repository.ParticipantsRepository;
 import kahlua.KahluaProject.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,22 +20,35 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final ParticipantsRepository participantsRepository;
 
     @Transactional
     public TicketCreateResponse createTicket(TicketCreateRequest ticketCreateRequest) {
 
         String reservationId = uniqueReservationId();
 
-        Ticket ticket = TicketConverter.toTicket(ticketCreateRequest, reservationId);
-        ticketRepository.save(ticket);
+        Ticket savedTicket = TicketConverter.toTicket(ticketCreateRequest, reservationId);
+        ticketRepository.save(savedTicket);
 
-        TicketCreateResponse ticketCreateResponse = TicketConverter.toTicketCreateResponse(ticket, reservationId);
+        // service 혹은 converter
+        List<Participants> members = ticketCreateRequest.getMembers().stream()
+                .map(memberRequest -> Participants.builder()
+                        .name(memberRequest.getName())
+                        .phone_num(memberRequest.getPhone_num())
+                        .ticket(savedTicket)
+                        .build())
+                .collect(Collectors.toList());
+
+        participantsRepository.saveAll(members);
+
+        TicketCreateResponse ticketCreateResponse = TicketConverter.toTicketCreateResponse(savedTicket, reservationId, members);
         return ticketCreateResponse;
     }
 
@@ -57,8 +77,18 @@ public class TicketService {
 
         Collections.shuffle(idList);
 
-
         return String.join("", idList);
+    }
+
+    @Transactional
+    public TicketGetResponse viewTicket(Long ticketId) {
+
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SESSION_UNAUTHORIZED));
+
+        List<Participants> participants = participantsRepository.findByTicket(ticket);
+
+        return TicketConverter.toTicketGetResponse(ticket, participants);
     }
 
 }
