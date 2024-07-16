@@ -1,11 +1,9 @@
 package kahlua.KahluaProject.domain.ticket;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import kahlua.KahluaProject.domain.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Builder
@@ -17,7 +15,6 @@ public class Participants extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="participants_id")
-
     private Long id;
 
     private String name;
@@ -26,5 +23,13 @@ public class Participants extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "ticket_id", nullable = false)
+    @JsonBackReference
     private Ticket ticket;
+
+    @Builder
+    public Participants(String name, String phone_num, Ticket ticket) {
+        this.name = name;
+        this.phone_num = phone_num;
+        this.ticket = ticket;
+    }
 }
