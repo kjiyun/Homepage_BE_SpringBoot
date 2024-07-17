@@ -52,12 +52,11 @@ public class SecurityConfig {
         http.addFilterBefore(exceptionFilter, JwtFilter.class);
 
         http.authorizeHttpRequests((authorize) ->
-                authorize.requestMatchers( "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
-                                "/swagger-resources/**",
-                                "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/v1/auth/**","/v1/user/**").permitAll()
-                        .requestMatchers("/error/**").permitAll()
-                        .anyRequest().authenticated());
+                authorize
+                        .requestMatchers("/v1/auth/sign-out/**", "v1/auth/recreate","/v1/user/**", "/error/**")
+                        .authenticated()
+                        .anyRequest()
+                        .permitAll());
 
         return http.build();
     }
