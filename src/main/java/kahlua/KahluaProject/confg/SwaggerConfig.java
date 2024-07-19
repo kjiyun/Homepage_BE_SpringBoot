@@ -2,6 +2,7 @@ package kahlua.KahluaProject.confg;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
@@ -16,7 +17,9 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(title = "Kahluaband API 명세서",
                 description = "Kahluaband 홈페이지 API 명세서",
-                version = "v1"))
+                version = "v1"),
+        servers = {@Server(url = "http://kahluaband.com", description = "http url"),
+                @Server(url = "https://kahluaband.com", description = "https url")})
 @RequiredArgsConstructor
 @Configuration
 public class SwaggerConfig {
