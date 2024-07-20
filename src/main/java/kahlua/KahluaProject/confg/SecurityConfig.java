@@ -36,8 +36,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable);
+        http.cors(Customizer.withDefaults());
+        http.csrf((csrf) -> csrf.disable());
 
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));// Session 미사용
         http.httpBasic(AbstractHttpConfigurer::disable)
@@ -53,7 +53,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((authorize) ->
                 authorize
-                        .requestMatchers("/v1/auth/sign-out/**", "v1/auth/recreate","/v1/user/**", "/error/**")
+                        .requestMatchers("/v1/auth/sign-out/**", "v1/auth/recreate/**","/v1/user/**", "/error/**", "/v1/admin/**")
                         .authenticated()
                         .anyRequest()
                         .permitAll());

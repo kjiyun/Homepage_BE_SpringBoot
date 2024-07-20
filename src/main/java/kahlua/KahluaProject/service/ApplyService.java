@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.ApplyConverter;
 import kahlua.KahluaProject.domain.apply.Apply;
+import kahlua.KahluaProject.domain.user.User;
+import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.request.ApplyCreateRequest;
 import kahlua.KahluaProject.dto.response.ApplyCreateResponse;
 import kahlua.KahluaProject.dto.response.ApplyGetResponse;
@@ -42,7 +44,11 @@ public class ApplyService {
         return applyGetResponse;
     }
 
-    public ApplyListResponse getApplyList() {
+    public ApplyListResponse getApplyList(User user) {
+
+        if(user.getUserType() != UserType.ADMIN){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
 
         List<Apply> applies = applyRepository.findAll();
         List<ApplyItemResponse> applyItemResponses = new ArrayList<>();
