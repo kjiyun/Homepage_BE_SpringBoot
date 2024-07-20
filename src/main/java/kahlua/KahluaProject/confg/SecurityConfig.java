@@ -36,8 +36,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(Customizer.withDefaults());
-        http.csrf((csrf) -> csrf.disable());
+        http.cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable);
 
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));// Session 미사용
         http.httpBasic(AbstractHttpConfigurer::disable)
@@ -48,15 +48,13 @@ public class SecurityConfig {
                         .accessDeniedHandler(jwtAccessDeniedHandler)
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
         );
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(exceptionFilter, JwtFilter.class);
+        http.authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers( "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/v1/auth/sign-out/**", "v1/auth/recreate/**","/v1/user/**", "/v1/admin/**").authenticated()
+                        .anyRequest().permitAll())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionFilter, JwtFilter.class);
 
-        http.authorizeHttpRequests((authorize) ->
-                authorize
-                        .requestMatchers("/v1/auth/sign-out/**", "v1/auth/recreate/**","/v1/user/**", "/error/**", "/v1/admin/**")
-                        .authenticated()
-                        .anyRequest()
-                        .permitAll());
 
         return http.build();
     }
@@ -65,7 +63,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedOrigins(List.of("http://localhost:8080", "http://kahluaband.com", "https//kahluaband.com", "http://localhost:3000"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
