@@ -19,7 +19,8 @@ import org.springframework.context.annotation.Configuration;
                 description = "Kahluaband 홈페이지 API 명세서",
                 version = "v1"),
         servers = {@Server(url = "http://kahluaband.com", description = "http url"),
-                @Server(url = "https://kahluaband.com", description = "https url")})
+                @Server(url = "https://kahluaband.com", description = "https url"),
+                @Server(url = "/", description = "Default Server URL")})
 @RequiredArgsConstructor
 @Configuration
 public class SwaggerConfig {
