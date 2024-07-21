@@ -8,5 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ParticipantsRepository extends JpaRepository<Participants, Long> {
+
     List<Participants> findByTicket(Ticket ticket);
+    Integer countByTicket_Id(Long id);
 }
