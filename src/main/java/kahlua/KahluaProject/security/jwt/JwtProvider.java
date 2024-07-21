@@ -10,7 +10,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.domain.user.User;
-import kahlua.KahluaProject.dto.response.TokenResponse;
+import kahlua.KahluaProject.dto.user.response.TokenResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.redis.RedisClient;
 import lombok.RequiredArgsConstructor;

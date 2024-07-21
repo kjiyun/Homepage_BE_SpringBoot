@@ -2,14 +2,10 @@ package kahlua.KahluaProject.converter;
 
 import kahlua.KahluaProject.domain.ticket.Participants;
 import kahlua.KahluaProject.domain.ticket.Ticket;
-import kahlua.KahluaProject.dto.request.ParticipantsCreateRequest;
-import kahlua.KahluaProject.dto.request.TicketCreateRequest;
-import kahlua.KahluaProject.dto.response.ParticipantsResponse;
-import kahlua.KahluaProject.dto.response.TicketCreateResponse;
-import kahlua.KahluaProject.dto.response.TicketGetResponse;
-import kahlua.KahluaProject.repository.ParticipantsRepository;
-import kahlua.KahluaProject.repository.TicketRepository;
-import org.springframework.stereotype.Component;
+import kahlua.KahluaProject.dto.ticket.request.TicketCreateRequest;
+import kahlua.KahluaProject.dto.ticket.response.ParticipantsResponse;
+import kahlua.KahluaProject.dto.ticket.response.TicketCreateResponse;
+import kahlua.KahluaProject.dto.ticket.response.TicketGetResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

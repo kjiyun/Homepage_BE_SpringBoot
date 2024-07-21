@@ -1,4 +1,4 @@
-package kahlua.KahluaProject.dto.response;
+package kahlua.KahluaProject.dto.ticket.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

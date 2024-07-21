@@ -1,9 +1,9 @@
 package kahlua.KahluaProject.converter;
 
 import kahlua.KahluaProject.domain.apply.Apply;
-import kahlua.KahluaProject.dto.request.ApplyCreateRequest;
-import kahlua.KahluaProject.dto.response.ApplyCreateResponse;
-import kahlua.KahluaProject.dto.response.ApplyGetResponse;
+import kahlua.KahluaProject.dto.apply.request.ApplyCreateRequest;
+import kahlua.KahluaProject.dto.apply.response.ApplyCreateResponse;
+import kahlua.KahluaProject.dto.apply.response.ApplyGetResponse;
 
 public class ApplyConverter {
 

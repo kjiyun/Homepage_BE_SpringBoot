@@ -1,16 +1,18 @@
-package kahlua.KahluaProject.dto.request;
-
+package kahlua.KahluaProject.dto.apply.response;
 
 import kahlua.KahluaProject.domain.apply.Gender;
 import kahlua.KahluaProject.domain.apply.Major;
 import kahlua.KahluaProject.domain.apply.Preference;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ApplyCreateRequest {
+@Builder
+public class ApplyGetResponse {
 
+    private Long id;
     private String name;
     private String phone_num;
     private String birth_date;
