@@ -41,20 +41,20 @@ public class AdminController {
     }
 
     @GetMapping("/tickets")
-    public ApiResponse<TicketListResponse> getTicketList() {
-        TicketListResponse ticketListResponse = ticketService.getTicketList();
+    public ApiResponse<TicketListResponse> getTicketList(@AuthenticationPrincipal AuthDetails authDetails) {
+        TicketListResponse ticketListResponse = ticketService.getTicketList(authDetails.user());
         return ApiResponse.onSuccess(ticketListResponse);
     }
 
     @GetMapping("/tickets/general/")
-    public ApiResponse<TicketListResponse> getGeneralTicketList() {
-        TicketListResponse ticketListResponse = ticketService.getGeneralTicketList();
+    public ApiResponse<TicketListResponse> getGeneralTicketList(@AuthenticationPrincipal AuthDetails authDetails) {
+        TicketListResponse ticketListResponse = ticketService.getGeneralTicketList(authDetails.user());
         return ApiResponse.onSuccess(ticketListResponse);
     }
 
     @GetMapping("/tickets/freshman/")
-    public ApiResponse<TicketListResponse> getFreshmanTicketList() {
-        TicketListResponse ticketListResponse = ticketService.getFreshmanTicketList();
+    public ApiResponse<TicketListResponse> getFreshmanTicketList(@AuthenticationPrincipal AuthDetails authDetails) {
+        TicketListResponse ticketListResponse = ticketService.getFreshmanTicketList(authDetails.user());
         return ApiResponse.onSuccess(ticketListResponse);
     }
 }

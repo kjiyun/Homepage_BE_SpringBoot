@@ -6,6 +6,8 @@ import kahlua.KahluaProject.converter.TicketConverter;
 import kahlua.KahluaProject.domain.ticket.Participants;
 import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.domain.ticket.Type;
+import kahlua.KahluaProject.domain.user.User;
+import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.request.TicketCreateRequest;
 import kahlua.KahluaProject.dto.response.*;
 import kahlua.KahluaProject.exception.GeneralException;
@@ -62,7 +64,11 @@ public class TicketService {
     }
 
     // 어드민 페이지 티켓 리스트 조회
-    public TicketListResponse getTicketList() {
+    public TicketListResponse getTicketList(User user) {
+
+        if(user.getUserType() != UserType.ADMIN){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
 
         List<Ticket> tickets = ticketRepository.findAll();
         List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
@@ -109,7 +115,11 @@ public class TicketService {
     }
 
     // 일반 티켓 리스트 조회
-    public TicketListResponse getGeneralTicketList() {
+    public TicketListResponse getGeneralTicketList(User user) {
+
+        if(user.getUserType() != UserType.ADMIN){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
 
         List<Ticket> tickets = ticketRepository.findAllByType(Type.GENERAL);
         List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
@@ -136,7 +146,11 @@ public class TicketService {
     }
 
     // 신입생 티켓 리스트 조회
-    public TicketListResponse getFreshmanTicketList() {
+    public TicketListResponse getFreshmanTicketList(User user) {
+
+        if(user.getUserType() != UserType.ADMIN){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
 
         List<Ticket> tickets = ticketRepository.findAllByType(Type.FRESHMAN);
         List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
