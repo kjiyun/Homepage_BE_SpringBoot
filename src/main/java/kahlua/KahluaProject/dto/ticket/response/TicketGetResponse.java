@@ -1,10 +1,8 @@
-package kahlua.KahluaProject.dto.response;
+package kahlua.KahluaProject.dto.ticket.response;
 
 import kahlua.KahluaProject.domain.ticket.Meeting;
-import kahlua.KahluaProject.domain.ticket.Participants;
 import kahlua.KahluaProject.domain.ticket.Status;
 import kahlua.KahluaProject.domain.ticket.Type;
-import kahlua.KahluaProject.repository.ParticipantsRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

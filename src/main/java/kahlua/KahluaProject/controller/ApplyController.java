@@ -1,9 +1,9 @@
 package kahlua.KahluaProject.controller;
 
 import kahlua.KahluaProject.apipayload.ApiResponse;
-import kahlua.KahluaProject.dto.request.ApplyCreateRequest;
-import kahlua.KahluaProject.dto.response.ApplyCreateResponse;
-import kahlua.KahluaProject.dto.response.ApplyGetResponse;
+import kahlua.KahluaProject.dto.apply.request.ApplyCreateRequest;
+import kahlua.KahluaProject.dto.apply.response.ApplyCreateResponse;
+import kahlua.KahluaProject.dto.apply.response.ApplyGetResponse;
 import kahlua.KahluaProject.service.ApplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

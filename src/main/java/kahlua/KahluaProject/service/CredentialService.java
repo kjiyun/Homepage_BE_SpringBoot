@@ -3,7 +3,7 @@ package kahlua.KahluaProject.service;
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.domain.user.Credential;
 import kahlua.KahluaProject.domain.user.User;
-import kahlua.KahluaProject.dto.request.SignUpRequest;
+import kahlua.KahluaProject.dto.user.request.SignUpRequest;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.CredentialRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package kahlua.KahluaProject.dto.response;
+package kahlua.KahluaProject.dto.ticket.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
