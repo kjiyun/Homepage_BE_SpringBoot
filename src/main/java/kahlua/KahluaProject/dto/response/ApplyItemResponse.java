@@ -1,5 +1,6 @@
 package kahlua.KahluaProject.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import kahlua.KahluaProject.domain.apply.Gender;
 import kahlua.KahluaProject.domain.apply.Major;
 import kahlua.KahluaProject.domain.apply.Preference;
@@ -12,17 +13,30 @@ import lombok.Getter;
 @Builder
 public class ApplyItemResponse {
 
+    @Schema(description = "지원자 id")
     private Long id;
+
+    @Schema(description = "지원자 이름")
     private String name;
+
+    @Schema(description = "지원자 전화번호")
     private String phone_num;
+
+    @Schema(description = "지원자 생년월일")
     private String birth_date;
 
+    @Schema(description = "지원자 성별")
     private Gender gender;
 
+    @Schema(description = "지원자 주소")
     private String address;
 
+    @Schema(description = "지원자 전공")
     private Major major;
 
+    @Schema(description = "지원자 1지망 악기")
     private Preference first_preference;
+
+    @Schema(description = "지원자 2지망 악기")
     private Preference second_preference;
 }
