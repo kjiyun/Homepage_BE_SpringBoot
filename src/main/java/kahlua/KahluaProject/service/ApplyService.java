@@ -52,6 +52,7 @@ public class ApplyService {
 
         List<Apply> applies = applyRepository.findAll();
         List<ApplyItemResponse> applyItemResponses = new ArrayList<>();
+        Long total = applyRepository.count();
 
         for (Apply apply : applies) {
             ApplyItemResponse applyItemResponse = ApplyItemResponse.builder()
@@ -69,6 +70,11 @@ public class ApplyService {
             applyItemResponses.add(applyItemResponse);
         }
 
-        return new ApplyListResponse(applyItemResponses);
+        ApplyListResponse applyListResponse = ApplyListResponse.builder()
+                .total(total)
+                .applies(applyItemResponses)
+                .build();
+
+        return applyListResponse;
     }
 }
