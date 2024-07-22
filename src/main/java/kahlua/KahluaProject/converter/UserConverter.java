@@ -1,7 +1,7 @@
 package kahlua.KahluaProject.converter;
 
 import kahlua.KahluaProject.domain.user.User;
-import kahlua.KahluaProject.dto.response.UserResponse;
+import kahlua.KahluaProject.dto.user.response.UserResponse;
 
 public class UserConverter {
 

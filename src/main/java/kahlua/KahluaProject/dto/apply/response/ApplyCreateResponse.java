@@ -1,4 +1,4 @@
-package kahlua.KahluaProject.dto.response;
+package kahlua.KahluaProject.dto.apply.response;
 
 import kahlua.KahluaProject.domain.apply.Gender;
 import kahlua.KahluaProject.domain.apply.Major;
@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class ApplyGetResponse {
+public class ApplyCreateResponse {
 
     private Long id;
     private String name;

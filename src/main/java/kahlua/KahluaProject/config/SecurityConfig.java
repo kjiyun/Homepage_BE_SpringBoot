@@ -1,4 +1,4 @@
-package kahlua.KahluaProject.confg;
+package kahlua.KahluaProject.config;
 
 import kahlua.KahluaProject.security.ExceptionFilter;
 import kahlua.KahluaProject.security.jwt.JwtAccessDeniedHandler;

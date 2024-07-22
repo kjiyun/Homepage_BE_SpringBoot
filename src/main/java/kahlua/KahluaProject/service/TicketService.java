@@ -5,11 +5,14 @@ import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.TicketConverter;
 import kahlua.KahluaProject.domain.ticket.Participants;
 import kahlua.KahluaProject.domain.ticket.Ticket;
-import kahlua.KahluaProject.dto.request.ParticipantsCreateRequest;
-import kahlua.KahluaProject.dto.request.TicketCreateRequest;
-import kahlua.KahluaProject.dto.response.ParticipantsResponse;
-import kahlua.KahluaProject.dto.response.TicketCreateResponse;
-import kahlua.KahluaProject.dto.response.TicketGetResponse;
+import kahlua.KahluaProject.domain.ticket.Type;
+import kahlua.KahluaProject.domain.user.User;
+import kahlua.KahluaProject.domain.user.UserType;
+import kahlua.KahluaProject.dto.ticket.request.TicketCreateRequest;
+import kahlua.KahluaProject.dto.ticket.response.TicketCreateResponse;
+import kahlua.KahluaProject.dto.ticket.response.TicketGetResponse;
+import kahlua.KahluaProject.dto.ticket.response.TicketItemResponse;
+import kahlua.KahluaProject.dto.ticket.response.TicketListResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ParticipantsRepository;
 import kahlua.KahluaProject.repository.TicketRepository;
@@ -52,6 +55,132 @@ public class TicketService {
         return ticketCreateResponse;
     }
 
+    @Transactional
+    public TicketGetResponse viewTicket(Long ticketId) {
+
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.SESSION_UNAUTHORIZED));
+
+        List<Participants> participants = participantsRepository.findByTicket(ticket);
+
+        return TicketConverter.toTicketGetResponse(ticket, participants);
+    }
+
+    // 어드민 페이지 티켓 리스트 조회
+    public TicketListResponse getTicketList(User user) {
+
+        if(user.getUserType() != UserType.ADMIN){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        List<Ticket> tickets = ticketRepository.findAll();
+        List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
+
+        for (Ticket ticket : tickets) {
+            // 일반티켓
+            // 전공, 뒷풀이 참석 여부 null
+            if (ticket.getType() == Type.GENERAL){
+                TicketItemResponse ticketItemResponse = TicketItemResponse.builder()
+                        .id(ticket.getId())
+                        .status(ticket.getStatus())
+                        .reservation_id(ticket.getReservationId())
+                        .buyer(ticket.getBuyer())
+                        .phone_num(ticket.getPhone_num())
+                        .total_ticket(participantsRepository.countByTicket_Id(ticket.getId()) + 1)
+                        .build();
+
+                ticketItemResponses.add(ticketItemResponse);
+            }
+            // 신입생티켓
+            // 티켓 매수 1 고정
+            else if (ticket.getType() == Type.FRESHMAN) {
+                TicketItemResponse ticketItemResponse = TicketItemResponse.builder()
+                        .id(ticket.getId())
+                        .status(ticket.getStatus())
+                        .reservation_id(ticket.getReservationId())
+                        .buyer(ticket.getBuyer())
+                        .phone_num(ticket.getPhone_num())
+                        .total_ticket(1)
+                        .major(ticket.getMajor())
+                        .meeting(ticket.getMeeting())
+                        .build();
+
+                ticketItemResponses.add(ticketItemResponse);
+            }
+        }
+
+        TicketListResponse ticketListResponse = TicketListResponse.builder()
+                .total(countTickets(ticketItemResponses))
+                .tickets(ticketItemResponses)
+                .build();
+
+        return ticketListResponse;
+    }
+
+    // 일반 티켓 리스트 조회
+    public TicketListResponse getGeneralTicketList(User user) {
+
+        if(user.getUserType() != UserType.ADMIN){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        List<Ticket> tickets = ticketRepository.findAllByType(Type.GENERAL);
+        List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
+
+        for (Ticket ticket : tickets) {
+            TicketItemResponse ticketItemResponse = TicketItemResponse.builder()
+                    .id(ticket.getId())
+                    .status(ticket.getStatus())
+                    .reservation_id(ticket.getReservationId())
+                    .buyer(ticket.getBuyer())
+                    .phone_num(ticket.getPhone_num())
+                    .total_ticket(participantsRepository.countByTicket_Id(ticket.getId()) + 1)
+                    .build();
+
+            ticketItemResponses.add(ticketItemResponse);
+        }
+
+        TicketListResponse ticketListResponse = TicketListResponse.builder()
+                .total(countTickets(ticketItemResponses))
+                .tickets(ticketItemResponses)
+                .build();
+
+        return ticketListResponse;
+    }
+
+    // 신입생 티켓 리스트 조회
+    public TicketListResponse getFreshmanTicketList(User user) {
+
+        if(user.getUserType() != UserType.ADMIN){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        List<Ticket> tickets = ticketRepository.findAllByType(Type.FRESHMAN);
+        List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
+
+        for (Ticket ticket : tickets) {
+            TicketItemResponse ticketItemResponse = TicketItemResponse.builder()
+                    .id(ticket.getId())
+                    .status(ticket.getStatus())
+                    .reservation_id(ticket.getReservationId())
+                    .buyer(ticket.getBuyer())
+                    .phone_num(ticket.getPhone_num())
+                    .total_ticket(1)
+                    .major(ticket.getMajor())
+                    .meeting(ticket.getMeeting())
+                    .build();
+
+            ticketItemResponses.add(ticketItemResponse);
+        }
+
+        TicketListResponse ticketListResponse = TicketListResponse.builder()
+                .total(countTickets(ticketItemResponses))
+                .tickets(ticketItemResponses)
+                .build();
+
+        return ticketListResponse;
+    }
+
     //예약번호가 기존 예약번호와 일치하면 안되므로 중복되는지 확인하는 기능
     public String uniqueReservationId() {
         String reservationId;
@@ -80,15 +209,14 @@ public class TicketService {
         return String.join("", idList);
     }
 
-    @Transactional
-    public TicketGetResponse viewTicket(Long ticketId) {
+    // 티켓 매수 count - 일반 티켓 리스트 조회에 사용
+    public Integer countTickets(List<TicketItemResponse> ticketItemResponses) {
 
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.SESSION_UNAUTHORIZED));
+        Integer total = 0;
+        for (TicketItemResponse ticketItemResponse : ticketItemResponses) {
+            total += ticketItemResponse.getTotal_ticket();
+        }
 
-        List<Participants> participants = participantsRepository.findByTicket(ticket);
-
-        return TicketConverter.toTicketGetResponse(ticket, participants);
+        return total;
     }
-
 }

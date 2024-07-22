@@ -1,9 +1,9 @@
 package kahlua.KahluaProject.controller;
 
 import kahlua.KahluaProject.apipayload.ApiResponse;
-import kahlua.KahluaProject.dto.request.TicketCreateRequest;
-import kahlua.KahluaProject.dto.response.TicketCreateResponse;
-import kahlua.KahluaProject.dto.response.TicketGetResponse;
+import kahlua.KahluaProject.dto.ticket.request.TicketCreateRequest;
+import kahlua.KahluaProject.dto.ticket.response.TicketCreateResponse;
+import kahlua.KahluaProject.dto.ticket.response.TicketGetResponse;
 import kahlua.KahluaProject.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
