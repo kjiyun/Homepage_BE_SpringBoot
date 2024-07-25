@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.ApplyConverter;
 import kahlua.KahluaProject.domain.apply.Apply;
+import kahlua.KahluaProject.domain.apply.Preference;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.apply.request.ApplyCreateRequest;
@@ -63,8 +64,8 @@ public class ApplyService {
                     .gender(apply.getGender())
                     .address(apply.getAddress())
                     .major(apply.getMajor())
-                    .first_preference(apply.getFirst_preference())
-                    .second_preference(apply.getSecond_preference())
+                    .first_preference(apply.getFirstPreference())
+                    .second_preference(apply.getSecondPreference())
                     .build();
 
             applyItemResponses.add(applyItemResponse);
@@ -72,6 +73,57 @@ public class ApplyService {
 
         ApplyListResponse applyListResponse = ApplyListResponse.builder()
                 .total(total)
+                .applies(applyItemResponses)
+                .build();
+
+        return applyListResponse;
+    }
+
+    public ApplyListResponse getApplyListByPreference(User user, Preference preference) {
+
+        if(user.getUserType() != UserType.ADMIN){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        List<Apply> firstPreferenceApplies = applyRepository.findAllByFirstPreference(preference);
+        List<Apply> secondPreferenceApplies = applyRepository.findAllBySecondPreference(preference);
+
+        List<ApplyItemResponse> applyItemResponses = new ArrayList<>();
+
+        for (Apply apply : firstPreferenceApplies) {
+            ApplyItemResponse applyItemResponse = ApplyItemResponse.builder()
+                    .id(apply.getId())
+                    .name(apply.getName())
+                    .phone_num(apply.getPhone_num())
+                    .birth_date(apply.getBirth_date())
+                    .gender(apply.getGender())
+                    .address(apply.getAddress())
+                    .major(apply.getMajor())
+                    .first_preference(apply.getFirstPreference())
+                    .second_preference(apply.getSecondPreference())
+                    .build();
+
+            applyItemResponses.add(applyItemResponse);
+        }
+
+        for (Apply apply : secondPreferenceApplies) {
+            ApplyItemResponse applyItemResponse = ApplyItemResponse.builder()
+                    .id(apply.getId())
+                    .name(apply.getName())
+                    .phone_num(apply.getPhone_num())
+                    .birth_date(apply.getBirth_date())
+                    .gender(apply.getGender())
+                    .address(apply.getAddress())
+                    .major(apply.getMajor())
+                    .first_preference(apply.getFirstPreference())
+                    .second_preference(apply.getSecondPreference())
+                    .build();
+
+            applyItemResponses.add(applyItemResponse);
+        }
+
+        ApplyListResponse applyListResponse = ApplyListResponse.builder()
+                .total((long)applyItemResponses.size())
                 .applies(applyItemResponses)
                 .build();
 

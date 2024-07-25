@@ -34,10 +34,10 @@ public class Apply extends BaseEntity{
     private Major major;
 
     @Enumerated(EnumType.STRING)
-    private Preference first_preference;
+    private Preference firstPreference;
 
     @Enumerated(EnumType.STRING)
-    private Preference second_preference;
+    private Preference secondPreference;
 
     private String experience_and_reason;
 
