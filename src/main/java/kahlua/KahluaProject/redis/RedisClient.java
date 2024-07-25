@@ -1,8 +1,11 @@
 package kahlua.KahluaProject.redis;
 
+import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -18,7 +21,7 @@ public class RedisClient {
             ValueOperations<String, Object> values = redisTemplate.opsForValue();
             values.set(key, value, Duration.ofMillis(timeout));
         } catch (Exception e) {
-            throw new RuntimeException("Redis 설정에 실패했습니다.", e);
+            throw new GeneralException(ErrorStatus.REDIS_NOT_FOUND);
         }
     }
 
@@ -30,7 +33,7 @@ public class RedisClient {
             }
             return values.get(key).toString();
         } catch (Exception e) {
-            throw new RuntimeException("Redis 값을 가져오는 데 실패했습니다.", e);
+            throw new GeneralException(ErrorStatus.REDIS_NOT_FOUND);
         }
     }
 
@@ -38,7 +41,7 @@ public class RedisClient {
         try {
             redisTemplate.delete(key);
         } catch (Exception e) {
-            throw new RuntimeException("Redis 값을 삭제하는 데 실패했습니다.", e);
+            throw new GeneralException(ErrorStatus.REDIS_NOT_FOUND);
         }
     }
 
@@ -46,7 +49,7 @@ public class RedisClient {
         try {
             return redisTemplate.hasKey(key);
         } catch (Exception e) {
-            throw new RuntimeException("Redis 값 존재 여부 확인에 실패했습니다.", e);
+            throw new GeneralException(ErrorStatus.REDIS_NOT_FOUND);
         }
     }
 }

@@ -37,7 +37,6 @@ public class AuthService {
 
     @Transactional
     public SignInResponse signIn(SignInRequest signInRequest) {
-        System.out.println(signInRequest);
         User user = userService.getUserByEmail(signInRequest.getEmail());
         credentialService.checkPassword(user, signInRequest.getPassword());
 

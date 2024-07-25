@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import kahlua.KahluaProject.domain.BaseEntity;
 import lombok.*;
 
+import static kahlua.KahluaProject.domain.ticket.Type.FRESHMAN;
+import static kahlua.KahluaProject.domain.ticket.Type.GENERAL;
+
 @Entity
 @Builder
 @Getter
@@ -41,8 +44,11 @@ public class Ticket extends BaseEntity {
 
     @PrePersist
     public void onCreate() {
-        if (status == null) {
+        if (status == null && type == GENERAL) {
             status = Status.WAIT;  // default 값 설정
+        }
+        else if (status == null && type == FRESHMAN) {
+            status = Status.FINISH;  // 신입생의 경우 바로 FINISH
         }
     }
 }
