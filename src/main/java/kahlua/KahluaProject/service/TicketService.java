@@ -9,10 +9,7 @@ import kahlua.KahluaProject.domain.ticket.Type;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.ticket.request.TicketCreateRequest;
-import kahlua.KahluaProject.dto.ticket.response.TicketCreateResponse;
-import kahlua.KahluaProject.dto.ticket.response.TicketGetResponse;
-import kahlua.KahluaProject.dto.ticket.response.TicketItemResponse;
-import kahlua.KahluaProject.dto.ticket.response.TicketListResponse;
+import kahlua.KahluaProject.dto.ticket.response.*;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ParticipantsRepository;
 import kahlua.KahluaProject.repository.TicketRepository;
@@ -77,6 +74,15 @@ public class TicketService {
         List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
 
         for (Ticket ticket : tickets) {
+
+            List<ParticipantsResponse> memberResponses = participantsRepository.findByTicket(ticket).stream()
+                    .map(participant -> ParticipantsResponse.builder()
+                            .id(participant.getId())
+                            .name(participant.getName())
+                            .phone_num(participant.getPhone_num())
+                            .build())
+                    .collect(Collectors.toList());
+
             // 일반티켓
             // 전공, 뒷풀이 참석 여부 null
             if (ticket.getType() == Type.GENERAL){
@@ -86,6 +92,7 @@ public class TicketService {
                         .reservation_id(ticket.getReservationId())
                         .buyer(ticket.getBuyer())
                         .phone_num(ticket.getPhone_num())
+                        .members(memberResponses)
                         .total_ticket(participantsRepository.countByTicket_Id(ticket.getId()) + 1)
                         .build();
 
@@ -128,12 +135,22 @@ public class TicketService {
         List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
 
         for (Ticket ticket : tickets) {
+
+            List<ParticipantsResponse> memberResponses = participantsRepository.findByTicket(ticket).stream()
+                    .map(participant -> ParticipantsResponse.builder()
+                            .id(participant.getId())
+                            .name(participant.getName())
+                            .phone_num(participant.getPhone_num())
+                            .build())
+                    .collect(Collectors.toList());
+
             TicketItemResponse ticketItemResponse = TicketItemResponse.builder()
                     .id(ticket.getId())
                     .status(ticket.getStatus())
                     .reservation_id(ticket.getReservationId())
                     .buyer(ticket.getBuyer())
                     .phone_num(ticket.getPhone_num())
+                    .members(memberResponses)
                     .total_ticket(participantsRepository.countByTicket_Id(ticket.getId()) + 1)
                     .build();
 
