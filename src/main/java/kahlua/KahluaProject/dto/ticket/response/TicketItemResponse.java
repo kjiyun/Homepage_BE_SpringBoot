@@ -6,6 +6,7 @@ import kahlua.KahluaProject.domain.ticket.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import java.util.List;
 
 @Getter
 @Builder
@@ -35,4 +36,7 @@ public class TicketItemResponse {
 
     @Schema(description = "뒷풀이 참여여부")
     private Meeting meeting;
+
+    @Schema(description = "참석자 정보")
+    private List<ParticipantsResponse> members;
 }

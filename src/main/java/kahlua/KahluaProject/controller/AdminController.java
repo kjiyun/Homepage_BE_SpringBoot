@@ -57,14 +57,14 @@ public class AdminController {
         return ApiResponse.onSuccess(ticketListResponse);
     }
 
-    @GetMapping("/tickets/general/")
+    @GetMapping("/tickets/general")
     @Operation(summary = "일반 티켓 리스트 조회", description = "id 기준으로 정렬된 일반 티켓 리스트를 조회합니다")
     public ApiResponse<TicketListResponse> getGeneralTicketList(@AuthenticationPrincipal AuthDetails authDetails) {
         TicketListResponse ticketListResponse = ticketService.getGeneralTicketList(authDetails.user());
         return ApiResponse.onSuccess(ticketListResponse);
     }
 
-    @GetMapping("/tickets/freshman/")
+    @GetMapping("/tickets/freshman")
     @Operation(summary = "신입생 티켓 리스트 조회", description = "id 기준으로 정렬된 신입생 티켓 리스트를 조회합니다")
     public ApiResponse<TicketListResponse> getFreshmanTicketList(@AuthenticationPrincipal AuthDetails authDetails) {
         TicketListResponse ticketListResponse = ticketService.getFreshmanTicketList(authDetails.user());
