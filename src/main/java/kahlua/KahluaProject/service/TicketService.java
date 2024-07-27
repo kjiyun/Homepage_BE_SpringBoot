@@ -52,11 +52,64 @@ public class TicketService {
         return ticketCreateResponse;
     }
 
+    //티켓 결제 완료한 경우
     @Transactional
-    public TicketGetResponse viewTicket(Long ticketId) {
+    public TicketUpdateResponse completePayment(User user, Long ticketId) {
 
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.SESSION_UNAUTHORIZED));
+        if (user.getUserType() != UserType.ADMIN) {
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        Ticket existingTicket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
+        existingTicket.completePayment();
+
+        Ticket updatedTicket = ticketRepository.save(existingTicket);
+
+
+        TicketUpdateResponse ticketUpdateResponse = TicketConverter.toTicketUpdateResponse(updatedTicket);
+        return ticketUpdateResponse;
+
+    }
+
+    //티켓 취소 요청하는 경우
+    @Transactional
+    public TicketUpdateResponse requestCancelTicket(String reservationId) {
+
+        Ticket existingTicket = ticketRepository.findByReservationId(reservationId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
+        existingTicket.requestCancelTicket();
+
+        Ticket updatedTicket = ticketRepository.save(existingTicket);
+
+        TicketUpdateResponse ticketUpdateResponse = TicketConverter.toTicketUpdateResponse(updatedTicket);
+        return ticketUpdateResponse;
+    }
+
+    //티켓 취소 완료
+    @Transactional
+    public TicketUpdateResponse completeCancelTicket(User user, Long ticketId) {
+
+        if(user.getUserType() != UserType.ADMIN){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        Ticket existingTicket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
+        existingTicket.completeCancel();
+
+        Ticket updatedTicket = ticketRepository.save(existingTicket);
+
+
+        TicketUpdateResponse ticketUpdateResponse = TicketConverter.toTicketUpdateResponse(updatedTicket);
+        return ticketUpdateResponse;
+    }
+
+    @Transactional
+    public TicketGetResponse viewTicket(String reservationId) {
+
+        Ticket ticket = ticketRepository.findByReservationId(reservationId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
 
         List<Participants> participants = participantsRepository.findByTicket(ticket);
 
