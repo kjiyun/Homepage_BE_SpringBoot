@@ -48,16 +48,18 @@ public class Ticket extends BaseEntity {
             status = Status.WAIT;  // default 값 설정
         }
         else if (status == null && type == FRESHMAN) {
-            status = Status.FINISH;  // 신입생의 경우 바로 FINISH
+            status = Status.FINISH_PAYMENT;  // 신입생의 경우 바로 FINISH
         }
     }
 
-    public void cancelTicket() {
-        this.status = Status.CANCEL;
+    public void completePayment() { this.status = Status.FINISH_PAYMENT; }
+
+    public void requestCancelTicket() {
+        this.status = Status.CANCEL_REQUEST;
     }
 
     public void completeCancel() {
-        this.status = Status.DELETE;
+        this.status = Status.CANCEL_COMPLETE;
         deletedTime();
     }
 }

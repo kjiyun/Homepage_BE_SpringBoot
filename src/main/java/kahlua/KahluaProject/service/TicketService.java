@@ -52,13 +52,33 @@ public class TicketService {
         return ticketCreateResponse;
     }
 
+    //티켓 결제 완료한 경우
+    @Transactional
+    public TicketUpdateResponse completePayment(User user, Long ticketId) {
+
+        if (user.getUserType() != UserType.ADMIN) {
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        Ticket existingTicket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+        existingTicket.completePayment();
+
+        Ticket updatedTicket = ticketRepository.save(existingTicket);
+
+
+        TicketUpdateResponse ticketUpdateResponse = TicketConverter.toTicketUpdateResponse(updatedTicket);
+        return ticketUpdateResponse;
+
+    }
+
     //티켓 취소 요청하는 경우
     @Transactional
     public TicketUpdateResponse requestCancelTicket(String reservationId) {
 
         Ticket existingTicket = ticketRepository.findByReservationId(reservationId)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
-        existingTicket.cancelTicket();
+        existingTicket.requestCancelTicket();
 
         Ticket updatedTicket = ticketRepository.save(existingTicket);
 
