@@ -40,7 +40,7 @@ public class Ticket extends BaseEntity {
     private Meeting meeting; // 가능한 뒷풀이 참석 날짜 (신입생)
 
     @Enumerated(EnumType.STRING)
-    private Status status;  // 결제 상태 (대기, 종료, 취소)
+    private Status status;  // 결제 상태 (대기, 종료, 취소 요청, 취소 완료)
 
     @PrePersist
     public void onCreate() {
@@ -50,5 +50,14 @@ public class Ticket extends BaseEntity {
         else if (status == null && type == FRESHMAN) {
             status = Status.FINISH;  // 신입생의 경우 바로 FINISH
         }
+    }
+
+    public void cancelTicket() {
+        this.status = Status.CANCEL;
+    }
+
+    public void completeCancel() {
+        this.status = Status.DELETE;
+        deletedTime();
     }
 }

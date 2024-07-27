@@ -52,10 +52,43 @@ public class TicketService {
         return ticketCreateResponse;
     }
 
+    //티켓 취소 요청하는 경우
     @Transactional
-    public TicketGetResponse viewTicket(Long ticketId) {
+    public TicketUpdateResponse requestCancelTicket(String reservationId) {
 
-        Ticket ticket = ticketRepository.findById(ticketId)
+        Ticket existingTicket = ticketRepository.findByReservationId(reservationId)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+        existingTicket.cancelTicket();
+
+        Ticket updatedTicket = ticketRepository.save(existingTicket);
+
+        TicketUpdateResponse ticketUpdateResponse = TicketConverter.toTicketUpdateResponse(updatedTicket);
+        return ticketUpdateResponse;
+    }
+
+    //티켓 취소 완료
+    @Transactional
+    public TicketUpdateResponse completeCancelTicket(User user, Long ticketId) {
+
+        if(user.getUserType() != UserType.ADMIN){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        Ticket existingTicket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+        existingTicket.completeCancel();
+
+        Ticket updatedTicket = ticketRepository.save(existingTicket);
+
+
+        TicketUpdateResponse ticketUpdateResponse = TicketConverter.toTicketUpdateResponse(updatedTicket);
+        return ticketUpdateResponse;
+    }
+
+    @Transactional
+    public TicketGetResponse viewTicket(String reservationId) {
+
+        Ticket ticket = ticketRepository.findByReservationId(reservationId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.SESSION_UNAUTHORIZED));
 
         List<Participants> participants = participantsRepository.findByTicket(ticket);

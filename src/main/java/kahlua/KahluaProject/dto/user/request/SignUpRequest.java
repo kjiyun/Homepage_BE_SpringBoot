@@ -5,12 +5,16 @@ import jakarta.validation.constraints.NotEmpty;
 import kahlua.KahluaProject.domain.user.Credential;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.domain.user.UserType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
 @Schema(title = "회원가입 요청 DTO")
+@AllArgsConstructor
+@NoArgsConstructor
 public class SignUpRequest {
     @NotEmpty
     @Schema(description = "사용자 이메일", example = "kahlua123@kahlua.com")

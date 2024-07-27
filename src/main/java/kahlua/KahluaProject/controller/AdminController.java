@@ -8,6 +8,7 @@ import kahlua.KahluaProject.domain.apply.Preference;
 import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.apply.response.ApplyGetResponse;
 import kahlua.KahluaProject.dto.apply.response.ApplyListResponse;
+import kahlua.KahluaProject.dto.ticket.response.TicketUpdateResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.security.AuthDetails;
 import kahlua.KahluaProject.dto.ticket.response.TicketListResponse;
@@ -69,5 +70,12 @@ public class AdminController {
     public ApiResponse<TicketListResponse> getFreshmanTicketList(@AuthenticationPrincipal AuthDetails authDetails) {
         TicketListResponse ticketListResponse = ticketService.getFreshmanTicketList(authDetails.user());
         return ApiResponse.onSuccess(ticketListResponse);
+    }
+
+    @PatchMapping("/{ticketId}/cancel-complete")
+    @Operation(summary = "티켓 취소 완료", description = "티켓 환불을 완료한 뒤 어드민 페이지에서 취소 완료를 클릭하는 경우 취소가 완료로 상태가 변합니다.")
+    public ApiResponse<TicketUpdateResponse> completeCancelForm(@PathVariable(name = "ticketId") Long ticketId, @AuthenticationPrincipal AuthDetails authDetails) {
+        TicketUpdateResponse ticketUpdateResponse = ticketService.completeCancelTicket(authDetails.user(), ticketId);
+        return ApiResponse.onSuccess(ticketUpdateResponse);
     }
 }

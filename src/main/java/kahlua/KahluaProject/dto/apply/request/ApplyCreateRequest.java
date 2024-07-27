@@ -6,9 +6,11 @@ import kahlua.KahluaProject.domain.apply.Major;
 import kahlua.KahluaProject.domain.apply.Preference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ApplyCreateRequest {
 
     private String name;

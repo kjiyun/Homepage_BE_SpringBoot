@@ -6,6 +6,7 @@ import kahlua.KahluaProject.dto.ticket.request.TicketCreateRequest;
 import kahlua.KahluaProject.dto.ticket.response.ParticipantsResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketCreateResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketGetResponse;
+import kahlua.KahluaProject.dto.ticket.response.TicketUpdateResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +40,20 @@ public class TicketConverter {
                 .studentId(ticket.getStudentId())
                 .meeting(ticket.getMeeting())
                 .members(members)
+                .status(ticket.getStatus())
+                .build();
+    }
+
+    public static TicketUpdateResponse toTicketUpdateResponse(Ticket ticket) {
+        return TicketUpdateResponse.builder()
+                .id(ticket.getId())
+                .buyer(ticket.getBuyer())
+                .phone_num(ticket.getPhone_num())
+                .reservationId(ticket.getReservationId())
+                .type(ticket.getType())
+                .major(ticket.getMajor())
+                .studentId(ticket.getStudentId())
+                .meeting(ticket.getMeeting())
                 .status(ticket.getStatus())
                 .build();
     }
