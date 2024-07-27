@@ -61,7 +61,7 @@ public class TicketService {
         }
 
         Ticket existingTicket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
         existingTicket.completePayment();
 
         Ticket updatedTicket = ticketRepository.save(existingTicket);
@@ -77,7 +77,7 @@ public class TicketService {
     public TicketUpdateResponse requestCancelTicket(String reservationId) {
 
         Ticket existingTicket = ticketRepository.findByReservationId(reservationId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
         existingTicket.requestCancelTicket();
 
         Ticket updatedTicket = ticketRepository.save(existingTicket);
@@ -95,7 +95,7 @@ public class TicketService {
         }
 
         Ticket existingTicket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
         existingTicket.completeCancel();
 
         Ticket updatedTicket = ticketRepository.save(existingTicket);
@@ -109,7 +109,7 @@ public class TicketService {
     public TicketGetResponse viewTicket(String reservationId) {
 
         Ticket ticket = ticketRepository.findByReservationId(reservationId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.SESSION_UNAUTHORIZED));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
 
         List<Participants> participants = participantsRepository.findByTicket(ticket);
 

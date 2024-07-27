@@ -30,7 +30,10 @@ public enum ErrorStatus implements BaseCode {
 
 
     // 세션 에러
-    SESSION_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "유효하지 않은 세션입니다.");
+    SESSION_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "유효하지 않은 세션입니다."),
+
+    // 티켓 에러
+    TICKET_NOT_FOUND(HttpStatus.NOT_FOUND, "TICKET NOT FOUND", "티켓을 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
