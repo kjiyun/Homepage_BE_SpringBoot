@@ -2,7 +2,6 @@ package kahlua.KahluaProject.dto.apply.request;
 
 
 import kahlua.KahluaProject.domain.apply.Gender;
-import kahlua.KahluaProject.domain.apply.Major;
 import kahlua.KahluaProject.domain.apply.Preference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +20,7 @@ public class ApplyCreateRequest {
 
     private String address;
 
-    private Major major;
+    private String major;
 
     private Preference first_preference;
     private Preference second_preference;

@@ -2,12 +2,10 @@ package kahlua.KahluaProject.dto.apply.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import kahlua.KahluaProject.domain.apply.Gender;
-import kahlua.KahluaProject.domain.apply.Major;
 import kahlua.KahluaProject.domain.apply.Preference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
@@ -33,7 +31,7 @@ public class ApplyItemResponse {
     private String address;
 
     @Schema(description = "지원자 전공")
-    private Major major;
+    private String major;
 
     @Schema(description = "지원자 1지망 악기")
     private Preference first_preference;

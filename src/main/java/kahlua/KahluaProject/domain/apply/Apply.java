@@ -31,8 +31,7 @@ public class Apply extends BaseEntity{
 
     private String address;
 
-    @Enumerated(EnumType.STRING)
-    private Major major;
+    private String major;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "first_preference")
