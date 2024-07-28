@@ -39,7 +39,7 @@ public class ApplyService {
     public ApplyGetResponse getApply(Long applyId) {
 
         Apply apply = applyRepository.findById(applyId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.SESSION_UNAUTHORIZED));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.APPLY_FORM_NOT_FOUND));
 
         ApplyGetResponse applyGetResponse = ApplyConverter.toApplyGetResponse(apply);
         return applyGetResponse;

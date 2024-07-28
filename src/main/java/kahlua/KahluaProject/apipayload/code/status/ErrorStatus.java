@@ -33,7 +33,10 @@ public enum ErrorStatus implements BaseCode {
     SESSION_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "유효하지 않은 세션입니다."),
 
     // 티켓 에러
-    TICKET_NOT_FOUND(HttpStatus.NOT_FOUND, "TICKET NOT FOUND", "티켓을 찾을 수 없습니다.");
+    TICKET_NOT_FOUND(HttpStatus.NOT_FOUND, "TICKET NOT FOUND", "티켓을 찾을 수 없습니다."),
+
+    //지원하기 에러
+    APPLY_FORM_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLY FORM NOT FOUND", "존지해지 않는 지원서입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

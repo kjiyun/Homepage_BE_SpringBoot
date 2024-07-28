@@ -19,16 +19,14 @@ public class ApplyController {
     private final ApplyService applyService;
 
     @PostMapping
-    @Operation(summary = "지원 폼 생성", description = "양식에 맞춰 지원 폼을 생성합니다")
+    @Operation(summary = "지원서 생성", description = "양식에 맞춰 지원서을 생성합니다")
     public ApiResponse<ApplyCreateResponse> createApplyFrom(@RequestBody ApplyCreateRequest applyCreateRequest) {
-        ApplyCreateResponse applyCreateResponse = applyService.createApply(applyCreateRequest);
-        return ApiResponse.onSuccess(applyCreateResponse);
+        return ApiResponse.onSuccess(applyService.createApply(applyCreateRequest));
     }
 
     @GetMapping("/{applyId}")
-    @Operation(summary = "지원 폼 조회", description = "지원 폼 아이디를 통해 지우너 폼을 조회합니다")
-    public ApiResponse<ApplyGetResponse> viewApplyForm(@PathVariable Long applyId) {
-        ApplyGetResponse applyGetResponse = applyService.getApply(applyId);
-        return ApiResponse.onSuccess(applyGetResponse);
+    @Operation(summary = "지원서 조회", description = "지원 폼 아이디를 통해 지원서를 조회합니다")
+    public ApiResponse<ApplyGetResponse> getApplyForm(@PathVariable Long applyId) {
+        return ApiResponse.onSuccess(applyService.getApply(applyId));
     }
 }
