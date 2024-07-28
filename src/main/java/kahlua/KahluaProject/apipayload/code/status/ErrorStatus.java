@@ -36,7 +36,8 @@ public enum ErrorStatus implements BaseCode {
     TICKET_NOT_FOUND(HttpStatus.NOT_FOUND, "TICKET NOT FOUND", "티켓을 찾을 수 없습니다."),
 
     //지원하기 에러
-    APPLY_FORM_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLY FORM NOT FOUND", "존지해지 않는 지원서입니다.");
+    ALREADY_EXIST_APPLICANT(HttpStatus.BAD_REQUEST, "ALREADY EXIST APPLICANT", "이미 존재하는 지원자입니다"),
+    APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT NOT FOUND", "존지해지 않는 지원자입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
