@@ -128,13 +128,11 @@ public class TicketService {
         if (sortBy != null) {
             // sortBy 값에 따라 티켓 속성 기준 정렬
             // 추후 정렬 기준 추가되면 case문에 추가
-            switch (sortBy) {
-                case "buyer":
-                    tickets = ticketRepository.findAllByOrderByBuyerAscIdDesc();
-                    break;
-                default:
-                    throw new GeneralException(ErrorStatus.TICKET_COLUMN_INVALID);
-            }
+            tickets = switch (sortBy) {
+                case "buyer" -> ticketRepository.findAllByOrderByBuyerAscIdDesc();
+                // case "status"
+                default -> throw new GeneralException(ErrorStatus.TICKET_COLUMN_INVALID);
+            };
         }
         // sortBy 값이 없다면 최신순 정렬
         else {
@@ -205,13 +203,10 @@ public class TicketService {
 
         if (sortBy != null) {
             // sortBy 값에 따라 티켓 속성 기준 정렬
-            switch (sortBy) {
-                case "buyer":
-                    tickets = ticketRepository.findAllByTypeOrderByBuyerAscIdDesc(Type.GENERAL);
-                    break;
-                default:
-                    throw new GeneralException(ErrorStatus.TICKET_COLUMN_INVALID);
-            }
+            tickets = switch (sortBy) {
+                case "buyer" -> ticketRepository.findAllByTypeOrderByBuyerAscIdDesc(Type.GENERAL);
+                default -> throw new GeneralException(ErrorStatus.TICKET_COLUMN_INVALID);
+            };
         }
         // sortBy 값이 없다면 최신순 정렬
         else {
@@ -262,13 +257,10 @@ public class TicketService {
 
         if (sortBy != null) {
             // sortBy 값에 따라 티켓 속성 기준 정렬
-            switch (sortBy) {
-                case "buyer":
-                    tickets = ticketRepository.findAllByTypeOrderByBuyerAscIdDesc(Type.FRESHMAN);
-                    break;
-                default:
-                    throw new GeneralException(ErrorStatus.TICKET_COLUMN_INVALID);
-            }
+            tickets = switch (sortBy) {
+                case "buyer" -> ticketRepository.findAllByTypeOrderByBuyerAscIdDesc(Type.FRESHMAN);
+                default -> throw new GeneralException(ErrorStatus.TICKET_COLUMN_INVALID);
+            };
         }
         // sortBy 값이 없다면 최신순 정렬
         else {
