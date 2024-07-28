@@ -52,23 +52,26 @@ public class AdminController {
     }
 
     @GetMapping("/tickets")
-    @Operation(summary = "전체 티켓 리스트 조회", description = "id 기준으로 정렬된 전체 티켓 리스트를 조회합니다")
-    public ApiResponse<TicketListResponse> getTicketList(@AuthenticationPrincipal AuthDetails authDetails) {
-        TicketListResponse ticketListResponse = ticketService.getTicketList(authDetails.user());
+    @Operation(summary = "전체 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 전체 티켓 리스트를 조회합니다 </br> sort-by를 쿼리에 포함시키지 않은 경우 최신순으로 정렬합니다")
+    public ApiResponse<TicketListResponse> getTicketList(@AuthenticationPrincipal AuthDetails authDetails,
+                                                         @RequestParam(name = "sort-by", required = false) String sortBy) {
+        TicketListResponse ticketListResponse = ticketService.getTicketList(authDetails.user(), sortBy);
         return ApiResponse.onSuccess(ticketListResponse);
     }
 
     @GetMapping("/tickets/general")
-    @Operation(summary = "일반 티켓 리스트 조회", description = "id 기준으로 정렬된 일반 티켓 리스트를 조회합니다")
-    public ApiResponse<TicketListResponse> getGeneralTicketList(@AuthenticationPrincipal AuthDetails authDetails) {
-        TicketListResponse ticketListResponse = ticketService.getGeneralTicketList(authDetails.user());
+    @Operation(summary = "일반 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 일반 티켓 리스트를 조회합니다 </br> sort-by를 쿼리에 포함시키지 않은 경우 최신순으로 정렬합니다")
+    public ApiResponse<TicketListResponse> getGeneralTicketList(@AuthenticationPrincipal AuthDetails authDetails,
+                                                                @RequestParam(name = "sort-by", required = false) String sortBy) {
+        TicketListResponse ticketListResponse = ticketService.getGeneralTicketList(authDetails.user(), sortBy);
         return ApiResponse.onSuccess(ticketListResponse);
     }
 
     @GetMapping("/tickets/freshman")
-    @Operation(summary = "신입생 티켓 리스트 조회", description = "id 기준으로 정렬된 신입생 티켓 리스트를 조회합니다")
-    public ApiResponse<TicketListResponse> getFreshmanTicketList(@AuthenticationPrincipal AuthDetails authDetails) {
-        TicketListResponse ticketListResponse = ticketService.getFreshmanTicketList(authDetails.user());
+    @Operation(summary = "신입생 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 신입생 티켓 리스트를 조회합니다 </br> sort-by를 쿼리에 포함시키지 않은 경우 최신순으로 정렬합니다")
+    public ApiResponse<TicketListResponse> getFreshmanTicketList(@AuthenticationPrincipal AuthDetails authDetails,
+                                                                 @RequestParam(name = "sort-by", required = false) String sortBy) {
+        TicketListResponse ticketListResponse = ticketService.getFreshmanTicketList(authDetails.user(), sortBy);
         return ApiResponse.onSuccess(ticketListResponse);
     }
 
