@@ -13,6 +13,9 @@ import java.util.Optional;
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     boolean existsByReservationId(String reservationId);
-    List<Ticket> findAllByType(Type type);
+    List<Ticket> findAllByOrderByIdDesc();
+    List<Ticket> findAllByTypeOrderByIdDesc(Type type);
     Optional<Ticket> findByReservationId(String reservationId);
+    List<Ticket> findAllByOrderByBuyerAscIdDesc();
+    List<Ticket> findAllByTypeOrderByBuyerAscIdDesc(Type type);
 }
