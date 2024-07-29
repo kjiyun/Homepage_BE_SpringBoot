@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@SQLDelete(sql = "UPDATE credentials SET deleted_at = NOW() where id = ?")
+@SQLDelete(sql = "UPDATE credential SET deleted_at = NOW() where id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 

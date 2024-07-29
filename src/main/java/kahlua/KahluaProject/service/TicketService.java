@@ -99,7 +99,7 @@ public class TicketService {
         existingTicket.completeCancel();
 
         Ticket updatedTicket = ticketRepository.save(existingTicket);
-
+        ticketRepository.deleteById(ticketId);
 
         TicketUpdateResponse ticketUpdateResponse = TicketConverter.toTicketUpdateResponse(updatedTicket);
         return ticketUpdateResponse;

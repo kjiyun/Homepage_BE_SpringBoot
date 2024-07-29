@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import kahlua.KahluaProject.domain.BaseEntity;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 
 import static kahlua.KahluaProject.domain.ticket.Type.FRESHMAN;
 import static kahlua.KahluaProject.domain.ticket.Type.GENERAL;
@@ -13,6 +14,7 @@ import static kahlua.KahluaProject.domain.ticket.Type.GENERAL;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE credential SET deleted_at = NOW() where id = ?")
 public class Ticket extends BaseEntity {
 
     @Id
@@ -60,6 +62,5 @@ public class Ticket extends BaseEntity {
 
     public void completeCancel() {
         this.status = Status.CANCEL_COMPLETE;
-        deletedTime();
     }
 }
