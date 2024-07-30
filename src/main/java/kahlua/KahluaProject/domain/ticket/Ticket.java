@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import kahlua.KahluaProject.domain.BaseEntity;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 
 import static kahlua.KahluaProject.domain.ticket.Type.FRESHMAN;
 import static kahlua.KahluaProject.domain.ticket.Type.GENERAL;
@@ -60,6 +61,5 @@ public class Ticket extends BaseEntity {
 
     public void completeCancel() {
         this.status = Status.CANCEL_COMPLETE;
-        deletedTime();
     }
 }

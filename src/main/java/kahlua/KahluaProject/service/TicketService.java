@@ -66,7 +66,6 @@ public class TicketService {
 
         Ticket updatedTicket = ticketRepository.save(existingTicket);
 
-
         TicketUpdateResponse ticketUpdateResponse = TicketConverter.toTicketUpdateResponse(updatedTicket);
         return ticketUpdateResponse;
 
@@ -99,7 +98,6 @@ public class TicketService {
         existingTicket.completeCancel();
 
         Ticket updatedTicket = ticketRepository.save(existingTicket);
-
 
         TicketUpdateResponse ticketUpdateResponse = TicketConverter.toTicketUpdateResponse(updatedTicket);
         return ticketUpdateResponse;
