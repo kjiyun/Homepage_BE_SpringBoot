@@ -86,7 +86,7 @@ public class TicketService {
     }
 
     //티켓 취소 완료
-//    @Transactional
+    @Transactional
     public TicketUpdateResponse completeCancelTicket(User user, Long ticketId) {
 
         if(user.getUserType() != UserType.ADMIN){
