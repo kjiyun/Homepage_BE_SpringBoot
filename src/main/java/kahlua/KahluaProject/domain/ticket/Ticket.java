@@ -14,7 +14,6 @@ import static kahlua.KahluaProject.domain.ticket.Type.GENERAL;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE ticket SET deleted_at = NOW() where ticket_id = ?")
 public class Ticket extends BaseEntity {
 
     @Id
@@ -62,6 +61,5 @@ public class Ticket extends BaseEntity {
 
     public void completeCancel() {
         this.status = Status.CANCEL_COMPLETE;
-        deletedTime();
     }
 }
