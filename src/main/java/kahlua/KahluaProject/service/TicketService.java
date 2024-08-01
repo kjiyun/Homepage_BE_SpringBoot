@@ -14,6 +14,7 @@ import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ParticipantsRepository;
 import kahlua.KahluaProject.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,7 +36,12 @@ public class TicketService {
         String reservationId = uniqueReservationId();
 
         Ticket savedTicket = TicketConverter.toTicket(ticketCreateRequest, reservationId);
-        ticketRepository.save(savedTicket);
+
+        try {
+            ticketRepository.save(savedTicket);
+        } catch (DataIntegrityViolationException e) {  //SQLIntegrityConstraintViolationException 발생하는 경우
+            throw new GeneralException(ErrorStatus.ALREADY_EXIST_STUDENT_ID);
+        }
 
         // service 혹은 converter
         List<Participants> members = ticketCreateRequest.getMembers().stream()
