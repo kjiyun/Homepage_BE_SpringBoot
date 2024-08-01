@@ -34,6 +34,9 @@ public class TicketItemResponse {
     @Schema(description = "티켓 구매자 전공")
     private String major;
 
+    @Schema(description = "티켓 구매자 학번")
+    private String studentId;
+
     @Schema(description = "뒷풀이 참여여부")
     private Meeting meeting;
 
