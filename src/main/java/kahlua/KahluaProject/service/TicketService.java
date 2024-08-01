@@ -276,6 +276,7 @@ public class TicketService {
                     .phone_num(ticket.getPhone_num())
                     .total_ticket(1)
                     .major(ticket.getMajor())
+                    .studentId(ticket.getStudentId())
                     .meeting(ticket.getMeeting())
                     .build();
 
