@@ -40,7 +40,7 @@ public class TicketService {
         try {
             ticketRepository.save(savedTicket);
         } catch (DataIntegrityViolationException e) {  //SQLIntegrityConstraintViolationException 발생하는 경우
-            throw new GeneralException(ErrorStatus.ALREADY_EXIST_STUDENTID);
+            throw new GeneralException(ErrorStatus.ALREADY_EXIST_STUDENT_ID);
         }
 
         // service 혹은 converter
@@ -71,7 +71,6 @@ public class TicketService {
         existingTicket.completePayment();
 
         Ticket updatedTicket = ticketRepository.save(existingTicket);
-
 
         TicketUpdateResponse ticketUpdateResponse = TicketConverter.toTicketUpdateResponse(updatedTicket);
         return ticketUpdateResponse;
@@ -106,7 +105,6 @@ public class TicketService {
 
         Ticket updatedTicket = ticketRepository.save(existingTicket);
 
-
         TicketUpdateResponse ticketUpdateResponse = TicketConverter.toTicketUpdateResponse(updatedTicket);
         return ticketUpdateResponse;
     }
@@ -123,13 +121,28 @@ public class TicketService {
     }
 
     // 어드민 페이지 티켓 리스트 조회
-    public TicketListResponse getTicketList(User user) {
+    public TicketListResponse getTicketList(User user, String sortBy) {
 
         if(user.getUserType() != UserType.ADMIN){
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
 
-        List<Ticket> tickets = ticketRepository.findAll();
+        List<Ticket> tickets;
+
+        if (sortBy != null) {
+            // sortBy 값에 따라 티켓 속성 기준 정렬
+            // 추후 정렬 기준 추가되면 case문에 추가
+            tickets = switch (sortBy) {
+                case "buyer" -> ticketRepository.findAllByOrderByBuyerAscIdDesc();
+                // case "status"
+                default -> throw new GeneralException(ErrorStatus.TICKET_COLUMN_INVALID);
+            };
+        }
+        // sortBy 값이 없다면 최신순 정렬
+        else {
+            tickets = ticketRepository.findAllByOrderByIdDesc();
+        }
+
         List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
 
         for (Ticket ticket : tickets) {
@@ -184,13 +197,26 @@ public class TicketService {
     }
 
     // 일반 티켓 리스트 조회
-    public TicketListResponse getGeneralTicketList(User user) {
+    public TicketListResponse getGeneralTicketList(User user, String sortBy) {
 
         if(user.getUserType() != UserType.ADMIN){
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
 
-        List<Ticket> tickets = ticketRepository.findAllByType(Type.GENERAL);
+        List<Ticket> tickets;
+
+        if (sortBy != null) {
+            // sortBy 값에 따라 티켓 속성 기준 정렬
+            tickets = switch (sortBy) {
+                case "buyer" -> ticketRepository.findAllByTypeOrderByBuyerAscIdDesc(Type.GENERAL);
+                default -> throw new GeneralException(ErrorStatus.TICKET_COLUMN_INVALID);
+            };
+        }
+        // sortBy 값이 없다면 최신순 정렬
+        else {
+            tickets = ticketRepository.findAllByTypeOrderByIdDesc(Type.GENERAL);
+        }
+
         List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
 
         for (Ticket ticket : tickets) {
@@ -225,13 +251,26 @@ public class TicketService {
     }
 
     // 신입생 티켓 리스트 조회
-    public TicketListResponse getFreshmanTicketList(User user) {
+    public TicketListResponse getFreshmanTicketList(User user, String sortBy) {
 
         if(user.getUserType() != UserType.ADMIN){
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
 
-        List<Ticket> tickets = ticketRepository.findAllByType(Type.FRESHMAN);
+        List<Ticket> tickets;
+
+        if (sortBy != null) {
+            // sortBy 값에 따라 티켓 속성 기준 정렬
+            tickets = switch (sortBy) {
+                case "buyer" -> ticketRepository.findAllByTypeOrderByBuyerAscIdDesc(Type.FRESHMAN);
+                default -> throw new GeneralException(ErrorStatus.TICKET_COLUMN_INVALID);
+            };
+        }
+        // sortBy 값이 없다면 최신순 정렬
+        else {
+            tickets = ticketRepository.findAllByTypeOrderByIdDesc(Type.FRESHMAN);
+        }
+
         List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
 
         for (Ticket ticket : tickets) {

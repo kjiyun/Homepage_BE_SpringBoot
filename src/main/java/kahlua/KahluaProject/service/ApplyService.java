@@ -29,6 +29,10 @@ public class ApplyService {
     @Transactional
     public ApplyCreateResponse createApply(ApplyCreateRequest applyCreateRequest) {
 
+        if(applyRepository.existsByPhoneNum(applyCreateRequest.getPhone_num())) {
+            throw new GeneralException(ErrorStatus.ALREADY_EXIST_APPLICANT);
+        }
+
         Apply apply = ApplyConverter.toApply(applyCreateRequest);
         applyRepository.save(apply);
 
@@ -39,7 +43,7 @@ public class ApplyService {
     public ApplyGetResponse getApply(Long applyId) {
 
         Apply apply = applyRepository.findById(applyId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.SESSION_UNAUTHORIZED));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.APPLICANT_NOT_FOUND));
 
         ApplyGetResponse applyGetResponse = ApplyConverter.toApplyGetResponse(apply);
         return applyGetResponse;
@@ -59,7 +63,7 @@ public class ApplyService {
             ApplyItemResponse applyItemResponse = ApplyItemResponse.builder()
                     .id(apply.getId())
                     .name(apply.getName())
-                    .phone_num(apply.getPhone_num())
+                    .phone_num(apply.getPhoneNum())
                     .birth_date(apply.getBirth_date())
                     .gender(apply.getGender())
                     .address(apply.getAddress())
@@ -94,7 +98,7 @@ public class ApplyService {
             ApplyItemResponse applyItemResponse = ApplyItemResponse.builder()
                     .id(apply.getId())
                     .name(apply.getName())
-                    .phone_num(apply.getPhone_num())
+                    .phone_num(apply.getPhoneNum())
                     .birth_date(apply.getBirth_date())
                     .gender(apply.getGender())
                     .address(apply.getAddress())
@@ -110,7 +114,7 @@ public class ApplyService {
             ApplyItemResponse applyItemResponse = ApplyItemResponse.builder()
                     .id(apply.getId())
                     .name(apply.getName())
-                    .phone_num(apply.getPhone_num())
+                    .phone_num(apply.getPhoneNum())
                     .birth_date(apply.getBirth_date())
                     .gender(apply.getGender())
                     .address(apply.getAddress())

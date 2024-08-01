@@ -11,7 +11,7 @@ import org.hibernate.annotations.SQLDelete;
 
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE credentials SET deleted_at = NOW() where id = ?")
+@SQLDelete(sql = "UPDATE credential SET deleted_at = NOW() where id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Schema(hidden = true)
 public class Credential extends BaseEntity {

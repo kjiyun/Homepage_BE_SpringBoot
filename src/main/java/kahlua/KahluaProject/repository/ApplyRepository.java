@@ -10,4 +10,5 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
 
     List<Apply> findAllByFirstPreference(Preference first_preference);
     List<Apply> findAllBySecondPreference(Preference second_preference);
+    Boolean existsByPhoneNum(String phone_num);
 }

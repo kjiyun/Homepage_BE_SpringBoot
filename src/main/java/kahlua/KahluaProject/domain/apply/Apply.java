@@ -21,7 +21,8 @@ public class Apply extends BaseEntity{
 
     private String name;
 
-    private String phone_num;
+    @Column(name = "phone_num")
+    private String phoneNum;
 
     private String birth_date;
 
@@ -30,13 +31,14 @@ public class Apply extends BaseEntity{
 
     private String address;
 
-    @Enumerated(EnumType.STRING)
-    private Major major;
+    private String major;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "first_preference")
     private Preference firstPreference;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "second_preference")
     private Preference secondPreference;
 
     private String experience_and_reason;
