@@ -34,6 +34,7 @@ public class Ticket extends BaseEntity {
 
     private String major; // 학과 (신입생)
 
+    @Column(unique = true)
     private String studentId; // 학번 (신입생)
 
     @Enumerated(EnumType.STRING)
