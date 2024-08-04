@@ -8,10 +8,7 @@ import kahlua.KahluaProject.domain.apply.Preference;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.apply.request.ApplyCreateRequest;
-import kahlua.KahluaProject.dto.apply.response.ApplyCreateResponse;
-import kahlua.KahluaProject.dto.apply.response.ApplyGetResponse;
-import kahlua.KahluaProject.dto.apply.response.ApplyItemResponse;
-import kahlua.KahluaProject.dto.apply.response.ApplyListResponse;
+import kahlua.KahluaProject.dto.apply.response.*;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ApplyRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +44,15 @@ public class ApplyService {
 
         ApplyGetResponse applyGetResponse = ApplyConverter.toApplyGetResponse(apply);
         return applyGetResponse;
+    }
+
+    public ApplyAdminGetResponse getApplyAdmin(Long applyId) {
+
+        Apply apply = applyRepository.findById(applyId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.APPLICANT_NOT_FOUND));
+
+        ApplyAdminGetResponse applyAdminGetResponse = ApplyConverter.toApplyAdminGetResponse(apply);
+        return applyAdminGetResponse;
     }
 
     public ApplyListResponse getApplyList(User user) {

@@ -6,6 +6,7 @@ import kahlua.KahluaProject.apipayload.ApiResponse;
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.domain.apply.Preference;
 import kahlua.KahluaProject.domain.user.UserType;
+import kahlua.KahluaProject.dto.apply.response.ApplyAdminGetResponse;
 import kahlua.KahluaProject.dto.apply.response.ApplyGetResponse;
 import kahlua.KahluaProject.dto.apply.response.ApplyListResponse;
 import kahlua.KahluaProject.exception.GeneralException;
@@ -32,12 +33,12 @@ public class AdminApplyController {
 
     @GetMapping("/{applyId}")
     @Operation(summary = "지원자 상세정보 조회", description = "지원자 상세정보를 조회합니다")
-    public ApiResponse<ApplyGetResponse> getApplyDetail(@PathVariable Long applyId, @AuthenticationPrincipal AuthDetails authDetails) {
+    public ApiResponse<ApplyAdminGetResponse> getApplyDetail(@PathVariable Long applyId, @AuthenticationPrincipal AuthDetails authDetails) {
         if(authDetails.getUser().getUserType() != UserType.ADMIN){
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
-        ApplyGetResponse applyGetResponse = applyService.getApply(applyId);
-        return ApiResponse.onSuccess(applyGetResponse);
+        ApplyAdminGetResponse applyAdminGetResponse = applyService.getApplyAdmin(applyId);
+        return ApiResponse.onSuccess(applyAdminGetResponse);
     }
 
     @GetMapping

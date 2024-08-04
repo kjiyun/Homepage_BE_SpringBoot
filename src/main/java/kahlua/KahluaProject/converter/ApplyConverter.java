@@ -2,6 +2,7 @@ package kahlua.KahluaProject.converter;
 
 import kahlua.KahluaProject.domain.apply.Apply;
 import kahlua.KahluaProject.dto.apply.request.ApplyCreateRequest;
+import kahlua.KahluaProject.dto.apply.response.ApplyAdminGetResponse;
 import kahlua.KahluaProject.dto.apply.response.ApplyCreateResponse;
 import kahlua.KahluaProject.dto.apply.response.ApplyGetResponse;
 
@@ -62,6 +63,24 @@ public class ApplyConverter {
                 .motive(apply.getMotive())
                 .finish_time(apply.getFinish_time())
                 .meeting(apply.getMeeting())
+                .readiness(apply.getReadiness())
+                .build();
+    }
+
+    public static ApplyAdminGetResponse toApplyAdminGetResponse(Apply apply) {
+        return ApplyAdminGetResponse.builder()
+                .id(apply.getId())
+                .name(apply.getName())
+                .gender(apply.getGender())
+                .birth_date(apply.getBirth_date())
+                .phone_num(apply.getPhoneNum())
+                .address(apply.getAddress())
+                .major(apply.getMajor())
+                .first_preference(apply.getFirstPreference())
+                .second_preference(apply.getSecondPreference())
+                .motive(apply.getMotive())
+                .experience_and_reason(apply.getExperience_and_reason())
+                .play_instrument(apply.getPlay_instrument())
                 .readiness(apply.getReadiness())
                 .build();
     }
