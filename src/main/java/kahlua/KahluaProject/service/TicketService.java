@@ -12,7 +12,7 @@ import kahlua.KahluaProject.dto.ticket.request.TicketCreateRequest;
 import kahlua.KahluaProject.dto.ticket.response.*;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ParticipantsRepository;
-import kahlua.KahluaProject.repository.TicketRepository;
+import kahlua.KahluaProject.repository.ticket.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -138,9 +138,9 @@ public class TicketService {
                 default -> throw new GeneralException(ErrorStatus.TICKET_COLUMN_INVALID);
             };
         }
-        // sortBy 값이 없다면 최신순 정렬
+        // sortBy 값이 없다면 결제 상태에 따라, 최신순으로 정렬
         else {
-            tickets = ticketRepository.findAllByOrderByIdDesc();
+            tickets = ticketRepository.findAllOrderByStatus();
         }
 
         List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
@@ -212,9 +212,9 @@ public class TicketService {
                 default -> throw new GeneralException(ErrorStatus.TICKET_COLUMN_INVALID);
             };
         }
-        // sortBy 값이 없다면 최신순 정렬
+        // sortBy 값이 없다면 결제 상태에 따라, 최신순으로 정렬
         else {
-            tickets = ticketRepository.findAllByTypeOrderByIdDesc(Type.GENERAL);
+            tickets = ticketRepository.findAllOrderByStatus();
         }
 
         List<TicketItemResponse> ticketItemResponses = new ArrayList<>();
@@ -266,9 +266,9 @@ public class TicketService {
                 default -> throw new GeneralException(ErrorStatus.TICKET_COLUMN_INVALID);
             };
         }
-        // sortBy 값이 없다면 최신순 정렬
+        // sortBy 값이 없다면 결제 상태에 따라, 최신순으로 정렬
         else {
-            tickets = ticketRepository.findAllByTypeOrderByIdDesc(Type.FRESHMAN);
+            tickets = ticketRepository.findAllOrderByStatus();
         }
 
         List<TicketItemResponse> ticketItemResponses = new ArrayList<>();

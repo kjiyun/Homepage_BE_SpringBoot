@@ -20,7 +20,8 @@ public class AdminTicketController {
     private final TicketService ticketService;
 
     @GetMapping
-    @Operation(summary = "전체 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 전체 티켓 리스트를 조회합니다 </br> sort-by를 쿼리에 포함시키지 않은 경우 최신순으로 정렬합니다")
+    @Operation(summary = "전체 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 전체 티켓 리스트를 조회합니다 " +
+            "</br> sort-by를 쿼리에 포함시키지 않은 경우 (환불 요청 -> 결제 대기 -> 결제 왼료 -> 환불 완료) 순서로, 같은 결제 상태에 대해서는 최신순으로 정렬합니다")
     public ApiResponse<TicketListResponse> getTicketList(@AuthenticationPrincipal AuthDetails authDetails,
                                                          @RequestParam(name = "sort-by", required = false) String sortBy) {
         TicketListResponse ticketListResponse = ticketService.getTicketList(authDetails.user(), sortBy);
@@ -28,7 +29,8 @@ public class AdminTicketController {
     }
 
     @GetMapping("/general")
-    @Operation(summary = "일반 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 일반 티켓 리스트를 조회합니다 </br> sort-by를 쿼리에 포함시키지 않은 경우 최신순으로 정렬합니다")
+    @Operation(summary = "일반 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 일반 티켓 리스트를 조회합니다 " +
+            "</br> sort-by를 쿼리에 포함시키지 않은 경우 (환불 요청 -> 결제 대기 -> 결제 왼료 -> 환불 완료) 순서로, 같은 결제 상태에 대해서는 최신순으로 정렬합니다")
     public ApiResponse<TicketListResponse> getGeneralTicketList(@AuthenticationPrincipal AuthDetails authDetails,
                                                                 @RequestParam(name = "sort-by", required = false) String sortBy) {
         TicketListResponse ticketListResponse = ticketService.getGeneralTicketList(authDetails.user(), sortBy);
@@ -36,7 +38,8 @@ public class AdminTicketController {
     }
 
     @GetMapping("/freshman")
-    @Operation(summary = "신입생 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 신입생 티켓 리스트를 조회합니다 </br> sort-by를 쿼리에 포함시키지 않은 경우 최신순으로 정렬합니다")
+    @Operation(summary = "신입생 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 신입생 티켓 리스트를 조회합니다 " +
+            "</br> sort-by를 쿼리에 포함시키지 않은 경우 (환불 요청 -> 결제 대기 -> 결제 왼료 -> 환불 완료) 순서로, 같은 결제 상태에 대해서는 최신순으로 정렬합니다")
     public ApiResponse<TicketListResponse> getFreshmanTicketList(@AuthenticationPrincipal AuthDetails authDetails,
                                                                  @RequestParam(name = "sort-by", required = false) String sortBy) {
         TicketListResponse ticketListResponse = ticketService.getFreshmanTicketList(authDetails.user(), sortBy);
