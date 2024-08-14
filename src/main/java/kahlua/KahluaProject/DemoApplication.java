@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaAuditing //시간에 대한 값을 자동으로 넣어주는 기능
-@EnableJpaRepositories(basePackages = {"kahlua.KahluaProject.repository.TicketRepository", "kahlua.KahluaProject.repository.ApplyRepository", "kahlua.KahluaProject.repository.ParticipantsRepository", "kahlua.KahluaProject.repository.CredentialRepository", "kahlua.KahluaProject.repository.UserRepository"})
+@EnableJpaRepositories(basePackages = {"kahlua.KahluaProject.repository"})
 public class DemoApplication {
 
 	public static void main(String[] args) {
