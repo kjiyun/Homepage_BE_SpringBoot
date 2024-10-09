@@ -21,10 +21,10 @@ public record TicketInfoData(
         LocalDateTime dateTime,
 
         @Schema(description = "신입생 가격", example = "0")
-        String newStudentPrice,
+        String freshmanPrice,
 
         @Schema(description = "신입생 최대 구매 개수", example = "1")
-        int newStudentMaxPurchase,
+        int freshmanMaxPurchase,
 
         @Schema(description = "일반 가격", example = "5000")
         String generalPrice,
