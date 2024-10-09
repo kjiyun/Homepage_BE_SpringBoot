@@ -18,7 +18,7 @@ public class TicketInfo {
     @Column(nullable = false, columnDefinition = "bigint")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
     private String posterImageUrl;
 
     @Column(columnDefinition = "json")
