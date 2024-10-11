@@ -6,13 +6,18 @@ import kahlua.KahluaProject.converter.TicketConverter;
 import kahlua.KahluaProject.domain.ticket.Participants;
 import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.domain.ticket.Type;
+import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.ticket.request.TicketCreateRequest;
 import kahlua.KahluaProject.dto.ticket.response.*;
+import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
+import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ParticipantsRepository;
+import kahlua.KahluaProject.repository.ticket.TicketInfoRepository;
 import kahlua.KahluaProject.repository.ticket.TicketRepository;
+import kahlua.KahluaProject.vo.TicketInfoData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -29,6 +34,7 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final ParticipantsRepository participantsRepository;
+    private final TicketInfoRepository ticketInfoRepository;
 
     @Transactional
     public TicketCreateResponse createTicket(TicketCreateRequest ticketCreateRequest) {
@@ -336,5 +342,25 @@ public class TicketService {
         }
 
         return total;
+    }
+
+    public TicketInfoResponse updateTicketInfo(Long ticketInfoId, TicketInfoRequest ticketUpdateRequest, User user) {
+        //validation: ticketId 존재 여부 확인/ user가 admin인지 확인
+        TicketInfo ticketInfo = ticketInfoRepository.findById(ticketInfoId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
+
+        if (user.getUserType() != UserType.ADMIN) {
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        //business logic: ticket 정보 수정
+        String posterImageUrl = ticketUpdateRequest.posterImageUrl();
+        TicketInfoData ticketInfoData = TicketConverter.toTicketInfo(ticketUpdateRequest);
+        ticketInfo.update(posterImageUrl, ticketInfoData);
+
+        TicketInfo updatedTicketInfo = ticketInfoRepository.save(ticketInfo);
+
+        //return: 수정된 ticket 정보 반환
+        return TicketConverter.toTicketInfoResponse(updatedTicketInfo);
     }
 }
