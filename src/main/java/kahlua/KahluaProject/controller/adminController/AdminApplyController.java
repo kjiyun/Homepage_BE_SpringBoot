@@ -7,8 +7,9 @@ import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.domain.apply.Preference;
 import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.apply.response.ApplyAdminGetResponse;
-import kahlua.KahluaProject.dto.apply.response.ApplyGetResponse;
 import kahlua.KahluaProject.dto.apply.response.ApplyListResponse;
+import kahlua.KahluaProject.dto.applyInfo.request.ApplyInfoRequest;
+import kahlua.KahluaProject.dto.applyInfo.response.ApplyInfoResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.security.AuthDetails;
 import kahlua.KahluaProject.service.ApplyService;
@@ -46,5 +47,12 @@ public class AdminApplyController {
     public ApiResponse<ApplyListResponse> getApplyListByPreference(@AuthenticationPrincipal AuthDetails authDetails, @RequestParam(name = "preference") Preference preference) {
         ApplyListResponse applyListResponse = applyService.getApplyListByPreference(authDetails.user(), preference);
         return ApiResponse.onSuccess(applyListResponse);
+    }
+
+
+    @PutMapping("/info/{apply_id}")
+    @Operation(summary = "지원 정보 수정", description = "지원 정보를 수정합니다")
+    public ApiResponse<ApplyInfoResponse> updateApplyInfo(@PathVariable("apply_id") Long applyId, @RequestBody ApplyInfoRequest applyInfoRequest, @AuthenticationPrincipal AuthDetails authDetails) {
+        return ApiResponse.onSuccess(applyService.updateApplyInfo(applyId, applyInfoRequest, authDetails.user()));
     }
 }
