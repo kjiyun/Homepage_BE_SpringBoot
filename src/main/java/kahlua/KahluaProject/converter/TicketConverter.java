@@ -28,6 +28,7 @@ public class TicketConverter {
                 .major(ticketCreateRequest.getMajor())
                 .studentId(ticketCreateRequest.getStudentId())
                 .meeting(ticketCreateRequest.getMeeting())
+                .email(ticketCreateRequest.getEmail())
                 .build();
 
         return ticket;
@@ -45,6 +46,7 @@ public class TicketConverter {
                 .meeting(ticket.getMeeting())
                 .members(members)
                 .status(ticket.getStatus())
+                .email(ticket.getEmail())
                 .build();
     }
 

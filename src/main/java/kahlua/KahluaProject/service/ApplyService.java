@@ -27,6 +27,7 @@ import java.util.List;
 public class ApplyService {
 
     private final ApplyRepository applyRepository;
+    private final MailService mailService;
     private final ApplyInfoRepository applyInfoRepository;
 
     @Transactional
@@ -39,7 +40,10 @@ public class ApplyService {
         Apply apply = ApplyConverter.toApply(applyCreateRequest);
         applyRepository.save(apply);
 
+        mailService.sendApplicantEmail(apply); // 보컬과 나머지 세션으로 구분하여 지원 확인 메일 발송
+
         ApplyCreateResponse applyCreateResponse = ApplyConverter.toApplyCreateResponse(apply);
+
         return applyCreateResponse;
     }
 
@@ -149,7 +153,7 @@ public class ApplyService {
     public ApplyInfoResponse updateApplyInfo(Long applyInfoId, ApplyInfoRequest applyInfoRequest, User user) {
         //validation: applyId 유효성, 관리자 권한 확인
         ApplyInfo applyInfo = applyInfoRepository.findById(applyInfoId)
-            .orElseThrow(() -> new GeneralException(ErrorStatus.APPLY_INFO_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.APPLY_INFO_NOT_FOUND));
 
         if(user.getUserType() != UserType.ADMIN){
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);

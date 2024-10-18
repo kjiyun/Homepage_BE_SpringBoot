@@ -4,20 +4,21 @@ import jakarta.transaction.Transactional;
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.TicketConverter;
 import kahlua.KahluaProject.domain.ticket.Participants;
+import kahlua.KahluaProject.domain.ticket.Status;
+import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
+import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
+import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
+import kahlua.KahluaProject.repository.ticket.TicketInfoRepository;
+import kahlua.KahluaProject.vo.TicketInfoData;
 import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.domain.ticket.Type;
-import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.ticket.request.TicketCreateRequest;
 import kahlua.KahluaProject.dto.ticket.response.*;
-import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
-import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ParticipantsRepository;
-import kahlua.KahluaProject.repository.ticket.TicketInfoRepository;
 import kahlua.KahluaProject.repository.ticket.TicketRepository;
-import kahlua.KahluaProject.vo.TicketInfoData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,11 @@ import java.util.stream.Collectors;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final ParticipantsService participantsService;
     private final ParticipantsRepository participantsRepository;
+    private final MailService mailService;
     private final TicketInfoRepository ticketInfoRepository;
+
 
     @Transactional
     public TicketCreateResponse createTicket(TicketCreateRequest ticketCreateRequest) {
@@ -47,6 +51,10 @@ public class TicketService {
             ticketRepository.save(savedTicket);
         } catch (DataIntegrityViolationException e) {  //SQLIntegrityConstraintViolationException 발생하는 경우
             throw new GeneralException(ErrorStatus.ALREADY_EXIST_STUDENT_ID);
+        }
+
+        if (savedTicket.getType() == Type.FRESHMAN) {
+            mailService.sendTicketEmail(savedTicket); // 신입생 티켓 구매자에게 확인 메일 발송
         }
 
         // service 혹은 converter
@@ -79,6 +87,9 @@ public class TicketService {
         Ticket updatedTicket = ticketRepository.save(existingTicket);
 
         TicketUpdateResponse ticketUpdateResponse = TicketConverter.toTicketUpdateResponse(updatedTicket);
+
+        mailService.sendTicketEmail(updatedTicket); // 일반 티켓 구매자에게 결제 완료 확인 메일 발송
+
         return ticketUpdateResponse;
 
     }
@@ -171,7 +182,7 @@ public class TicketService {
                         .buyer(ticket.getBuyer())
                         .phone_num(ticket.getPhone_num())
                         .members(memberResponses)
-                        .total_ticket(participantsRepository.countByTicket_Id(ticket.getId()) + 1)
+                        .total_ticket(participantsService.getTotalGeneralTicket(ticket.getId()))
                         .build();
 
                 ticketItemResponses.add(ticketItemResponse);
@@ -243,7 +254,7 @@ public class TicketService {
                     .buyer(ticket.getBuyer())
                     .phone_num(ticket.getPhone_num())
                     .members(memberResponses)
-                    .total_ticket(participantsRepository.countByTicket_Id(ticket.getId()) + 1)
+                    .total_ticket(participantsService.getTotalGeneralTicket(ticket.getId()))
                     .build();
 
             ticketItemResponses.add(ticketItemResponse);
@@ -333,14 +344,15 @@ public class TicketService {
         return String.join("", idList);
     }
 
-    // 티켓 매수 count - 일반 티켓 리스트 조회에 사용
+    // 티켓 매수 count - 티켓 리스트 조회에 사용
     public Integer countTickets(List<TicketItemResponse> ticketItemResponses) {
 
         Integer total = 0;
         for (TicketItemResponse ticketItemResponse : ticketItemResponses) {
-            total += ticketItemResponse.getTotal_ticket();
+            if (ticketItemResponse.getStatus() != Status.CANCEL_COMPLETE) {
+                total += ticketItemResponse.getTotal_ticket();
+            }
         }
-
         return total;
     }
 

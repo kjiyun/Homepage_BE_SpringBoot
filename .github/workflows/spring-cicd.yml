@@ -5,14 +5,18 @@
 name: Spring Boot & Gradle CI/CD
 
 # Event Trigger
-# master branch에 push 또는 pull request가 발생할 경우 동작
+# master branch에 대한 pull request가 close 될 때 동작
 # branch 단위 외에도, tag나 cron 식 등을 사용할 수 있음
 on:
-  push:
+  pull_request_target:
     branches: [ main ]
+    types:
+      - closed
 
 jobs:
   build:
+    # pull request가 merge된 경우
+    if: github.event.pull_request.merged == true
     # 실행 환경 지정
     runs-on: ubuntu-24.04
 
@@ -27,12 +31,8 @@ jobs:
         ## create application.yaml
       - name: make application.yml
         run: |
-          ## create application.yml
-          mkdir ./src/main/resources
           cd ./src/main/resources
-          # application.yml 파일 생성
           touch ./application.yml
-          # GitHub-Actions 에서 설정한 값을 application.yaml 파일에 쓰기
           echo "${{ secrets.APPLICATION }}" >> ./application.yml
         shell: bash
 

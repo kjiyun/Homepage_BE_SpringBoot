@@ -2,16 +2,25 @@ package kahlua.KahluaProject.controller.adminController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import kahlua.KahluaProject.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketListResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketUpdateResponse;
 import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
 import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
 import kahlua.KahluaProject.security.AuthDetails;
+import kahlua.KahluaProject.service.ExcelConvertService;
 import kahlua.KahluaProject.service.TicketService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 @Tag(name = "관리자(예매하기)", description = "관리자(예매하기) 페이지 관련 API")
 @RestController
@@ -20,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminTicketController {
 
     private final TicketService ticketService;
+    private final ExcelConvertService excelConvertService;
 
     @GetMapping
     @Operation(summary = "전체 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 전체 티켓 리스트를 조회합니다 " +
@@ -49,7 +59,8 @@ public class AdminTicketController {
     }
 
     @PatchMapping("/{ticketId}/ticket-complete")
-    @Operation(summary = "티켓 결제 완료", description = "티켓 결제를 완료한 뒤 어드민 페이지에서 결제 완료를 클릭하는 경우 결제 완료로 상태가 변합니다.")
+    @Operation(summary = "티켓 결제 완료", description = "티켓 결제를 완료한 뒤 어드민 페이지에서 결제 완료를 클릭하는 경우 결제 완료로 상태가 변합니다." +
+            "</br> 추가적으로 티켓 구매자에게 결제 완료 확인 메일을 발송합니다.")
     public ApiResponse<TicketUpdateResponse> completePaymentForm(@PathVariable(name = "ticketId") Long ticketId, @AuthenticationPrincipal AuthDetails authDetails) {
         TicketUpdateResponse ticketUpdateResponse = ticketService.completePayment(authDetails.user(), ticketId);
         return ApiResponse.onSuccess(ticketUpdateResponse);
@@ -60,6 +71,32 @@ public class AdminTicketController {
     public ApiResponse<TicketUpdateResponse> completeCancelForm(@PathVariable(name = "ticketId") Long ticketId, @AuthenticationPrincipal AuthDetails authDetails) {
         TicketUpdateResponse ticketUpdateResponse = ticketService.completeCancelTicket(authDetails.user(), ticketId);
         return ApiResponse.onSuccess(ticketUpdateResponse);
+    }
+
+    @GetMapping("/download")
+    @Operation(summary = "티켓 리스트 엑셀 변환", description = "전체 티켓 리스트를 엑셀 파일로 변환하여 다운로드합니다.")
+    public ResponseEntity<InputStreamResource> applyListToExcel() throws IOException {
+        ByteArrayInputStream in = excelConvertService.ticketListToExcel();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=tickets.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new InputStreamResource(in));
+    }
+
+    @GetMapping("/participants/download")
+    @Operation(summary = "참석자 리스트 엑셀 변환", description = "전체 참석자 리스트를 엑셀 파일로 변환하여 다운로드합니다.")
+    public ResponseEntity<InputStreamResource> participantsListToExcel() throws IOException {
+        ByteArrayInputStream in = excelConvertService.participantListToExcel();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=participants.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(new InputStreamResource(in));
     }
 
     @PutMapping("/{ticket_info_id}")
