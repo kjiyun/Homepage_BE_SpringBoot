@@ -9,6 +9,8 @@ import kahlua.KahluaProject.apipayload.ApiResponse;
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.dto.user.request.SignInRequest;
 import kahlua.KahluaProject.dto.user.request.SignUpRequest;
+import kahlua.KahluaProject.dto.user.request.UserInfoRequest;
+import kahlua.KahluaProject.dto.user.response.SignInResponse;
 import kahlua.KahluaProject.dto.user.response.TokenResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.security.AuthDetails;
@@ -31,6 +33,12 @@ public class AuthController {
 
     private final AuthService authService;
     private final JwtProvider jwtProvider;
+
+    @PostMapping("/kakao/sign-in")
+    @Operation(summary = "카카오 로그인", description = "카카오 로그인을 통한 회원가입 및 로그인")
+    public ResponseEntity<SignInResponse> signInWithKakao(@RequestParam("code") String code, @RequestBody UserInfoRequest userInfoRequest) {
+        return ResponseEntity.ok(authService.signInWithKakao(code, userInfoRequest));
+    }
 
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입", description = "사용자의 정보 입력 후 회원가입")

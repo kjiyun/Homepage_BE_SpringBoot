@@ -16,25 +16,38 @@ public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, columnDefinition = "bigint")
+    @Column(nullable = false, columnDefinition = "bigint")
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "credential_id", referencedColumnName = "id")
+    @JoinColumn(referencedColumnName = "id")
     private Credential credential;
 
-    @Column(name = "email", columnDefinition = "varchar(255)", nullable = false)
+    @Column(columnDefinition = "varchar(255)", nullable = false)
     private String email;
 
-    @Column(name = "user_type", nullable = false, columnDefinition = "varchar(255)")
+    @Column(nullable = false, columnDefinition = "varchar(255)")
+    private String name;
+
+    @Column(nullable = false, columnDefinition = "varchar(255)")
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
+    @Column(nullable = false, columnDefinition = "varchar(255)")
+    @Enumerated(EnumType.STRING)
+    private Session session;
+
+    @Column(nullable = false, columnDefinition = "bigint")
+    private Long term;
+
     @Builder
-    public User(Long id, String email, Credential credential, UserType userType) {
+    public User(Long id, String email, Credential credential, UserType userType, Session session, String name, Long term) {
         this.id = id;
         this.credential = credential;
         this.email = email;
+        this.name = name;
         this.userType = userType;
+        this.session = session;
+        this.term = term;
     }
 }
