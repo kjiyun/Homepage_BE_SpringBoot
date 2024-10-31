@@ -36,7 +36,7 @@ public class AuthController {
 
     @PostMapping("/kakao/sign-in")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인을 통한 회원가입 및 로그인")
-    public ResponseEntity<SignInResponse> signInWithKakao(@RequestParam("code") String code, @RequestBody UserInfoRequest userInfoRequest) {
+    public ResponseEntity<SignInResponse> signInWithKakao(@RequestParam("code") String code, @RequestBody(required = false) UserInfoRequest userInfoRequest) {
         return ResponseEntity.ok(authService.signInWithKakao(code, userInfoRequest));
     }
 
@@ -78,5 +78,19 @@ public class AuthController {
             throw new GeneralException(ErrorStatus.TOKEN_NOT_FOUND);
         }
         return ResponseEntity.ok().body(authService.recreate(token, authDetails.getUser()));
+    }
+
+    @Operation(summary = "회원탈퇴", description = "회원탈퇴 기능", security = @SecurityRequirement(name = "JWT Authentication"))
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<ApiResponse<String>> withdraw(HttpServletRequest request, @AuthenticationPrincipal AuthDetails authDetails) {
+        String refreshToken = jwtProvider.resolveRefreshToken(request);
+        String accessToken = jwtProvider.resolveAccessToken(request);
+
+        if(refreshToken==null || accessToken==null){
+            throw new GeneralException(ErrorStatus.TOKEN_NOT_FOUND);
+        }
+
+        authService.withdraw(authDetails.getUser(), refreshToken, accessToken);
+        return ResponseEntity.ok(ApiResponse.onSuccess("회원탈퇴가 성공적으로 처리되었습니다."));
     }
 }

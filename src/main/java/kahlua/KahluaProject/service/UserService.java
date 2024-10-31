@@ -26,8 +26,8 @@ public class UserService {
         String email = kakaoProfile.kakao_account().email();
 
         //bussiness logic & return : 사용자 정보가 이미 있다면 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
-        if(userRepository.findByEmail(email).isPresent()) {
-            return userRepository.findByEmail(email).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        if(userRepository.findByEmailAndDeletedAtIsNull(email).isPresent()) {
+            return userRepository.findByEmailAndDeletedAtIsNull(email).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
         } else {
             User user = User.builder()
                 .email(email)
@@ -43,7 +43,7 @@ public class UserService {
 
     @Transactional
     public User createUser(Credential credential, SignUpRequest signUpRequest) {
-        userRepository.findByEmail(signUpRequest.getEmail()).ifPresent(existingUser -> {
+        userRepository.findByEmailAndDeletedAtIsNull(signUpRequest.getEmail()).ifPresent(existingUser -> {
             throw new GeneralException(ErrorStatus.ALREADY_EXIST_USER);
         });
         User user = signUpRequest.toUser(credential);
@@ -52,7 +52,12 @@ public class UserService {
 
 
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
+        return userRepository.findByEmailAndDeletedAtIsNull(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    @Transactional
+    public void withdraw(User user) {
+        userRepository.delete(user);
     }
 }

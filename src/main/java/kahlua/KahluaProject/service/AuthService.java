@@ -71,10 +71,10 @@ public class AuthService {
 
     @Transactional
     public void signOut(String refreshToken, String accessToken) {
-        if(jwtProvider.validateToken(accessToken)) {
+        if(!jwtProvider.validateToken(accessToken, "access")){
             throw new GeneralException(ErrorStatus.TOKEN_INVALID);
         }
-        
+
         jwtProvider.invalidateTokens(refreshToken, accessToken);
     }
 
@@ -84,7 +84,7 @@ public class AuthService {
         }
 
         String refreshToken = token.substring(7);
-        boolean isValid = jwtProvider.validateToken(refreshToken);
+        boolean isValid = jwtProvider.validateToken(refreshToken, "refresh");
 
         if (!isValid) {
             throw new GeneralException(ErrorStatus.TOKEN_INVALID);
@@ -98,5 +98,19 @@ public class AuthService {
         }
 
         return jwtProvider.recreate(user, refreshToken);
+    }
+
+    @Transactional
+    public void withdraw(User user, String refreshToken, String accessToken) {
+        if (user == null) {
+            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+        }
+
+        if(!jwtProvider.validateToken(accessToken, "access")){
+            throw new GeneralException(ErrorStatus.TOKEN_INVALID);
+        }
+
+        userService.withdraw(user);
+        jwtProvider.invalidateTokens(refreshToken, accessToken);
     }
 }
