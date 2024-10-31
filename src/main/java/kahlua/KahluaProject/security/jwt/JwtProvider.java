@@ -90,6 +90,11 @@ public class JwtProvider {
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
+
+            if (redisClient.checkExistsValue(token)) {
+                return false;
+            }
+
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return false;

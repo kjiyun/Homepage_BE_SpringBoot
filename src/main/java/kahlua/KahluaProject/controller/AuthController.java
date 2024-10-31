@@ -41,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-up")
-    @Operation(summary = "회원가입", description = "사용자의 정보 입력 후 회원가입")
+    @Operation(summary = "일반 회원가입", description = "사용자의 정보 입력 후 회원가입")
     public ResponseEntity<?> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         return ResponseEntity
                 .created(URI.create("v1/auth/sign-up"))
@@ -49,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    @Operation(summary = "로그인", description = "로그인 기능")
+    @Operation(summary = "일반 로그인", description = "로그인 기능")
     public ResponseEntity<?> signIn(@Valid @RequestBody SignInRequest signInRequest) {
         return ResponseEntity
                 .ok()
@@ -57,7 +57,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-out")
-    @Operation(summary = "로그아웃", description = "로그아웃 기능", security = @SecurityRequirement(name = "JWT Authentication"))
+    @Operation(summary = "일반/카카오 로그아웃", description = "로그아웃 기능", security = @SecurityRequirement(name = "JWT Authentication"))
     public ResponseEntity<ApiResponse<String>> signOut(HttpServletRequest request) {
         String refreshToken = jwtProvider.resolveRefreshToken(request);
         String accessToken = jwtProvider.resolveAccessToken(request);

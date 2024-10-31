@@ -50,7 +50,6 @@ public class AuthService {
         return AuthConverter.toSignInResDto(user, tokenResponse);
     }
 
-
     @Transactional
     public UserResponse signUp(SignUpRequest signUpRequest) {
         Credential credential = credentialService.createCredential(signUpRequest);
@@ -72,6 +71,10 @@ public class AuthService {
 
     @Transactional
     public void signOut(String refreshToken, String accessToken) {
+        if(jwtProvider.validateToken(accessToken)) {
+            throw new GeneralException(ErrorStatus.TOKEN_INVALID);
+        }
+        
         jwtProvider.invalidateTokens(refreshToken, accessToken);
     }
 
