@@ -25,7 +25,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
 
-    public static final String DEFAULT_PATH = "/topic/public/";
+    public static final String DEFAULT_PATH = "/topic/reservation/";
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository; // RestControllerAdvice 사용하지 않기 위해 userService 대신 userRepository 주입
