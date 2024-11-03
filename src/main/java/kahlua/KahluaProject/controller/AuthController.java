@@ -16,6 +16,7 @@ import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.security.AuthDetails;
 import kahlua.KahluaProject.security.jwt.JwtProvider;
 import kahlua.KahluaProject.service.AuthService;
+import kahlua.KahluaProject.service.SocialLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +33,19 @@ import java.net.URI;
 public class AuthController {
 
     private final AuthService authService;
+    private final SocialLoginService socialLoginService;
     private final JwtProvider jwtProvider;
+
+    @PostMapping("/google/sign-in")
+    @Operation(summary = "구글 로그인", description = "구글 로그인을 통한 회원가입 및 로그인")
+    public ResponseEntity<SignInResponse> signInWithGoogle(@RequestParam("code") String code, @RequestBody(required = false) UserInfoRequest userInfoRequest) {
+        return ResponseEntity.ok(socialLoginService.signInWithGoogle(code, userInfoRequest));
+    }
 
     @PostMapping("/kakao/sign-in")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인을 통한 회원가입 및 로그인")
     public ResponseEntity<SignInResponse> signInWithKakao(@RequestParam("code") String code, @RequestBody(required = false) UserInfoRequest userInfoRequest) {
-        return ResponseEntity.ok(authService.signInWithKakao(code, userInfoRequest));
+        return ResponseEntity.ok(socialLoginService.signInWithKakao(code, userInfoRequest));
     }
 
     @PostMapping("/sign-up")
@@ -77,7 +85,7 @@ public class AuthController {
         if(token ==null){
             throw new GeneralException(ErrorStatus.TOKEN_NOT_FOUND);
         }
-        return ResponseEntity.ok().body(authService.recreate(token, authDetails.getUser()));
+        return ResponseEntity.ok().body(authService.recreate(token, authDetails.user()));
     }
 
     @Operation(summary = "회원탈퇴", description = "회원탈퇴 기능", security = @SecurityRequirement(name = "JWT Authentication"))
@@ -90,7 +98,7 @@ public class AuthController {
             throw new GeneralException(ErrorStatus.TOKEN_NOT_FOUND);
         }
 
-        authService.withdraw(authDetails.getUser(), refreshToken, accessToken);
+        authService.withdraw(authDetails.user(), refreshToken, accessToken);
         return ResponseEntity.ok(ApiResponse.onSuccess("회원탈퇴가 성공적으로 처리되었습니다."));
     }
 }

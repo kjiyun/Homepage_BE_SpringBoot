@@ -1,10 +1,7 @@
 package kahlua.KahluaProject.service;
 
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
-import kahlua.KahluaProject.domain.user.Credential;
-import kahlua.KahluaProject.domain.user.Session;
-import kahlua.KahluaProject.domain.user.User;
-import kahlua.KahluaProject.domain.user.UserType;
+import kahlua.KahluaProject.domain.user.*;
 import kahlua.KahluaProject.dto.user.request.SignUpRequest;
 import kahlua.KahluaProject.dto.user.request.UserInfoRequest;
 import kahlua.KahluaProject.exception.GeneralException;
@@ -35,6 +32,7 @@ public class UserService {
                 .name(userInfoRequest.name())
                 .term(userInfoRequest.term())
                 .session(Session.valueOf(userInfoRequest.session()))
+                .loginType(LoginType.KAKAO)
                 .credential(null)
                 .build();
             return userRepository.save(user);

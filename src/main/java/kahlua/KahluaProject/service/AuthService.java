@@ -7,16 +7,12 @@ import kahlua.KahluaProject.domain.user.Credential;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.dto.user.request.SignInRequest;
 import kahlua.KahluaProject.dto.user.request.SignUpRequest;
-import kahlua.KahluaProject.dto.user.request.UserInfoRequest;
 import kahlua.KahluaProject.dto.user.response.SignInResponse;
 import kahlua.KahluaProject.dto.user.response.TokenResponse;
 import kahlua.KahluaProject.dto.user.response.UserResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.redis.RedisClient;
 import kahlua.KahluaProject.security.jwt.JwtProvider;
-import kahlua.KahluaProject.security.kakao.KakaoService;
-import kahlua.KahluaProject.security.kakao.dto.KakaoProfile;
-import kahlua.KahluaProject.security.kakao.dto.KakaoToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,25 +26,6 @@ public class AuthService {
     private final CredentialService credentialService;
     private final JwtProvider jwtProvider;
     private final RedisClient redisClient;
-    private final KakaoService kakaoService;
-
-    // 카카오 로그인을 통한 회원가입 메서드
-    @Transactional
-    public SignInResponse signInWithKakao(String code, UserInfoRequest userInfoRequest) {
-        // 카카오에서 액세스 토큰을 가져옴
-        KakaoToken kakaoToken = kakaoService.getAccessTokenFromKakao(code);
-
-        // 카카오 프로필 정보를 가져옴
-        KakaoProfile kakaoProfile = kakaoService.getMemberInfo(kakaoToken);
-
-        // User 가입 안되어 있을 경우 User 객체 생성 및 저장
-        User user = userService.SignInWithKakao(kakaoProfile, userInfoRequest);
-
-        TokenResponse tokenResponse = jwtProvider.createToken(user);
-        redisClient.setValue(user.getEmail(), tokenResponse.getRefreshToken(), 1000 * 60 * 60 * 24 * 7L);
-
-        return AuthConverter.toSignInResDto(user, tokenResponse);
-    }
 
     @Transactional
     public UserResponse signUp(SignUpRequest signUpRequest) {
@@ -71,7 +48,7 @@ public class AuthService {
 
     @Transactional
     public void signOut(String refreshToken, String accessToken) {
-        if(!jwtProvider.validateToken(accessToken, "access")){
+        if (!jwtProvider.validateToken(accessToken, "access")) {
             throw new GeneralException(ErrorStatus.TOKEN_INVALID);
         }
 
@@ -106,7 +83,7 @@ public class AuthService {
             throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
         }
 
-        if(!jwtProvider.validateToken(accessToken, "access")){
+        if (!jwtProvider.validateToken(accessToken, "access")) {
             throw new GeneralException(ErrorStatus.TOKEN_INVALID);
         }
 
