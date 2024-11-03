@@ -30,7 +30,6 @@ public class StompHandler implements ChannelInterceptor {
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository; // RestControllerAdvice 사용하지 않기 위해 userService 대신 userRepository 주입
 
-
     // WebSocket으로 들어온 메시지가 처리되기 전에 실행됨
     // STOMP 메시지의 종류에 따라 다른 작업을 수행하며, 메시지를 가로채 필요한 처리 가능
     @Override
@@ -47,12 +46,12 @@ public class StompHandler implements ChannelInterceptor {
             // 인증 후 데이터를 헤더에 추가
             setValue(accessor, "email", user.getEmail());
 
-        } else if (StompCommand.SUBSCRIBE.equals(command)) { // 예약 화면 진입(구독 요청)
+        } else if (StompCommand.SUBSCRIBE.equals(command)) { // 예약 날짜 진입(구독 요청)
 
             String email = (String)getValue(accessor, "email");
-            Long reservationId = parseReservationIdFromPath(accessor);
-            log.debug("email : " + email + "reservationId : " + reservationId);
-            setValue(accessor, "reservationId", reservationId);
+            String reservationDate = parseReservationDateFromPath(accessor);
+            log.debug("email : " + email + "reservationDate : " + reservationDate);
+            setValue(accessor, "reservationDate", reservationDate);
 
         } else if (StompCommand.DISCONNECT == command) { // Websocket 연결 종료
             String email = (String)getValue(accessor, "email");
@@ -85,15 +84,15 @@ public class StompHandler implements ChannelInterceptor {
         return accessToken;
     }
 
-    // 메세지의 목적지 경로에서 예약 id 추출
-    private Long parseReservationIdFromPath(StompHeaderAccessor accessor) {
+    // 메세지의 목적지 경로에서 예약 날짜 추출
+    private String parseReservationDateFromPath(StompHeaderAccessor accessor) {
         String destination = accessor.getDestination();
 
         if (Objects.isNull(destination) || destination.isBlank()) {
             throw new WebSocketException("destination: " + destination);
         }
 
-        return Long.parseLong(destination.substring(DEFAULT_PATH.length()));
+        return destination.substring(DEFAULT_PATH.length());
     }
 
     // Stomp 세션 속성으로부터 원하는 값 추출
