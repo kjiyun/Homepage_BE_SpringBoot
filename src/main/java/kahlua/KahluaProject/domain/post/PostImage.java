@@ -12,10 +12,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "postImage")
+@Table(name = "postImages")
 public class PostImage extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="image_id")
     private Long id;
 
@@ -23,6 +24,11 @@ public class PostImage extends BaseEntity {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "POST_ID")
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
+
+    public PostImage(String url, Post post) {
+        this.url = url;
+        this.post = post;
+    }
 }
