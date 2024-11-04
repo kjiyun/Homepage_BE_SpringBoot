@@ -51,6 +51,7 @@ public class SocialLoginService {
     private final KakaoService kakaoService;
     private final RedisClient redisClient;
 
+    @Transactional
     public SignInResponse signInWithGoogle(String codeString, UserInfoRequest userInfoRequest) {
         codeString = URLDecoder.decode(codeString, StandardCharsets.UTF_8);
 
@@ -67,9 +68,14 @@ public class SocialLoginService {
         String accessToken = Objects.requireNonNull(response.getBody()).get("access_token").asText();
         String email = getGoogleUserEmail(accessToken);
 
+        //bussiness logic: 사용자 정보가 이미 있다면 로그인 타입 확인 후 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
         if (email != null) {
             User user = userRepository.findByEmailAndDeletedAtIsNull(email)
                     .orElseGet(() -> createUser(email, userInfoRequest, LoginType.GOOGLE));
+
+            if (user.getLoginType() != LoginType.GOOGLE) {
+                throw new GeneralException(ErrorStatus.ALREADY_EXIST_USER);
+            }
 
             return AuthConverter.toSignInResDto(user, jwtProvider.createToken(user));
         }
@@ -94,20 +100,18 @@ public class SocialLoginService {
 
     @Transactional
     public SignInResponse signInWithKakao(String code, UserInfoRequest userInfoRequest) {
-        // 카카오에서 액세스 토큰을 가져옴
         KakaoToken kakaoToken = kakaoService.getAccessTokenFromKakao(code);
 
-        // 카카오 프로필 정보를 가져옴
         KakaoProfile kakaoProfile = kakaoService.getMemberInfo(kakaoToken);
 
         String email = kakaoProfile.kakao_account().email();
 
-        //bussiness logic & return : 사용자 정보가 이미 있다면 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
-        User user = null;
-        if(userRepository.findByEmailAndDeletedAtIsNull(email).isPresent()) {
-            user = userRepository.findByEmailAndDeletedAtIsNull(email).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-        } else {
-            createUser(email, userInfoRequest, LoginType.KAKAO);
+        //bussiness logic: 사용자 정보가 이미 있다면 로그인 타입 확인 후 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
+        User user = userRepository.findByEmailAndDeletedAtIsNull(email)
+                .orElseGet(() -> createUser(email, userInfoRequest, LoginType.KAKAO));
+
+        if (user.getLoginType() != LoginType.KAKAO) {
+            throw new GeneralException(ErrorStatus.ALREADY_EXIST_USER);
         }
 
         TokenResponse tokenResponse = jwtProvider.createToken(user);
@@ -116,7 +120,8 @@ public class SocialLoginService {
         return AuthConverter.toSignInResDto(user, tokenResponse);
     }
 
-    private User createUser(String email, UserInfoRequest userInfoRequest, LoginType loginType) {
+    @Transactional
+    public User createUser(String email, UserInfoRequest userInfoRequest, LoginType loginType) {
         User user = User.builder()
                 .email(email)
                 .userType(UserType.GENERAL)
