@@ -18,28 +18,6 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public User SignInWithKakao(KakaoProfile kakaoProfile, UserInfoRequest userInfoRequest) {
-        // validation: 이메일 유효성 확인
-        String email = kakaoProfile.kakao_account().email();
-
-        //bussiness logic & return : 사용자 정보가 이미 있다면 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
-        if(userRepository.findByEmailAndDeletedAtIsNull(email).isPresent()) {
-            return userRepository.findByEmailAndDeletedAtIsNull(email).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-        } else {
-            User user = User.builder()
-                .email(email)
-                .userType(UserType.GENERAL)
-                .name(userInfoRequest.name())
-                .term(userInfoRequest.term())
-                .session(Session.valueOf(userInfoRequest.session()))
-                .loginType(LoginType.KAKAO)
-                .credential(null)
-                .build();
-            return userRepository.save(user);
-        }
-    }
-
-    @Transactional
     public User createUser(Credential credential, SignUpRequest signUpRequest) {
         userRepository.findByEmailAndDeletedAtIsNull(signUpRequest.getEmail()).ifPresent(existingUser -> {
             throw new GeneralException(ErrorStatus.ALREADY_EXIST_USER);

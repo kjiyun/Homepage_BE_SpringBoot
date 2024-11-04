@@ -51,6 +51,15 @@ public class SocialLoginService {
     private final KakaoService kakaoService;
     private final RedisClient redisClient;
 
+    /*
+    * 구글 로그인
+    * @param codeString 구글에서 받은 code
+    * @param userInfoRequest 사용자 정보
+    * @return 사용자 정보와 토큰
+    * 1. 구글에서 받은 code를 이용하여 access token을 받아온다.
+    * 2. access token을 이용하여 사용자의 이메일을 받아온다.
+    * 3. 사용자 정보가 이미 있다면 로그인 타입 확인 후 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
+     */
     @Transactional
     public SignInResponse signInWithGoogle(String codeString, UserInfoRequest userInfoRequest) {
         codeString = URLDecoder.decode(codeString, StandardCharsets.UTF_8);
@@ -68,7 +77,6 @@ public class SocialLoginService {
         String accessToken = Objects.requireNonNull(response.getBody()).get("access_token").asText();
         String email = getGoogleUserEmail(accessToken);
 
-        //bussiness logic: 사용자 정보가 이미 있다면 로그인 타입 확인 후 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
         if (email != null) {
             User user = userRepository.findByEmailAndDeletedAtIsNull(email)
                     .orElseGet(() -> createUser(email, userInfoRequest, LoginType.GOOGLE));
@@ -83,6 +91,11 @@ public class SocialLoginService {
         throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
     }
 
+    /*
+    * 구글 access token을 이용하여 사용자의 이메일을 받아온다.
+    * @param accessToken 구글 access token
+    * @return 사용자의 이메일
+     */
     public String getGoogleUserEmail(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
@@ -98,6 +111,15 @@ public class SocialLoginService {
         return response.getBody().get("email").asText();
     }
 
+    /*
+    * 카카오 로그인
+    * @param codeString 카카오에서 받은 code
+    * @param userInfoRequest 사용자 정보
+    * @return 사용자 정보와 토큰
+    * 1. 카카오에서 받은 code를 이용하여 access token을 받아온다.
+    * 2. access token을 이용하여 사용자의 이메일을 받아온다.
+    * 3. 사용자 정보가 이미 있다면 로그인 타입 확인 후 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
+     */
     @Transactional
     public SignInResponse signInWithKakao(String code, UserInfoRequest userInfoRequest) {
         KakaoToken kakaoToken = kakaoService.getAccessTokenFromKakao(code);

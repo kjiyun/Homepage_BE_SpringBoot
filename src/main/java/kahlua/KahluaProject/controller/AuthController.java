@@ -65,7 +65,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-out")
-    @Operation(summary = "일반/카카오 로그아웃", description = "로그아웃 기능", security = @SecurityRequirement(name = "JWT Authentication"))
+    @Operation(summary = "일반/카카오/구글 로그아웃", description = "로그아웃 기능", security = @SecurityRequirement(name = "JWT Authentication"))
     public ResponseEntity<ApiResponse<String>> signOut(HttpServletRequest request) {
         String refreshToken = jwtProvider.resolveRefreshToken(request);
         String accessToken = jwtProvider.resolveAccessToken(request);
@@ -88,7 +88,7 @@ public class AuthController {
         return ResponseEntity.ok().body(authService.recreate(token, authDetails.user()));
     }
 
-    @Operation(summary = "회원탈퇴", description = "회원탈퇴 기능", security = @SecurityRequirement(name = "JWT Authentication"))
+    @Operation(summary = "일반/카카오/구글 회원탈퇴", description = "회원탈퇴 기능", security = @SecurityRequirement(name = "JWT Authentication"))
     @DeleteMapping("/withdraw")
     public ResponseEntity<ApiResponse<String>> withdraw(HttpServletRequest request, @AuthenticationPrincipal AuthDetails authDetails) {
         String refreshToken = jwtProvider.resolveRefreshToken(request);
