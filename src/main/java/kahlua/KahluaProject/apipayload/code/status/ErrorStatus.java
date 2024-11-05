@@ -38,7 +38,10 @@ public enum ErrorStatus implements BaseCode {
     //지원하기 에러
     ALREADY_EXIST_APPLICANT(HttpStatus.BAD_REQUEST, "ALREADY EXIST APPLICANT", "이미 존재하는 지원자입니다."),
     APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT NOT FOUND", "존재하지 않는 지원자입니다."),
-    APPLY_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLY INFO NOT FOUND", "존재하지 않는 지원정보 입니다." );
+    APPLY_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLY INFO NOT FOUND", "존재하지 않는 지원정보 입니다." ),
+
+    //게시판 에러
+    IMAGE_NOT_UPLOAD(HttpStatus.BAD_REQUEST, "IMAGE_NOT_UPLOAD", "이미지 업로드 개수를 초과하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
