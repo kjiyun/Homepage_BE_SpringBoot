@@ -9,6 +9,7 @@ import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.post.request.PostCreateRequest;
 import kahlua.KahluaProject.dto.post.request.PostImageCreateRequest;
 import kahlua.KahluaProject.dto.post.response.PostCreateResponse;
+import kahlua.KahluaProject.dto.post.response.PostImageCreateResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.PostImageRepository;
 import kahlua.KahluaProject.repository.PostRepository;
@@ -39,20 +40,13 @@ public class PostService {
         Post post = PostConverter.toPost(postCreateRequest);
         postRepository.save(post);
 
-        List<PostImage> imageUrls = Optional.ofNullable(postCreateRequest.getImageUrls())
-                .orElse(Collections.emptyList())
-                .stream()
-                .map((PostImageCreateRequest imageRequest) -> PostImage.builder()
-                        .url(imageRequest.getUrl())
-                        .post(post)
-                        .build())
-                .collect(Collectors.toList());
-
+        List<PostImage> imageUrls = PostConverter.toPostImage(postCreateRequest.getImageUrls(), post);
         if(imageUrls.size() > 10) throw new GeneralException(ErrorStatus.IMAGE_NOT_UPLOAD);
 
         postImageRepository.saveAll(imageUrls);
+        List<PostImageCreateResponse> imageUrlResponses = PostConverter.toPostImageCreateResponse(imageUrls);
 
-        PostCreateResponse postCreateResponse = PostConverter.toPostCreateResponse(post, user, imageUrls);
+        PostCreateResponse postCreateResponse = PostConverter.toPostCreateResponse(post, user, imageUrlResponses);
 
         return postCreateResponse;
     }

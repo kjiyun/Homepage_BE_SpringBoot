@@ -28,7 +28,7 @@ public class PostCreateResponse {
     private int likes;
 
     @Schema(description = "게시글 사진 리스트", example = "https://bucketname.s3.region.amazonaws.com/image1.jpg")
-    private List<PostImage> imageUrls;
+    private List<PostImageCreateResponse> imageUrls;
 
     @Schema(description = "작성한 날짜", example = "2024-08-01T00:00:00")
     private LocalDateTime created_at;

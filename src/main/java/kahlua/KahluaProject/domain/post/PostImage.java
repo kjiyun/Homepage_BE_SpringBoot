@@ -8,10 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Builder
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "postImages")
 public class PostImage extends BaseEntity {
 
@@ -27,6 +25,7 @@ public class PostImage extends BaseEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    @Builder
     public PostImage(String url, Post post) {
         this.url = url;
         this.post = post;
