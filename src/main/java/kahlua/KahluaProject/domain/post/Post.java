@@ -39,11 +39,9 @@ public class Post extends BaseEntity {
     private int likes;  // likes 필드와 연결 필요
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OrderBy("id asc")
     private List<PostImage> ImageUrls = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @OrderBy("id asc")
     private List<Comment> comments = new ArrayList<>();
 
     public void addImage(PostImage postImage) {
