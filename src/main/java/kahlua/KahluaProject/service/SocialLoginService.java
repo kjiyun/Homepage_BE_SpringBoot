@@ -1,6 +1,5 @@
 package kahlua.KahluaProject.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.AuthConverter;
 import kahlua.KahluaProject.domain.user.LoginType;
@@ -13,35 +12,23 @@ import kahlua.KahluaProject.dto.user.response.TokenResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.redis.RedisClient;
 import kahlua.KahluaProject.repository.UserRepository;
+import kahlua.KahluaProject.security.google.GoogleClient;
+import kahlua.KahluaProject.security.google.dto.GoogleProfile;
+import kahlua.KahluaProject.security.google.dto.GoogleToken;
 import kahlua.KahluaProject.security.jwt.JwtProvider;
 import kahlua.KahluaProject.security.kakao.KakaoService;
 import kahlua.KahluaProject.security.kakao.dto.KakaoProfile;
 import kahlua.KahluaProject.security.kakao.dto.KakaoToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class SocialLoginService {
-
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String googleClientId;
-
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String googleClientSecret;
 
     @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
     private String googleRedirectUrl;
@@ -50,83 +37,49 @@ public class SocialLoginService {
     private final JwtProvider jwtProvider;
     private final KakaoService kakaoService;
     private final RedisClient redisClient;
+    private final GoogleClient googleClient;
 
-    /*
-    * 구글 로그인
-    * @param codeString 구글에서 받은 code
-    * @param userInfoRequest 사용자 정보
-    * @return 사용자 정보와 토큰
-    * 1. 구글에서 받은 code를 이용하여 access token을 받아온다.
-    * 2. access token을 이용하여 사용자의 이메일을 받아온다.
-    * 3. 사용자 정보가 이미 있다면 로그인 타입 확인 후 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
-     */
     @Transactional
-    public SignInResponse signInWithGoogle(String codeString, UserInfoRequest userInfoRequest) {
-        codeString = URLDecoder.decode(codeString, StandardCharsets.UTF_8);
+    public SignInResponse signInWithGoogle(String code, UserInfoRequest userInfoRequest) {
+        // 구글로 액세스 토큰 요청하기
+        GoogleToken googleAccessToken = googleClient.getGoogleAccessToken(code, googleRedirectUrl);
 
-        String tokenUrl = String.format("https://oauth2.googleapis.com/token?client_id=%s&client_secret=%s&code=%s&redirect_uri=%s&grant_type=authorization_code",
-                googleClientId, googleClientSecret, codeString, googleRedirectUrl);
+        // 구글에 있는 사용자 정보 반환
+        GoogleProfile googleProfile = googleClient.getMemberInfo(googleAccessToken);
 
-        ResponseEntity<JsonNode> response = new RestTemplate().exchange(
-                tokenUrl,
-                HttpMethod.POST,
-                null,
-                JsonNode.class
-        );
-
-        String accessToken = Objects.requireNonNull(response.getBody()).get("access_token").asText();
-        String email = getGoogleUserEmail(accessToken);
-
-        if (email != null) {
-            User user = userRepository.findByEmailAndDeletedAtIsNull(email)
-                    .orElseGet(() -> createUser(email, userInfoRequest, LoginType.GOOGLE));
-
-            if (user.getLoginType() != LoginType.GOOGLE) {
-                throw new GeneralException(ErrorStatus.ALREADY_EXIST_USER);
-            }
-
-            return AuthConverter.toSignInResDto(user, jwtProvider.createToken(user));
+        // 반환된 정보의 이메일 기반으로 사용자 테이블에서 계정 정보 조회 진행
+        String email = googleProfile.email();
+        if (email == null) {
+            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
         }
 
-        throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+        //bussiness logic: 사용자 정보가 이미 있다면 로그인 타입 확인 후 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
+        User user = userRepository.findByEmailAndDeletedAtIsNull(email)
+                .orElseGet(() -> createUser(email, userInfoRequest, LoginType.GOOGLE));
+
+        if (user.getLoginType() != LoginType.GOOGLE) {
+            throw new GeneralException(ErrorStatus.ALREADY_EXIST_USER);
+        }
+
+        TokenResponse tokenResponse = jwtProvider.createToken(user);
+        redisClient.setValue(user.getEmail(), tokenResponse.getRefreshToken(), 1000 * 60 * 60 * 24 * 7L);
+
+        return AuthConverter.toSignInResDto(user, tokenResponse);
     }
 
-    /*
-    * 구글 access token을 이용하여 사용자의 이메일을 받아온다.
-    * @param accessToken 구글 access token
-    * @return 사용자의 이메일
-     */
-    public String getGoogleUserEmail(String accessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
-
-        HttpEntity<MultiValueMap<String, String>> googleTokenRequest = new HttpEntity<>(headers);
-        ResponseEntity<JsonNode> response = new RestTemplate().exchange(
-                "https://www.googleapis.com/oauth2/v2/userinfo",
-                HttpMethod.GET,
-                googleTokenRequest,
-                JsonNode.class
-        );
-
-        return response.getBody().get("email").asText();
-    }
-
-    /*
-    * 카카오 로그인
-    * @param codeString 카카오에서 받은 code
-    * @param userInfoRequest 사용자 정보
-    * @return 사용자 정보와 토큰
-    * 1. 카카오에서 받은 code를 이용하여 access token을 받아온다.
-    * 2. access token을 이용하여 사용자의 이메일을 받아온다.
-    * 3. 사용자 정보가 이미 있다면 로그인 타입 확인 후 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
-     */
     @Transactional
     public SignInResponse signInWithKakao(String code, UserInfoRequest userInfoRequest) {
+        // 카카오로 액세스 토큰 요청하기
         KakaoToken kakaoToken = kakaoService.getAccessTokenFromKakao(code);
 
+        // 카카오에 있는 사용자 정보 반환
         KakaoProfile kakaoProfile = kakaoService.getMemberInfo(kakaoToken);
 
+        // 반환된 정보의 이메일 기반으로 사용자 테이블에서 계정 정보 조회 진행
         String email = kakaoProfile.kakao_account().email();
+        if (email == null) {
+            throw new GeneralException(ErrorStatus.USER_NOT_FOUND);
+        }
 
         //bussiness logic: 사용자 정보가 이미 있다면 로그인 타입 확인 후 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
         User user = userRepository.findByEmailAndDeletedAtIsNull(email)
