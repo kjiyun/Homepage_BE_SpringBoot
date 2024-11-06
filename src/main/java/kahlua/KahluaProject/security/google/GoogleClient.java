@@ -5,15 +5,18 @@ import kahlua.KahluaProject.security.google.dto.GoogleProfile;
 import kahlua.KahluaProject.security.google.dto.GoogleToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
 
 @Component
 @RequiredArgsConstructor
 public class GoogleClient {
+
+    private final ObjectMapper objectMapper;
+    private final RestClient restClient = RestClient.create();
+
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientId;
 
@@ -30,62 +33,35 @@ public class GoogleClient {
     private String googleUserInfoUri;
 
     public GoogleToken getGoogleAccessToken(String code, String redirectUri) {
-        // 요청 보낼 객체 기본 생성
-        WebClient webClient = WebClient.create(googleTokenUri);
-
-        //요청 본문
-        MultiValueMap<String , String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", googleGrantType);
-        params.add("client_id", googleClientId);
-        params.add("redirect_uri", redirectUri);
-        params.add("code", code);
-        params.add("client_secret", googleClientSecret);
-
-        // 요청 보내기 및 응답 수신
-        String response = webClient.post()
+        String response = restClient.post()
                 .uri(googleTokenUri)
-                .header("Content-type", "application/x-www-form-urlencoded")
-                .body(BodyInserters.fromFormData(params))
-                .retrieve() // 데이터 받는 방식, 스프링에서는 exchange는 메모리 누수 가능성 때문에 retrieve 권장
-                .bodyToMono(String.class) // (Mono는 단일 데이터, Flux는 복수 데이터)
-                .block();// 비동기 방식의 데이터 수신
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .body("grant_type=" + googleGrantType +
+                        "&client_id=" + googleClientId +
+                        "&redirect_uri=" + redirectUri +
+                        "&code=" + code +
+                        "&client_secret=" + googleClientSecret)
+                .retrieve()
+                .body(String.class);
 
-        // 수신된 응답 Mapping
-        ObjectMapper objectMapper = new ObjectMapper();
-        System.out.println(objectMapper);
-        GoogleToken googleToken;
         try {
-            googleToken = objectMapper.readValue(response, GoogleToken.class);
+            return objectMapper.readValue(response, GoogleToken.class);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to parse Google access token response", e);
         }
-
-        return googleToken;
     }
 
     public GoogleProfile getMemberInfo(GoogleToken googleToken) {
-        // 요청 기본 객체 생성
-        WebClient webClient = WebClient.create(googleUserInfoUri);
-
-        // 요청 보내서 응답 받기
-        String response = webClient.post()
+        String response = restClient.get()
                 .uri(googleUserInfoUri)
-                .header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8")
-                .header("Authorization", "Bearer " + googleToken.access_token())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + googleToken.access_token())
                 .retrieve()
-                .bodyToMono(String.class)
-                .block();
+                .body(String.class);
 
-        // 수신된 응답 Mapping
-        ObjectMapper objectMapper = new ObjectMapper();
-        GoogleProfile googleProfile;
         try {
-            googleProfile = objectMapper.readValue(response, GoogleProfile.class);
-
+            return objectMapper.readValue(response, GoogleProfile.class);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to parse Google user info response", e);
         }
-
-        return googleProfile;
     }
 }

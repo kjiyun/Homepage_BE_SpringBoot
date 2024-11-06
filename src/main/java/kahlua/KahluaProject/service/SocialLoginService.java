@@ -16,7 +16,7 @@ import kahlua.KahluaProject.security.google.GoogleClient;
 import kahlua.KahluaProject.security.google.dto.GoogleProfile;
 import kahlua.KahluaProject.security.google.dto.GoogleToken;
 import kahlua.KahluaProject.security.jwt.JwtProvider;
-import kahlua.KahluaProject.security.kakao.KakaoService;
+import kahlua.KahluaProject.security.kakao.KakaoClient;
 import kahlua.KahluaProject.security.kakao.dto.KakaoProfile;
 import kahlua.KahluaProject.security.kakao.dto.KakaoToken;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class SocialLoginService {
 
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
-    private final KakaoService kakaoService;
+    private final KakaoClient kakaoClient;
     private final RedisClient redisClient;
     private final GoogleClient googleClient;
 
@@ -70,10 +70,10 @@ public class SocialLoginService {
     @Transactional
     public SignInResponse signInWithKakao(String code, UserInfoRequest userInfoRequest) {
         // 카카오로 액세스 토큰 요청하기
-        KakaoToken kakaoToken = kakaoService.getAccessTokenFromKakao(code);
+        KakaoToken kakaoToken = kakaoClient.getAccessTokenFromKakao(code);
 
         // 카카오에 있는 사용자 정보 반환
-        KakaoProfile kakaoProfile = kakaoService.getMemberInfo(kakaoToken);
+        KakaoProfile kakaoProfile = kakaoClient.getMemberInfo(kakaoToken);
 
         // 반환된 정보의 이메일 기반으로 사용자 테이블에서 계정 정보 조회 진행
         String email = kakaoProfile.kakao_account().email();
