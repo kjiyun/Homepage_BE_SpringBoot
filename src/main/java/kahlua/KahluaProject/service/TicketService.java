@@ -373,6 +373,15 @@ public class TicketService {
         return TicketConverter.toTicketInfoResponse(updatedTicketInfo);
     }
 
+    public TicketInfoResponse getTicketInfo(Long ticketInfoId) {
+        //validation: ticketId 존재 여부 확인
+        TicketInfo ticketInfo = ticketInfoRepository.findById(ticketInfoId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
+
+        //return: ticket 정보 반환
+        return TicketConverter.toTicketInfoResponse(ticketInfo);
+    }
+
     public TicketStatisticsResponse getTicketStatistics(User user) {
         //validation: user가 admin인지 확인
         if (user.getUserType() != UserType.ADMIN) {

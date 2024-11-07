@@ -106,6 +106,12 @@ public class AdminTicketController {
         return ApiResponse.onSuccess(ticketService.updateTicketInfo(ticketInfoId, ticketUpdateRequest, authDetails.user()));
     }
 
+    @GetMapping("/{ticket_info_id}")
+    @Operation(summary = "티켓 정보 조회", description = "티켓 정보를 조회합니다")
+    public ApiResponse<TicketInfoResponse> getTicketInfo(@PathVariable("ticket_info_id") Long ticketInfoId) {
+        return ApiResponse.onSuccess(ticketService.getTicketInfo(ticketInfoId));
+    }
+
     @GetMapping("/statistics")
     @Operation(summary = "티켓 통계 조회", description = "티켓 통계를 조회합니다")
     public ApiResponse<TicketStatisticsResponse> getTicketStatistics(@AuthenticationPrincipal AuthDetails authDetails) {

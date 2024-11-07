@@ -173,6 +173,15 @@ public class ApplyService {
         return ApplyConverter.toApplyInfoResponse(applyInfo);
     }
 
+    public ApplyInfoResponse getApplyInfo(Long applyId) {
+        //business logic: applyInfo 데이터 조회
+        ApplyInfo applyInfo = applyInfoRepository.findById(applyId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.APPLY_INFO_NOT_FOUND));
+
+        //return: ApplyInfoResponse 타입으로 변환 후 반환
+        return ApplyConverter.toApplyInfoResponse(applyInfo);
+    }
+
     public ApplyStatisticsResponse getApplyStatistics(User user) {
         //validation: 관리자 권한 확인
         if (user.getUserType() != UserType.ADMIN) {
