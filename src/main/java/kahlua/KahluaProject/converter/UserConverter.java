@@ -10,6 +10,9 @@ public class UserConverter {
                 .id(user.getId())
                 .email(user.getEmail())
                 .role(user.getUserType())
+                .name(user.getName())
+                .term(user.getTerm())
+                .session(String.valueOf(user.getSession()))
                 .build();
     }
 }

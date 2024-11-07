@@ -21,7 +21,7 @@ public enum ErrorStatus implements BaseCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "권한이 없습니다."),
     PASSWORD_NOT_MATCH(HttpStatus.NOT_FOUND, "PASSWORD NOT MATCH", "비밀번호가 틀렸습니다."),
     PASSWORD_INVALID(HttpStatus.NOT_FOUND, "PASSWORD INVALID", "유효하지 않은 password입니다."),
-    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN INVALID", "토큰 유효하지 않습니다."),
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN INVALID", "토큰이 유효하지 않습니다."),
     TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "TOKEN INVALID", "토큰을 찾을 수 없습니다."),
     ALREADY_EXIST_USER(HttpStatus.BAD_REQUEST, "ALREADY EXIST USER", "이미 존재하는 회원입니다."),
     REDIS_NOT_FOUND(HttpStatus.NOT_FOUND, "REDIS NOT FOUND", "Redis 설정에 오류가 발생했습니다."),

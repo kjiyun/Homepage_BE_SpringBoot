@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum UserType {
-    GENERAL("일반 사용자"),
-    KAHLUA("깔루아"),
-    ADMIN("관리자");
+public enum LoginType {
+    KAKAO("카카오"),
+    GOOGLE("구글"),
+    GENERAL("일반");
 
-    private final String role;
+    private final String loginType;
 }

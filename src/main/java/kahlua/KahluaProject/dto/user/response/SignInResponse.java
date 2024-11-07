@@ -22,6 +22,15 @@ public class SignInResponse {
     @Schema(description = "권한")
     private UserType role;
 
+    @Schema(description = "이름")
+    private String name;
+
+    @Schema(description = "기수")
+    private Long term;
+
+    @Schema(description = "세션")
+    private String session;
+
     @Schema(description = "Access Token")
     private String accessToken;
 

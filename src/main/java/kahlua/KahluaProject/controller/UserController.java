@@ -37,7 +37,7 @@ public class UserController {
         }
 
         AuthDetails authDetails = (AuthDetails) principal;
-        User user = authDetails.getUser();
+        User user = authDetails.user();
         return ResponseEntity.ok().body(ApiResponse.onSuccess(UserConverter.toUserResDto(user)));
     }
 }
