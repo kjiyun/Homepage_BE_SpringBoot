@@ -12,6 +12,7 @@ import kahlua.KahluaProject.dto.apply.request.ApplyCreateRequest;
 import kahlua.KahluaProject.dto.apply.response.*;
 import kahlua.KahluaProject.dto.applyInfo.request.ApplyInfoRequest;
 import kahlua.KahluaProject.dto.applyInfo.response.ApplyInfoResponse;
+import kahlua.KahluaProject.dto.apply.response.ApplyStatisticsResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ApplyInfoRepository;
 import kahlua.KahluaProject.repository.ApplyRepository;
@@ -20,7 +21,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -168,4 +172,46 @@ public class ApplyService {
         //return: ApplyInfoResponse 타입으로 변환 후 반환
         return ApplyConverter.toApplyInfoResponse(applyInfo);
     }
+
+    public ApplyStatisticsResponse getApplyStatistics(User user) {
+        //validation: 관리자 권한 확인
+        if (user.getUserType() != UserType.ADMIN) {
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        //business logic: 전체 지원자 수, 각 세션별 지원자 수 조회
+        Long totalApplyCount = applyRepository.countByDeletedAtIsNull()
+                .orElseThrow(() -> new GeneralException(ErrorStatus.APPLICANT_NOT_FOUND));
+
+        Map<Preference, Long> counts = Arrays.stream(Preference.values())
+                .collect(Collectors.toMap(
+                        preference -> preference,
+                        this::getCount
+                ));
+
+        //return: ApplyStatisticsResponse 타입으로 변환 후 반환
+       return ApplyStatisticsResponse.builder()
+                .totalApplyCount(totalApplyCount)
+                .vocalCount(counts.get(Preference.VOCAL))
+                .vocalPercent(calculatePercent(counts.get(Preference.VOCAL), totalApplyCount))
+                .drumCount(counts.get(Preference.DRUM))
+                .drumPercent(calculatePercent(counts.get(Preference.DRUM), totalApplyCount))
+                .guitarCount(counts.get(Preference.GUITAR))
+                .guitarPercent(calculatePercent(counts.get(Preference.GUITAR), totalApplyCount))
+                .bassCount(counts.get(Preference.BASS))
+                .bassPercent(calculatePercent(counts.get(Preference.BASS), totalApplyCount))
+                .synthesizerCount(counts.get(Preference.SYNTHESIZER))
+                .synthesizerPercent(calculatePercent(counts.get(Preference.SYNTHESIZER), totalApplyCount))
+                .build();
+    }
+
+    private Long getCount(Preference preference) {
+        return applyRepository.countByFirstPreferenceAndDeletedAtIsNull(preference)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.APPLICANT_NOT_FOUND));
+    }
+
+    private Long calculatePercent(Long count, Long total) {
+        return total > 0 ? (count * 100) / total : 0;
+    }
+
 }
