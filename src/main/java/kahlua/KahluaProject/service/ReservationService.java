@@ -1,6 +1,7 @@
 package kahlua.KahluaProject.service;
 
 import jakarta.transaction.Transactional;
+import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.domain.reservation.Reservation;
 import kahlua.KahluaProject.domain.reservation.ReservationStatus;
 import kahlua.KahluaProject.domain.user.User;
@@ -8,6 +9,7 @@ import kahlua.KahluaProject.dto.reservation.request.ReservationProceedRequest;
 import kahlua.KahluaProject.dto.reservation.request.ReservationRequest;
 import kahlua.KahluaProject.dto.reservation.response.ReservationListResponse;
 import kahlua.KahluaProject.dto.reservation.response.ReservationResponse;
+import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -73,6 +75,14 @@ public class ReservationService {
                 .collect(Collectors.toList());
 
         return new ReservationListResponse(reservationResponseList);
+    }
+
+    @Transactional
+    public void delete(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                        .orElseThrow(() -> new GeneralException(ErrorStatus.RESERVATION_NOT_FOUND));
+
+        reservationRepository.deleteById(reservationId);
     }
 
     // String to LocalDateTime

@@ -13,9 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -59,5 +57,12 @@ public class ReservationController {
     public ApiResponse<ReservationListResponse> getReservationList(@AuthenticationPrincipal AuthDetails authDetails) {
 
         return ApiResponse.onSuccess(reservationService.getByUser(authDetails.user()));
+    }
+
+    @DeleteMapping("/v1/reservation/check/{reservationId}")
+    public ApiResponse<?> delete(@PathVariable Long reservationId) {
+
+        reservationService.delete(reservationId);
+        return ApiResponse.onSuccess("예약내역 삭제 성공");
     }
 }
