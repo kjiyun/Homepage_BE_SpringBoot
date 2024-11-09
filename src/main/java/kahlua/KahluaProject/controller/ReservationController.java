@@ -25,4 +25,14 @@ public class ReservationController {
 
         return reservationService.proceed(reservationProceedRequest, reservationDate, simpSessionAttributes);
     }
+
+    // 예약 확정 후 예약내역 DB에 저장
+    @MessageMapping("/reserve.complete/{date}")
+    @SendTo("/topic/public/{date}")
+    public ReservationResponse complete(@DestinationVariable String reservationDate,
+                                       @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
+                                       @Payload ReservationRequest reservationRequest) {
+
+        return reservationService.save(reservationRequest, reservationDate, simpSessionAttributes);
+    }
 }

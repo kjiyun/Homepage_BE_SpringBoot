@@ -1,8 +1,10 @@
 package kahlua.KahluaProject.service;
 
+import jakarta.transaction.Transactional;
 import kahlua.KahluaProject.converter.ReservationConverter;
 import kahlua.KahluaProject.domain.reservation.Reservation;
 import kahlua.KahluaProject.domain.reservation.ReservationStatus;
+import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.dto.reservation.request.ReservationProceedRequest;
 import kahlua.KahluaProject.dto.reservation.request.ReservationRequest;
 import kahlua.KahluaProject.dto.reservation.response.ReservationResponse;
@@ -14,11 +16,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
+import static kahlua.KahluaProject.converter.ReservationConverter.*;
+
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final UserService userService;
 
     public ReservationResponse proceed(ReservationProceedRequest reservationProceedRequest, String reservationDate, Map<String, Object> header) {
 
@@ -33,16 +38,22 @@ public class ReservationService {
                 .build();
     }
 
+    @Transactional
+    public ReservationResponse save(ReservationRequest reservationRequest, String reservationDate, Map<String, Object> header) {
+
+        String email = getValueFromHeader(header, "email");
+        User user = userService.getUserByEmail(email);
+
+        Reservation reservation = toReservation(reservationRequest, user, toLocalDate(reservationDate), ReservationStatus.RESERVED);
+        Reservation savedReservation = reservationRepository.save(reservation);
+
+        return toReservationResponse(savedReservation, email);
+    }
+
     // String to LocalDateTime
     private LocalDate toLocalDate(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, formatter);
-    }
-
-    private ReservationResponse toReservationResponse(Reservation reservation, Map<String, Object> header) {
-        String email = getValueFromHeader(header, "email");
-
-        return ReservationConverter.toReservationResponse(reservation, email);
     }
 
     private String getValueFromHeader(Map<String, Object> header, String key) {
