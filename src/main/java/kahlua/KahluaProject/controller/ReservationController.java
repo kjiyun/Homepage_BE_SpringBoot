@@ -1,15 +1,24 @@
 package kahlua.KahluaProject.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import kahlua.KahluaProject.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.reservation.request.ReservationProceedRequest;
 import kahlua.KahluaProject.dto.reservation.request.ReservationRequest;
+import kahlua.KahluaProject.dto.reservation.response.ReservationListResponse;
 import kahlua.KahluaProject.dto.reservation.response.ReservationResponse;
 import kahlua.KahluaProject.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.messaging.handler.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.Map;
 
+@Tag(name = "동방 예약", description = "동방 예약 기능 관련 API")
 @RestController
 @RequiredArgsConstructor
 public class ReservationController {
@@ -34,5 +43,13 @@ public class ReservationController {
                                        @Payload ReservationRequest reservationRequest) {
 
         return reservationService.save(reservationRequest, reservationDate, simpSessionAttributes);
+    }
+
+    @GetMapping("/v1/reservation")
+    @Operation(summary = "날짜별 예약내역 목록 조회", description = "지정한 날짜에 해당하는 예약내역 목록을 조회합니다." +
+            "<br> 쿼리 파라미터 날짜 형식은 yyyy-MM-dd 입니다")
+    public ApiResponse<ReservationListResponse> getReservationListByDate(@RequestParam(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+
+        return ApiResponse.onSuccess(reservationService.getByDate(date));
     }
 }

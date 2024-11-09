@@ -7,6 +7,7 @@ import kahlua.KahluaProject.domain.reservation.ReservationStatus;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.dto.reservation.request.ReservationProceedRequest;
 import kahlua.KahluaProject.dto.reservation.request.ReservationRequest;
+import kahlua.KahluaProject.dto.reservation.response.ReservationListResponse;
 import kahlua.KahluaProject.dto.reservation.response.ReservationResponse;
 import kahlua.KahluaProject.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static kahlua.KahluaProject.converter.ReservationConverter.*;
 
@@ -48,6 +52,18 @@ public class ReservationService {
         Reservation savedReservation = reservationRepository.save(reservation);
 
         return toReservationResponse(savedReservation, email);
+    }
+
+    @Transactional
+    public ReservationListResponse getByDate(LocalDate date) {
+
+        List<Reservation> reservationList = reservationRepository.findAllByReservationDate(date);
+
+        List<ReservationResponse> reservationResponseList = reservationList.stream()
+                .map(reservation -> toReservationResponse(reservation, reservation.getUser().getEmail()))
+                .collect(Collectors.toList());
+
+        return new ReservationListResponse(reservationResponseList);
     }
 
     // String to LocalDateTime

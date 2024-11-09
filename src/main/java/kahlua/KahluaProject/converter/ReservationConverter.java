@@ -29,6 +29,7 @@ public class ReservationConverter {
                 .reservationId(reservation.getId())
                 .email(email)
                 .type(reservation.getType())
+                .clubroomUsername(reservation.getClubRoomUsername())
                 .reservationDate(reservation.getReservationDate())
                 .startTime(reservation.getStartTime())
                 .endTime(reservation.getEndTime())
