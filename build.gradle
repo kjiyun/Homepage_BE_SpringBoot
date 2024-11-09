@@ -38,6 +38,7 @@ dependencies {
 
 	// Spring Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -72,8 +73,12 @@ dependencies {
     implementation 'software.amazon.awssdk:s3control:2.27.3'
     implementation 'software.amazon.awssdk:s3outposts:2.27.3'
 
+
 	// Web Socket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	//Webflux
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 tasks.named('test') {

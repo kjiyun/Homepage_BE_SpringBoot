@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -84,12 +85,17 @@ public class JwtProvider {
                 .build();
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, String tokenType) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
+
+            if (Objects.equals(tokenType, "refresh") && redisClient.checkExistsValue(token)) {
+                return false;
+            }
+
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return false;
@@ -126,7 +132,7 @@ public class JwtProvider {
 
     @Transactional
     public void invalidateTokens(String refreshToken, String accessToken) {
-        if (!validateToken(refreshToken)) {
+        if (!validateToken(refreshToken, "refresh")) {
             throw new GeneralException(ErrorStatus.TOKEN_INVALID);
         }
         redisClient.deleteValue(getEmail(refreshToken));

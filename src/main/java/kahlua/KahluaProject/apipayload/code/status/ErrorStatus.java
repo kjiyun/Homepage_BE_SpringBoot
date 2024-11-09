@@ -21,7 +21,7 @@ public enum ErrorStatus implements BaseCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "권한이 없습니다."),
     PASSWORD_NOT_MATCH(HttpStatus.NOT_FOUND, "PASSWORD NOT MATCH", "비밀번호가 틀렸습니다."),
     PASSWORD_INVALID(HttpStatus.NOT_FOUND, "PASSWORD INVALID", "유효하지 않은 password입니다."),
-    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN INVALID", "토큰 유효하지 않습니다."),
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN INVALID", "토큰이 유효하지 않습니다."),
     TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "TOKEN INVALID", "토큰을 찾을 수 없습니다."),
     ALREADY_EXIST_USER(HttpStatus.BAD_REQUEST, "ALREADY EXIST USER", "이미 존재하는 회원입니다."),
     REDIS_NOT_FOUND(HttpStatus.NOT_FOUND, "REDIS NOT FOUND", "Redis 설정에 오류가 발생했습니다."),
@@ -41,7 +41,10 @@ public enum ErrorStatus implements BaseCode {
     APPLY_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLY INFO NOT FOUND", "존재하지 않는 지원정보 입니다." ),
 
     // 웹소켓 에러
-    WEBSOCKET_SESSION_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "WEBSOCKET SESSION UNAUTHORIZED", "웹소켓 연결에 실패했습니다.");
+    WEBSOCKET_SESSION_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "WEBSOCKET SESSION UNAUTHORIZED", "웹소켓 연결에 실패했습니다."),
+
+    //게시판 에러
+    IMAGE_NOT_UPLOAD(HttpStatus.BAD_REQUEST, "IMAGE_NOT_UPLOAD", "이미지 업로드 개수를 초과하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
