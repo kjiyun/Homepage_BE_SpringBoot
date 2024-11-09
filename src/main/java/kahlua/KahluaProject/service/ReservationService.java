@@ -1,7 +1,6 @@
 package kahlua.KahluaProject.service;
 
 import jakarta.transaction.Transactional;
-import kahlua.KahluaProject.converter.ReservationConverter;
 import kahlua.KahluaProject.domain.reservation.Reservation;
 import kahlua.KahluaProject.domain.reservation.ReservationStatus;
 import kahlua.KahluaProject.domain.user.User;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -61,6 +59,17 @@ public class ReservationService {
 
         List<ReservationResponse> reservationResponseList = reservationList.stream()
                 .map(reservation -> toReservationResponse(reservation, reservation.getUser().getEmail()))
+                .collect(Collectors.toList());
+
+        return new ReservationListResponse(reservationResponseList);
+    }
+
+    public ReservationListResponse getByUser(User user) {
+
+        List<Reservation> reservationList = reservationRepository.findAllByUser_Id(user.getId());
+
+        List<ReservationResponse> reservationResponseList = reservationList.stream()
+                .map(reservation -> toReservationResponse(reservation, user.getEmail()))
                 .collect(Collectors.toList());
 
         return new ReservationListResponse(reservationResponseList);

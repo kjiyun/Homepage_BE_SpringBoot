@@ -7,10 +7,12 @@ import kahlua.KahluaProject.dto.reservation.request.ReservationProceedRequest;
 import kahlua.KahluaProject.dto.reservation.request.ReservationRequest;
 import kahlua.KahluaProject.dto.reservation.response.ReservationListResponse;
 import kahlua.KahluaProject.dto.reservation.response.ReservationResponse;
+import kahlua.KahluaProject.security.AuthDetails;
 import kahlua.KahluaProject.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.messaging.handler.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,5 +53,11 @@ public class ReservationController {
     public ApiResponse<ReservationListResponse> getReservationListByDate(@RequestParam(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 
         return ApiResponse.onSuccess(reservationService.getByDate(date));
+    }
+
+    @GetMapping("/v1/reservation/check")
+    public ApiResponse<ReservationListResponse> getReservationList(@AuthenticationPrincipal AuthDetails authDetails) {
+
+        return ApiResponse.onSuccess(reservationService.getByUser(authDetails.user()));
     }
 }
