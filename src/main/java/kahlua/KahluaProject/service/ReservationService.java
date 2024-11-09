@@ -10,7 +10,7 @@ import kahlua.KahluaProject.dto.reservation.request.ReservationRequest;
 import kahlua.KahluaProject.dto.reservation.response.ReservationListResponse;
 import kahlua.KahluaProject.dto.reservation.response.ReservationResponse;
 import kahlua.KahluaProject.exception.GeneralException;
-import kahlua.KahluaProject.repository.ReservationRepository;
+import kahlua.KahluaProject.repository.reservation.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +57,7 @@ public class ReservationService {
     @Transactional
     public ReservationListResponse getByDate(LocalDate date) {
 
-        List<Reservation> reservationList = reservationRepository.findAllByReservationDate(date);
+        List<Reservation> reservationList = reservationRepository.findByDate(date);
 
         List<ReservationResponse> reservationResponseList = reservationList.stream()
                 .map(reservation -> toReservationResponse(reservation, reservation.getUser().getEmail()))
@@ -68,7 +68,7 @@ public class ReservationService {
 
     public ReservationListResponse getByUser(User user) {
 
-        List<Reservation> reservationList = reservationRepository.findAllByUser_Id(user.getId());
+        List<Reservation> reservationList = reservationRepository.findByUser(user);
 
         List<ReservationResponse> reservationResponseList = reservationList.stream()
                 .map(reservation -> toReservationResponse(reservation, user.getEmail()))

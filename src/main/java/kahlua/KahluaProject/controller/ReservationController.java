@@ -46,7 +46,7 @@ public class ReservationController {
     }
 
     @GetMapping("/v1/reservation")
-    @Operation(summary = "날짜별 예약내역 목록 조회", description = "지정한 날짜에 해당하는 예약내역 목록을 조회합니다." +
+    @Operation(summary = "날짜별 예약내역 목록 조회", description = "지정한 날짜에 해당하는 예약내역 목록을 사용 시작 시간 오름차순으로 조회합니다." +
             "<br> 쿼리 파라미터 날짜 형식은 yyyy-MM-dd 입니다")
     public ApiResponse<ReservationListResponse> getReservationListByDate(@RequestParam(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 
@@ -54,7 +54,8 @@ public class ReservationController {
     }
 
     @GetMapping("/v1/reservation/check")
-    @Operation(summary = "사용자 예약내역 조회", description = "사용자의 전체 예약내역을 조회합니다.")
+    @Operation(summary = "사용자 예약내역 조회", description = "사용자의 전체 예약내역을 예약 날짜 오름차순으로 조회합니다." +
+            "<br> 같은 날짜에 대해서는 시작 시간 오름차순으로 정렬합니다.")
     public ApiResponse<ReservationListResponse> getReservationList(@AuthenticationPrincipal AuthDetails authDetails) {
 
         return ApiResponse.onSuccess(reservationService.getByUser(authDetails.user()));
