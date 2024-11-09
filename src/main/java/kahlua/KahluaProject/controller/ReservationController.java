@@ -54,12 +54,14 @@ public class ReservationController {
     }
 
     @GetMapping("/v1/reservation/check")
+    @Operation(summary = "사용자 예약내역 조회", description = "사용자의 전체 예약내역을 조회합니다.")
     public ApiResponse<ReservationListResponse> getReservationList(@AuthenticationPrincipal AuthDetails authDetails) {
 
         return ApiResponse.onSuccess(reservationService.getByUser(authDetails.user()));
     }
 
     @DeleteMapping("/v1/reservation/check/{reservationId}")
+    @Operation(summary = "예약내역 삭제", description = "지정한 예약내역을 삭제합니다.")
     public ApiResponse<?> delete(@PathVariable Long reservationId) {
 
         reservationService.delete(reservationId);
