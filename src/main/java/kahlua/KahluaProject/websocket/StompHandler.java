@@ -69,7 +69,7 @@ public class StompHandler implements ChannelInterceptor {
 
         String email = jwtProvider.getEmail(accessToken);
 
-        return userRepository.findByEmail(email)
+        return userRepository.findByEmailAndDeletedAtIsNull(email)
                 .orElseThrow(() -> new WebSocketException("사용자를 찾을 수 없습니다."));
     }
 
@@ -79,7 +79,7 @@ public class StompHandler implements ChannelInterceptor {
         }
 
         String accessToken = jwtProvider.resolveAccessTokenFromHeader(authHeaderValue);
-        jwtProvider.validateToken(accessToken);
+        jwtProvider.validateToken(accessToken, "access");
 
         return accessToken;
     }
