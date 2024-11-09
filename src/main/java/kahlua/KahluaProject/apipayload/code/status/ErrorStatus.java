@@ -40,6 +40,9 @@ public enum ErrorStatus implements BaseCode {
     APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT NOT FOUND", "존재하지 않는 지원자입니다."),
     APPLY_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLY INFO NOT FOUND", "존재하지 않는 지원정보 입니다." ),
 
+    // 웹소켓 에러
+    WEBSOCKET_SESSION_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "WEBSOCKET SESSION UNAUTHORIZED", "웹소켓 연결에 실패했습니다."),
+
     //게시판 에러
     IMAGE_NOT_UPLOAD(HttpStatus.BAD_REQUEST, "IMAGE_NOT_UPLOAD", "이미지 업로드 개수를 초과하였습니다.");
 

@@ -138,4 +138,11 @@ public class JwtProvider {
         redisClient.deleteValue(getEmail(refreshToken));
         redisClient.setValue(accessToken, "logout", getExpirationTime(accessToken));
     }
+
+    public String resolveAccessTokenFromHeader(String authHeaderValue) {
+        if (authHeaderValue.startsWith("Bearer ")) {
+            return authHeaderValue.substring(7).trim();
+        }
+        return null;
+    }
 }
