@@ -1,6 +1,7 @@
 package kahlua.KahluaProject.dto.post.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kahlua.KahluaProject.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,9 @@ public class PostCreateRequest {
 
     @Schema(description = "게시글 내용", example = "안녕하세요 깔루아 기장입니다. 감사합니다.")
     private String content;
+
+    @Schema(description = "게시글 작성자", example = "관리자")
+    private User user;
 
     @Schema(description = "게시글 사진 리스트", example = "https://bucketname.s3.region.amazonaws.com/image1.jpg")
     private List<PostImageCreateRequest> imageUrls;

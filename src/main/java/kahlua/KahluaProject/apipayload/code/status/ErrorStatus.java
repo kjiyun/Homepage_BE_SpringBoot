@@ -44,6 +44,7 @@ public enum ErrorStatus implements BaseCode {
     WEBSOCKET_SESSION_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "WEBSOCKET SESSION UNAUTHORIZED", "웹소켓 연결에 실패했습니다."),
 
     //게시판 에러
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST_NOT_FOUND", "존재하지 않는 게시글입니다."),
     IMAGE_NOT_UPLOAD(HttpStatus.BAD_REQUEST, "IMAGE_NOT_UPLOAD", "이미지 업로드 개수를 초과하였습니다.");
 
     private final HttpStatus httpStatus;
