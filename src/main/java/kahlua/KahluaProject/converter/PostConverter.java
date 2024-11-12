@@ -2,11 +2,14 @@ package kahlua.KahluaProject.converter;
 
 import kahlua.KahluaProject.domain.post.Post;
 import kahlua.KahluaProject.domain.post.PostImage;
+import kahlua.KahluaProject.domain.post.PostLikes;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.dto.post.request.PostCreateRequest;
 import kahlua.KahluaProject.dto.post.request.PostImageCreateRequest;
 import kahlua.KahluaProject.dto.post.response.PostCreateResponse;
+import kahlua.KahluaProject.dto.post.response.PostGetResponse;
 import kahlua.KahluaProject.dto.post.response.PostImageCreateResponse;
+import kahlua.KahluaProject.dto.post.response.PostImageGetResponse;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,10 +18,18 @@ import java.util.stream.Collectors;
 
 public class PostConverter {
 
-    public static Post toPost(PostCreateRequest postCreateRequest) {
+    public static Post toPost(PostCreateRequest postCreateRequest, User user) {
         return Post.builder()
                 .title(postCreateRequest.getTitle())
                 .content(postCreateRequest.getContent())
+                .user(user)
+                .build();
+    }
+
+    public static PostLikes toPostLikes(Post post, User user) {
+        return PostLikes.builder()
+                .post(post)
+                .user(user)
                 .build();
     }
 
@@ -55,5 +66,26 @@ public class PostConverter {
                 .collect(Collectors.toList());
 
         return imageUrlResponses;
+    }
+
+    public static PostGetResponse toPostGetResponse(Post post) {
+        // imageUrls 변환 로직
+        List<PostImageGetResponse> getImageUrls = post.getImageUrls().stream()
+                .map(postImage2 -> PostImageGetResponse.builder()
+                        .id(postImage2.getId())
+                        .url(postImage2.getUrl())
+                        .build())
+                .collect(Collectors.toList());
+
+        return PostGetResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .writer(post.getUser().getName())
+                .likes(post.getLikes())
+                .imageUrls(getImageUrls)
+                .created_at(post.getCreatedAt())
+                .created_at(post.getUpdatedAt())
+                .build();
     }
 }
