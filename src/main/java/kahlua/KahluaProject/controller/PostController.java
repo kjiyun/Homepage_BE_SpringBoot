@@ -10,6 +10,8 @@ import kahlua.KahluaProject.security.AuthDetails;
 import kahlua.KahluaProject.service.PostService;
 import kahlua.KahluaProject.service.TicketService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -43,5 +45,14 @@ public class PostController {
     public ApiResponse<PostGetResponse> viewPost(@PathVariable("post_id") Long post_id, @AuthenticationPrincipal AuthDetails authDetails) {
         PostGetResponse postGetResponse = postService.viewPost(post_id, authDetails.user());
         return ApiResponse.onSuccess(postGetResponse);
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "게시판 목록 조회", description = "공지사항/깔브리타임 목록을 조회합니다.")
+    public ApiResponse<Page<PostGetResponse>> viewPostList(@AuthenticationPrincipal AuthDetails authDetails,
+                                                           @RequestParam(value = "post_type", required = false) String searchType,
+                                                           @RequestParam(value = "search_word", required = false) String searchWord,
+                                                           Pageable pageable) {
+        return ApiResponse.onSuccess(postService.viewPostList(authDetails.user(), searchType, searchWord, pageable));
     }
 }
