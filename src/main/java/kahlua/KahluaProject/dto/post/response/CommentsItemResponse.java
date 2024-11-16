@@ -1,14 +1,20 @@
-package kahlua.KahluaProject.dto.post.request;
+package kahlua.KahluaProject.dto.post.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class CommentsCreateRequest {
+@Builder
+public class CommentsItemResponse {
+
+    @Schema(description = "댓글 번호", example = "1")
+    private Long id;
+
+    @Schema(description = "게시글 번호", example = "1")
+    private Long postId;
 
     @Schema(description = "댓글 작성자", example = "깔루아 홍길동")
     private String user;
@@ -18,4 +24,7 @@ public class CommentsCreateRequest {
 
     @Schema(description = "대댓글인 경우 부모 댓글 id", example = "네 수고하세요.")
     private Long parentCommentId;
+
+    @Schema(description = "삭제된 날짜", example = "2024.01.01")
+    private LocalDateTime deletedAt;
 }
