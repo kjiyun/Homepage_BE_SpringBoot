@@ -7,6 +7,7 @@ import kahlua.KahluaProject.security.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -50,6 +51,8 @@ public class SecurityConfig {
         );
         http.authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers( "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html/**", "/v3/api-docs/**", "/swagger-ui/index.html#/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/admin/tickets/info/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/admin/apply/info/**").permitAll()
                         .requestMatchers("/v1/auth/sign-out/**", "v1/auth/recreate/**","/v1/user/**", "/v1/admin/**").authenticated()
                         .requestMatchers("v1/reservation/**").hasAnyAuthority("KAHLUA", "ADMIN")
                         .anyRequest().permitAll())

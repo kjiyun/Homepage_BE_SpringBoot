@@ -23,10 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,7 +109,7 @@ public class TicketService {
     @Transactional
     public TicketUpdateResponse completeCancelTicket(User user, Long ticketId) {
 
-        if(user.getUserType() != UserType.ADMIN){
+        if (user.getUserType() != UserType.ADMIN) {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
 
@@ -140,7 +137,7 @@ public class TicketService {
     // 어드민 페이지 티켓 리스트 조회
     public TicketListResponse getTicketList(User user, String sortBy) {
 
-        if(user.getUserType() != UserType.ADMIN){
+        if (user.getUserType() != UserType.ADMIN) {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
 
@@ -174,7 +171,7 @@ public class TicketService {
 
             // 일반티켓
             // 전공, 뒷풀이 참석 여부 null
-            if (ticket.getType() == Type.GENERAL){
+            if (ticket.getType() == Type.GENERAL) {
                 TicketItemResponse ticketItemResponse = TicketItemResponse.builder()
                         .id(ticket.getId())
                         .status(ticket.getStatus())
@@ -217,7 +214,7 @@ public class TicketService {
     // 일반 티켓 리스트 조회
     public TicketListResponse getGeneralTicketList(User user, String sortBy) {
 
-        if(user.getUserType() != UserType.ADMIN){
+        if (user.getUserType() != UserType.ADMIN) {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
 
@@ -271,7 +268,7 @@ public class TicketService {
     // 신입생 티켓 리스트 조회
     public TicketListResponse getFreshmanTicketList(User user, String sortBy) {
 
-        if(user.getUserType() != UserType.ADMIN){
+        if (user.getUserType() != UserType.ADMIN) {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
 
@@ -321,7 +318,7 @@ public class TicketService {
         String reservationId;
         do {
             reservationId = generateReservationId();
-        } while(ticketRepository.existsByReservationId(reservationId));
+        } while (ticketRepository.existsByReservationId(reservationId));
 
         return reservationId;
     }
@@ -331,11 +328,11 @@ public class TicketService {
         Random random = new Random();
         List<String> idList = new ArrayList<>();
 
-        for (int i=0; i<length/2; i++) {
+        for (int i = 0; i < length / 2; i++) {
             idList.add(String.valueOf(random.nextInt(10)));
         }
 
-        for (int i=0; i<length/2; i++) {
+        for (int i = 0; i < length / 2; i++) {
             idList.add(String.valueOf((char) (random.nextInt(26) + 65)));
         }
 
@@ -374,5 +371,61 @@ public class TicketService {
 
         //return: 수정된 ticket 정보 반환
         return TicketConverter.toTicketInfoResponse(updatedTicketInfo);
+    }
+
+    public TicketInfoResponse getTicketInfo(Long ticketInfoId) {
+        //validation: ticketId 존재 여부 확인
+        TicketInfo ticketInfo = ticketInfoRepository.findById(ticketInfoId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
+
+        //return: ticket 정보 반환
+        return TicketConverter.toTicketInfoResponse(ticketInfo);
+    }
+
+    public TicketStatisticsResponse getTicketStatistics(User user) {
+        //validation: user가 admin인지 확인
+        if (user.getUserType() != UserType.ADMIN) {
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        //business logic: 티켓 통계 조회
+        Long totalTicket = ticketRepository.countAllByDeletedAtIsNull()
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
+
+        Map<Status, Long> statusCounts = Arrays.stream(Status.values())
+                .collect(Collectors.toMap(
+                        status -> status,
+                        status -> ticketRepository.countByStatusAndDeletedAtIsNull(status)
+                                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND))
+                ));
+
+        Long generalTicket = ticketRepository.countByTypeAndDeletedAtIsNull(Type.GENERAL)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
+        Long freshmanTicket = ticketRepository.countByTypeAndDeletedAtIsNull(Type.FRESHMAN)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
+
+        Long totalIncome = ticketRepository.countByTypeAndStatusAndDeletedAtIsNull(Type.GENERAL, Status.FINISH_PAYMENT)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND)) * 5000L;
+
+        //return: 티켓 통계 정보 반환
+        return TicketStatisticsResponse.builder()
+                .ticketStatusCount(TicketStatisticsResponse.TicketStatusResponse.builder()
+                        .totalTicketCount(totalTicket)
+                        .waitCount(statusCounts.get(Status.WAIT))
+                        .finishPaymentCount(statusCounts.get(Status.FINISH_PAYMENT))
+                        .cancelRequestCount(statusCounts.get(Status.CANCEL_REQUEST))
+                        .build())
+                .graph(TicketStatisticsResponse.GraphResponse.builder()
+                        .generalCount(generalTicket)
+                        .generalPercent(calculatePercent(generalTicket, totalTicket))
+                        .freshmanCount(freshmanTicket)
+                        .freshmanPercent(calculatePercent(freshmanTicket, totalTicket))
+                        .build())
+                .totalIncome(totalIncome)
+                .build();
+    }
+
+    private Long calculatePercent(Long count, Long total) {
+        return total > 0 ? (count * 100) / total : 0;
     }
 }
