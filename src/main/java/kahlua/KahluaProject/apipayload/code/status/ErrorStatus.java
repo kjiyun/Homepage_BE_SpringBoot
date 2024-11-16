@@ -46,7 +46,6 @@ public enum ErrorStatus implements BaseCode {
     //게시판 에러
     IMAGE_NOT_UPLOAD(HttpStatus.BAD_REQUEST, "IMAGE_NOT_UPLOAD", "이미지 업로드 개수를 초과하였습니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST_NOT_FOUND", "존재하지 않는 게시글입니다."),
-    IMAGE_NOT_UPLOAD(HttpStatus.BAD_REQUEST, "IMAGE_NOT_UPLOAD", "이미지 업로드 개수를 초과하였습니다."),
 
     // 예약 에러
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION NOT FOUND", "예약내역을 찾을 수 없습니다.");
