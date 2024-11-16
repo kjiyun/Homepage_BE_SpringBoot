@@ -1,5 +1,6 @@
 package kahlua.KahluaProject.repository.ticket;
 
+import kahlua.KahluaProject.domain.ticket.Status;
 import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.domain.ticket.Type;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>, TicketCus
     Optional<Ticket> findByReservationId(String reservationId);
     List<Ticket> findAllByOrderByBuyerAscIdDesc();
     List<Ticket> findAllByTypeOrderByBuyerAscIdDesc(Type type);
+
+    Optional<Long> countByStatusAndDeletedAtIsNull(Status status);
+    Optional<Long>  countByTypeAndDeletedAtIsNull(Type type);
+    Optional<Long>  countAllByDeletedAtIsNull();
+    Optional<Long>  countByTypeAndStatusAndDeletedAtIsNull(Type type, Status status);
 }

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import kahlua.KahluaProject.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketListResponse;
+import kahlua.KahluaProject.dto.ticket.response.TicketStatisticsResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketUpdateResponse;
 import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
 import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
@@ -103,5 +104,17 @@ public class AdminTicketController {
     @Operation(summary = "티켓 정보 수정", description = "티켓 정보를 수정합니다")
     public ApiResponse<TicketInfoResponse> updateTicketInfo(@PathVariable("ticket_info_id") Long ticketInfoId, @RequestBody TicketInfoRequest ticketUpdateRequest, @AuthenticationPrincipal AuthDetails authDetails) {
         return ApiResponse.onSuccess(ticketService.updateTicketInfo(ticketInfoId, ticketUpdateRequest, authDetails.user()));
+    }
+
+    @GetMapping("/{ticket_info_id}")
+    @Operation(summary = "티켓 정보 조회", description = "티켓 정보를 조회합니다")
+    public ApiResponse<TicketInfoResponse> getTicketInfo(@PathVariable("ticket_info_id") Long ticketInfoId) {
+        return ApiResponse.onSuccess(ticketService.getTicketInfo(ticketInfoId));
+    }
+
+    @GetMapping("/statistics")
+    @Operation(summary = "티켓 통계 조회", description = "티켓 통계를 조회합니다")
+    public ApiResponse<TicketStatisticsResponse> getTicketStatistics(@AuthenticationPrincipal AuthDetails authDetails) {
+        return ApiResponse.onSuccess(ticketService.getTicketStatistics(authDetails.user()));
     }
 }

@@ -10,6 +10,7 @@ import kahlua.KahluaProject.dto.apply.response.ApplyAdminGetResponse;
 import kahlua.KahluaProject.dto.applyInfo.request.ApplyInfoRequest;
 import kahlua.KahluaProject.dto.applyInfo.response.ApplyInfoResponse;
 import kahlua.KahluaProject.dto.apply.response.ApplyListResponse;
+import kahlua.KahluaProject.dto.apply.response.ApplyStatisticsResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.security.AuthDetails;
 import kahlua.KahluaProject.service.ApplyService;
@@ -70,10 +71,22 @@ public class AdminApplyController {
                 .body(new InputStreamResource(in));
     }
 
-    @PutMapping("/info/{apply_id}")
+    @PutMapping("/info/{apply_info_id}")
     @Operation(summary = "지원 정보 수정", description = "지원 정보를 수정합니다")
-    public ApiResponse<ApplyInfoResponse> updateApplyInfo(@PathVariable("apply_id") Long applyId, @RequestBody ApplyInfoRequest applyInfoRequest, @AuthenticationPrincipal AuthDetails authDetails) {
+    public ApiResponse<ApplyInfoResponse> updateApplyInfo(@PathVariable("apply_info_id") Long applyId, @RequestBody ApplyInfoRequest applyInfoRequest, @AuthenticationPrincipal AuthDetails authDetails) {
         return ApiResponse.onSuccess(applyService.updateApplyInfo(applyId, applyInfoRequest, authDetails.user()));
+    }
+
+    @GetMapping("/info/{apply_info_id}")
+    @Operation(summary = "지원 정보 조회", description = "지원 정보를 조회합니다")
+    public ApiResponse<ApplyInfoResponse> getApplyInfo(@PathVariable("apply_info_id") Long applyId) {
+        return ApiResponse.onSuccess(applyService.getApplyInfo(applyId));
+    }
+
+    @GetMapping("/statistics")
+    @Operation(summary = "지원자 통계 조회", description = "지원자 통계를 조회합니다")
+    public ApiResponse<ApplyStatisticsResponse> getApplyStatistics(@AuthenticationPrincipal AuthDetails authDetails) {
+        return ApiResponse.onSuccess(applyService.getApplyStatistics(authDetails.user()));
     }
 }
 
