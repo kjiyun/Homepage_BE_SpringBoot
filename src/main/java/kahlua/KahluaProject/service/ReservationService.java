@@ -82,7 +82,7 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(reservationId)
                         .orElseThrow(() -> new GeneralException(ErrorStatus.RESERVATION_NOT_FOUND));
 
-        reservationRepository.deleteById(reservationId);
+        reservationRepository.delete(reservation);
     }
 
     // String to LocalDateTime
