@@ -81,11 +81,19 @@ public class PostConverter {
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .writer(post.getUser().getName())
+                .writer(post.getUser() != null ? post.getUser().getName() : null)
                 .likes(post.getLikes())
                 .imageUrls(getImageUrls)
                 .created_at(post.getCreatedAt())
                 .created_at(post.getUpdatedAt())
                 .build();
+    }
+
+    public static List<PostGetResponse> toPostListResponse(List<Post> posts) {
+        return Optional.ofNullable(posts)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(PostConverter::toPostGetResponse)
+                .collect(Collectors.toList());
     }
 }
