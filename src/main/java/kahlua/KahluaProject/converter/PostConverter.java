@@ -23,6 +23,7 @@ public class PostConverter {
                 .title(postCreateRequest.getTitle())
                 .content(postCreateRequest.getContent())
                 .user(user)
+                .postType(postCreateRequest.getPostType())
                 .build();
     }
 
@@ -41,6 +42,7 @@ public class PostConverter {
                 .writer(user.getEmail())
                 .likes(post.getLikes())
                 .imageUrls(imageUrls)
+                .postType(post.getPostType())
                 .created_at(post.getCreatedAt())
                 .updated_at(post.getUpdatedAt())
                 .build();

@@ -25,6 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static kahlua.KahluaProject.domain.post.PostType.KAHLUA_TIME;
+import static kahlua.KahluaProject.domain.post.PostType.NOTICE;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -37,8 +40,17 @@ public class PostService {
     public PostCreateResponse createPost(PostCreateRequest postCreateRequest, User user) {
 
         // 공지사항인 경우 admin인지 확인
-        if(user.getUserType() != UserType.ADMIN){
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        if (postCreateRequest.getPostType() == NOTICE) {
+            if (user.getUserType() != UserType.ADMIN) {
+                throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+            }
+        }
+
+        // 깔깔깔인 경우 kahlua 또는 admin인지 확인
+        if (postCreateRequest.getPostType() == KAHLUA_TIME) {
+            if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
+                throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+            }
         }
 
         Post post = PostConverter.toPost(postCreateRequest, user);
