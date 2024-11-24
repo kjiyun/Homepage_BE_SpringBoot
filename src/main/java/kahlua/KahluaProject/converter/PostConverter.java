@@ -42,7 +42,7 @@ public class PostConverter {
                 .likes(post.getLikes())
                 .imageUrls(imageUrls)
                 .created_at(post.getCreatedAt())
-                .created_at(post.getUpdatedAt())
+                .updated_at(post.getUpdatedAt())
                 .build();
     }
 
