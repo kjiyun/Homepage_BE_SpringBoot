@@ -57,7 +57,7 @@ public class PostService {
         postRepository.save(post);
 
         List<PostImage> imageUrls = PostConverter.toPostImage(postCreateRequest.getImageUrls(), post);
-        if(imageUrls.size() > 10) throw new GeneralException(ErrorStatus.IMAGE_NOT_UPLOAD);
+        if (imageUrls.size() > 10) throw new GeneralException(ErrorStatus.IMAGE_NOT_UPLOAD);
 
         postImageRepository.saveAll(imageUrls);
         List<PostImageCreateResponse> imageUrlResponses = PostConverter.toPostImageCreateResponse(imageUrls);
@@ -79,7 +79,7 @@ public class PostService {
 
         if (existingLike.isPresent()) {
             postLikesRepository.delete(existingLike.get());
-            System.out.println("like"+existingLike.get());
+            System.out.println("like" + existingLike.get());
 
             existingPost.decreaseLikes();
             postRepository.save(existingPost);
@@ -98,7 +98,7 @@ public class PostService {
     public PostGetResponse viewPost(Long post_id, User user) {
 
         // 공지사항 조회의 경우 kahlua 혹은 ADMIN인지 확인
-        if(user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN){
+        if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
 
@@ -113,10 +113,17 @@ public class PostService {
     public Page<PostGetResponse> viewPostList(User user, String postType, String searchWord, Pageable pageable) {
 
         // 공지사항 조회의 경우 kahlua 혹은 ADMIN인지 확인
-        if(user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN){
+        if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
 
         return postRepository.findPostListByPagination(postType, searchWord, pageable);
+    }
+
+    @Transactional
+    // 마이페이지 내가 작성한 글 리스트 조회
+    public Page<PostGetResponse> viewMyPostList(User user, String postType, String searchWord, Pageable pageable) {
+
+        return postRepository.findMyPostByUserId(user.getId(), postType, searchWord, pageable);
     }
 }

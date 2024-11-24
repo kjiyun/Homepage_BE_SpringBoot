@@ -62,4 +62,30 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         }
         return post.title.contains(searchWord);
     }
+
+    @Override
+    public Page<PostGetResponse> findMyPostByUserId(Long user_id, String postType, String searchWord, Pageable pageable) {
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(eqPostType(postType));
+        builder.and(likeTitle(searchWord));
+        builder.and(post.user.id.eq(user_id));
+
+        List<Post> posts = queryFactory.select(post)
+                .from(post)
+                .where(post.deletedAt.isNull()
+                        .and(builder))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        List<PostGetResponse> postGetResponses = PostConverter.toPostListResponse(posts);
+
+        Long total = queryFactory.select(post.count())
+                .from(post)
+                .where(post.deletedAt.isNull()
+                        .and(builder))
+                .fetchOne();
+
+        return new PageImpl<>(postGetResponses, pageable, total != null ? total : 0);
+    }
 }
