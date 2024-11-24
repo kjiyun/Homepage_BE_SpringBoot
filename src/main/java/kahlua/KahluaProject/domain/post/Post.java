@@ -35,6 +35,10 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PostType postType;
+
     @ColumnDefault("0")
     private int likes;  // likes 필드와 연결 필요
 

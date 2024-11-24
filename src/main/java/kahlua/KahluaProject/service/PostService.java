@@ -17,6 +17,8 @@ import kahlua.KahluaProject.repository.UserRepository;
 import kahlua.KahluaProject.repository.post.PostLikesRepository;
 import kahlua.KahluaProject.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,5 +95,16 @@ public class PostService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
         return PostConverter.toPostGetResponse(existingPost);
+    }
+
+    @Transactional
+    public Page<PostGetResponse> viewPostList(User user, String postType, String searchWord, Pageable pageable) {
+
+        // 공지사항 조회의 경우 kahlua 혹은 ADMIN인지 확인
+        if(user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN){
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        return postRepository.findPostListByPagination(postType, searchWord, pageable);
     }
 }
