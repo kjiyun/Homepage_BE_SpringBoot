@@ -55,6 +55,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/v1/admin/apply/info/**").permitAll()
                         .requestMatchers("/v1/auth/sign-out/**", "v1/auth/recreate/**","/v1/user/**", "/v1/admin/**").authenticated()
                         .requestMatchers("v1/reservation/**").hasAnyAuthority("KAHLUA", "ADMIN")
+                        .requestMatchers("v1/comment/**").hasAnyAuthority("KAHLUA", "ADMIN")
                         .anyRequest().permitAll())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(exceptionFilter, JwtFilter.class);
