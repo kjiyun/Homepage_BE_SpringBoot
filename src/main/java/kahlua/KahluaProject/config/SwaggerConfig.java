@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
         info = @Info(title = "Kahluaband API 명세서",
                 description = "Kahluaband 홈페이지 API 명세서",
                 version = "v1"),
-        servers = {@Server(url = "https://kahluaband.com/api", description = "https url"),
+        servers = {@Server(url = "https://api.kahluaband.com", description = "https url"),
                 @Server(url = "/", description = "Default Server URL")})
 @RequiredArgsConstructor
 @Configuration
