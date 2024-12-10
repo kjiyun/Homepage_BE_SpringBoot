@@ -40,7 +40,7 @@ public class SocialLoginService {
     private final GoogleClient googleClient;
 
     @Transactional
-    public SignInResponse signInWithGoogle(String code, UserInfoRequest userInfoRequest) {
+    public SignInResponse signInWithGoogle(String code) {
         // 구글로 액세스 토큰 요청하기
         GoogleToken googleAccessToken = googleClient.getGoogleAccessToken(code, googleRedirectUrl);
 
@@ -55,7 +55,7 @@ public class SocialLoginService {
 
         //bussiness logic: 사용자 정보가 이미 있다면 로그인 타입 확인 후 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
         User user = userRepository.findByEmailAndDeletedAtIsNull(email)
-                .orElseGet(() -> createUser(email, userInfoRequest, LoginType.GOOGLE));
+                .orElseGet(() -> createUser(email, LoginType.GOOGLE));
 
         if (user.getLoginType() != LoginType.GOOGLE) {
             throw new GeneralException(ErrorStatus.ALREADY_EXIST_USER);
@@ -68,7 +68,7 @@ public class SocialLoginService {
     }
 
     @Transactional
-    public SignInResponse signInWithKakao(String code, UserInfoRequest userInfoRequest) {
+    public SignInResponse signInWithKakao(String code) {
         // 카카오로 액세스 토큰 요청하기
         KakaoToken kakaoToken = kakaoClient.getAccessTokenFromKakao(code);
 
@@ -83,7 +83,7 @@ public class SocialLoginService {
 
         //bussiness logic: 사용자 정보가 이미 있다면 로그인 타입 확인 후 해당 사용자 정보를 반환하고, 없다면 새로운 사용자 정보를 생성하여 반환
         User user = userRepository.findByEmailAndDeletedAtIsNull(email)
-                .orElseGet(() -> createUser(email, userInfoRequest, LoginType.KAKAO));
+                .orElseGet(() -> createUser(email, LoginType.KAKAO));
 
         if (user.getLoginType() != LoginType.KAKAO) {
             throw new GeneralException(ErrorStatus.ALREADY_EXIST_USER);
@@ -96,13 +96,13 @@ public class SocialLoginService {
     }
 
     @Transactional
-    public User createUser(String email, UserInfoRequest userInfoRequest, LoginType loginType) {
+    public User createUser(String email, LoginType loginType) {
         User user = User.builder()
                 .email(email)
-                .userType(UserType.GENERAL)
-                .name(userInfoRequest.name())
-                .term(userInfoRequest.term())
-                .session(Session.valueOf(userInfoRequest.session()))
+                .userType(UserType.QUEST)
+                .name(null)
+                .term(null)
+                .session(null)
                 .loginType(loginType)
                 .credential(null)
                 .build();

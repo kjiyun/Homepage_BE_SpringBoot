@@ -43,11 +43,11 @@ public class SignUpRequest {
         return User.builder()
                 .credential(credential)
                 .email(this.email)
-                .userType(UserType.GENERAL)
+                .userType(UserType.QUEST)
                 .loginType(LoginType.GENERAL)
-                .name(this.name)
-                .term(this.term)
-                .session(Session.valueOf(this.session))
+                .name(null)
+                .term(null)
+                .session(null)
                 .build();
     }
 }

@@ -38,14 +38,14 @@ public class AuthController {
 
     @PostMapping("/google/sign-in")
     @Operation(summary = "구글 로그인", description = "구글 로그인을 통한 회원가입 및 로그인")
-    public ResponseEntity<SignInResponse> signInWithGoogle(@RequestParam("code") String code, @RequestBody(required = false) UserInfoRequest userInfoRequest) {
-        return ResponseEntity.ok(socialLoginService.signInWithGoogle(code, userInfoRequest));
+    public ResponseEntity<SignInResponse> signInWithGoogle(@RequestParam("code") String code) {
+        return ResponseEntity.ok(socialLoginService.signInWithGoogle(code));
     }
 
     @PostMapping("/kakao/sign-in")
     @Operation(summary = "카카오 로그인", description = "카카오 로그인을 통한 회원가입 및 로그인")
-    public ResponseEntity<SignInResponse> signInWithKakao(@RequestParam("code") String code, @RequestBody(required = false) UserInfoRequest userInfoRequest) {
-        return ResponseEntity.ok(socialLoginService.signInWithKakao(code, userInfoRequest));
+    public ResponseEntity<SignInResponse> signInWithKakao(@RequestParam("code") String code) {
+        return ResponseEntity.ok(socialLoginService.signInWithKakao(code));
     }
 
     @PostMapping("/sign-up")
