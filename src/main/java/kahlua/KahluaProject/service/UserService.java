@@ -1,8 +1,11 @@
 package kahlua.KahluaProject.service;
 
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.converter.UserConverter;
 import kahlua.KahluaProject.domain.user.*;
 import kahlua.KahluaProject.dto.user.request.SignUpRequest;
+import kahlua.KahluaProject.dto.user.request.UserInfoRequest;
+import kahlua.KahluaProject.dto.user.response.UserResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +27,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-
     public User getUserByEmail(String email) {
         return userRepository.findByEmailAndDeletedAtIsNull(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
@@ -33,5 +35,14 @@ public class UserService {
     @Transactional
     public void withdraw(User user) {
         userRepository.delete(user);
+    }
+
+    @Transactional
+    public UserResponse createUserInfo(Long userId, UserInfoRequest userInfoRequest) {
+        User user = userRepository.findByIdAndDeletedAtIsNull(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        user.updateUserInfo(userInfoRequest);
+
+        return UserConverter.toUserResDto(user);
     }
 }

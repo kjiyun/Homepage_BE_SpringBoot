@@ -2,6 +2,7 @@ package kahlua.KahluaProject.domain.user;
 
 import jakarta.persistence.*;
 import kahlua.KahluaProject.domain.BaseEntity;
+import kahlua.KahluaProject.dto.user.request.UserInfoRequest;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 
@@ -23,18 +24,18 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "varchar(255)", nullable = false)
     private String email;
 
-    @Column(nullable = false, columnDefinition = "varchar(255)")
+    @Column(columnDefinition = "varchar(255)")
     private String name;
 
     @Column(nullable = false, columnDefinition = "varchar(255)")
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
-    @Column(nullable = false, columnDefinition = "varchar(255)")
+    @Column(columnDefinition = "varchar(255)")
     @Enumerated(EnumType.STRING)
     private Session session;
 
-    @Column(nullable = false, columnDefinition = "bigint")
+    @Column(columnDefinition = "bigint")
     private Long term;
 
     @Column(nullable = false, columnDefinition = "varchar(255)")
@@ -50,5 +51,12 @@ public class User extends BaseEntity {
         this.session = session;
         this.term = term;
         this.loginType = loginType;
+    }
+
+    public void updateUserInfo(UserInfoRequest userInfoRequest) {
+        this.name = userInfoRequest.name();
+        this.term = userInfoRequest.term();
+        this.session = Session.valueOf(userInfoRequest.session());
+        this.userType = UserType.valueOf(UserType.KAHLUA.name());
     }
 }
