@@ -45,10 +45,10 @@ public class JwtProvider {
     }
 
     public String createAccessToken(User user) {
-        Claims claims = getClaims(user);
         Date now = new Date();
         return Jwts.builder()
-                .setClaims(claims)
+                .setSubject(user.getEmail())
+                .claim("role", user.getUserType().getRole())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + accessTokenExpirationTime))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -56,10 +56,10 @@ public class JwtProvider {
     }
 
     private String createRefreshToken(User user) {
-        Claims claims = getClaims(user);
         Date now = new Date();
         return Jwts.builder()
-                .setClaims(claims)
+                .setSubject(user.getEmail())
+                .claim("role", user.getUserType().getRole())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + refreshTokenExpirationTime))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -108,10 +108,6 @@ public class JwtProvider {
 
     public Long getExpirationTime(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration().getTime();
-    }
-
-    private Claims getClaims(User user) {
-        return Jwts.claims().setSubject(user.getEmail());
     }
 
     public String resolveRefreshToken(HttpServletRequest request) {

@@ -10,11 +10,8 @@ import kahlua.KahluaProject.dto.user.response.UserResponse;
 import kahlua.KahluaProject.security.AuthDetails;
 import kahlua.KahluaProject.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -35,20 +32,8 @@ public class UserController {
 
     @GetMapping("")
     @Operation(summary = "사용자 정보 조회", description = "사용자의 정보를 조회")
-    public ResponseEntity<?> getUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        }
-
-        Object principal = authentication.getPrincipal();
-        if (!(principal instanceof AuthDetails)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        }
-
-        AuthDetails authDetails = (AuthDetails) principal;
+    public ApiResponse<UserResponse> getUser(@AuthenticationPrincipal AuthDetails authDetails) {
         User user = authDetails.user();
-        return ResponseEntity.ok().body(ApiResponse.onSuccess(UserConverter.toUserResDto(user)));
+        return ApiResponse.onSuccess(UserConverter.toUserResDto(user));
     }
 }
