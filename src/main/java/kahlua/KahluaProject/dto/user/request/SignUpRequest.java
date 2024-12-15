@@ -43,7 +43,7 @@ public class SignUpRequest {
         return User.builder()
                 .credential(credential)
                 .email(this.email)
-                .userType(UserType.QUEST)
+                .userType(UserType.GENERAL)
                 .loginType(LoginType.GENERAL)
                 .name(null)
                 .term(null)

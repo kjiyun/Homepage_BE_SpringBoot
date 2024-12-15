@@ -99,7 +99,7 @@ public class SocialLoginService {
     public User createUser(String email, LoginType loginType) {
         User user = User.builder()
                 .email(email)
-                .userType(UserType.QUEST)
+                .userType(UserType.GENERAL)
                 .name(null)
                 .term(null)
                 .session(null)
