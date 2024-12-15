@@ -2,9 +2,7 @@ package kahlua.KahluaProject.dto.user.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import kahlua.KahluaProject.domain.user.Credential;
-import kahlua.KahluaProject.domain.user.User;
-import kahlua.KahluaProject.domain.user.UserType;
+import kahlua.KahluaProject.domain.user.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,11 +30,24 @@ public class SignUpRequest {
     @Schema(description = "사용자 권한", example = "GENERAL")
     private String userType;
 
+    @Schema(description = "이름", example = "김깔룽")
+    String name;
+
+    @Schema(description = "기수", example = "21")
+    Long term;
+
+    @Schema( description= "세션", example = "VOCAL | BASS | GUITAR | DRUM | SYNTHESIZER | MANAGER")
+    String session;
+
     public User toUser(Credential credential) {
         return User.builder()
                 .credential(credential)
                 .email(this.email)
-                .userType(UserType.GENERAL)
+                .userType(UserType.QUEST)
+                .loginType(LoginType.GENERAL)
+                .name(null)
+                .term(null)
+                .session(null)
                 .build();
     }
 }
