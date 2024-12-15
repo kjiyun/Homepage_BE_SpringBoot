@@ -48,7 +48,7 @@ public class JwtProvider {
         Date now = new Date();
         return Jwts.builder()
                 .setSubject(user.getEmail())
-                .claim("role", user.getUserType().getRole())
+                .claim("role", user.getUserType().name())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + accessTokenExpirationTime))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -59,7 +59,7 @@ public class JwtProvider {
         Date now = new Date();
         return Jwts.builder()
                 .setSubject(user.getEmail())
-                .claim("role", user.getUserType().getRole())
+                .claim("role", user.getUserType().name())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + refreshTokenExpirationTime))
                 .signWith(key, SignatureAlgorithm.HS256)
