@@ -106,7 +106,11 @@ public class PostService {
         Post existingPost = postRepository.findById(post_id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
-        return PostConverter.toPostGetResponse(existingPost);
+        boolean isLiked = postLikesRepository.findByPostAndUser(existingPost, user).isPresent();
+
+        Post updatedPost = Post.withLikeStatus(existingPost, isLiked);
+
+        return PostConverter.toPostGetResponse(updatedPost);
     }
 
     @Transactional
