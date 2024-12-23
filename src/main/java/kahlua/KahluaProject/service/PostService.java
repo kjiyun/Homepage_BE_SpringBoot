@@ -126,4 +126,18 @@ public class PostService {
 
         return postRepository.findMyPostByUserId(user.getId(), postType, searchWord, pageable);
     }
+
+    @Transactional
+    public void delete(Long post_id, User user) {
+
+        // 공지사항 삭제의 경우 kahlua 혹은 ADMIN인지 확인
+        if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        Post post = postRepository.findById(post_id)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        postRepository.delete(post);
+    }
 }
