@@ -70,7 +70,7 @@ public class PostConverter {
         return imageUrlResponses;
     }
 
-    public static PostGetResponse toPostGetResponse(Post post) {
+    public static PostGetResponse toPostGetResponse(Post post, boolean isLiked) {
         // imageUrls 변환 로직
         List<PostImageGetResponse> getImageUrls = post.getImageUrls().stream()
                 .map(postImage2 -> PostImageGetResponse.builder()
@@ -85,6 +85,7 @@ public class PostConverter {
                 .content(post.getContent())
                 .writer(post.getUser() != null ? post.getUser().getName() : null)
                 .likes(post.getLikes())
+                .isLiked(isLiked)
                 .imageUrls(getImageUrls)
                 .created_at(post.getCreatedAt())
                 .created_at(post.getUpdatedAt())
@@ -95,7 +96,21 @@ public class PostConverter {
         return Optional.ofNullable(posts)
                 .orElse(Collections.emptyList())
                 .stream()
-                .map(PostConverter::toPostGetResponse)
+                .map(post -> PostGetResponse.builder()
+                        .id(post.getId())
+                        .title(post.getTitle())
+                        .content(post.getContent())
+                        .writer(post.getUser() != null ? post.getUser().getName() : null)
+                        .likes(post.getLikes())
+                        .imageUrls(post.getImageUrls().stream()
+                                .map(postImage -> PostImageGetResponse.builder()
+                                        .id(postImage.getId())
+                                        .url(postImage.getUrl())
+                                        .build())
+                                .collect(Collectors.toList()))
+                        .created_at(post.getCreatedAt())
+                        .updated_at(post.getUpdatedAt())
+                        .build())
                 .collect(Collectors.toList());
     }
 }
