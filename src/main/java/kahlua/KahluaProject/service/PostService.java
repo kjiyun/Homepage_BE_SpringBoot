@@ -108,9 +108,7 @@ public class PostService {
 
         boolean isLiked = postLikesRepository.findByPostAndUser(existingPost, user).isPresent();
 
-        Post updatedPost = Post.withLikeStatus(existingPost, isLiked);
-
-        return PostConverter.toPostGetResponse(updatedPost);
+        return PostConverter.toPostGetResponse(existingPost, isLiked);
     }
 
     @Transactional
