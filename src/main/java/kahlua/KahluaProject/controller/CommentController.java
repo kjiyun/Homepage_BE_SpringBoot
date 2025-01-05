@@ -36,7 +36,7 @@ public class CommentController {
         return ApiResponse.onSuccess(commentsListResponse);
     }
 
-    @DeleteMapping("/{post_id}/{comment_id}/delete")
+    @PatchMapping("/{post_id}/{comment_id}/delete")
     @Operation(summary = "댓글 삭제", description = "댓글을 삭제합니다.")
     public ApiResponse<CommentsItemResponse> deleteComment(@PathVariable("post_id") Long post_id,
                                                            @PathVariable("comment_id") Long comment_id) {

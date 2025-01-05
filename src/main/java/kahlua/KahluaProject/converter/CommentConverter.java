@@ -48,6 +48,7 @@ public class CommentConverter {
                 .user(comment.getUser().getName())
                 .content(comment.getContent())
                 .parentCommentId(parentCommentId)
+                .deletedAt(comment.getDeletedAt())
                 .build();
     }
 
