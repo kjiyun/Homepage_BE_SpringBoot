@@ -30,6 +30,8 @@ public class PostGetResponse {
     private boolean isLiked;
 
     //게시글 댓글 수
+    @Schema(description = "게시글 댓글 수", example = "5")
+    private int commentsCount;
 
     @Schema(description = "게시글 사진 리스트", example = "https://bucketname.s3.region.amazonaws.com/image1.jpg")
     private List<PostImageGetResponse> imageUrls;
