@@ -33,6 +33,7 @@ public class CommentConverter {
                 .user(comment.getUser().getName())
                 .content(comment.getContent())
                 .parentCommentId(parentCommentId)
+                .created_at(comment.getCreatedAt())
                 .build();
     }
 
@@ -50,10 +51,10 @@ public class CommentConverter {
                 .build();
     }
 
-    public static CommentsListResponse toCommentListResponse(List<CommentsItemResponse> commentsItemResponses) {
+    public static CommentsListResponse toCommentListResponse(List<CommentsCreateResponse> commentsCreateResponses) {
         return CommentsListResponse.builder()
-                .comments_count(commentsItemResponses.stream().count())
-                .comments(commentsItemResponses)
+                .comments_count(commentsCreateResponses.stream().count())
+                .comments(commentsCreateResponses)
                 .build();
     }
 }
