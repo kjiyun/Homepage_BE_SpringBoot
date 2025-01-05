@@ -28,6 +28,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
         List<Post> posts = queryFactory.select(post)
                 .from(post)
+                .orderBy(post.createdAt.desc(), post.id.desc())
                 .where(post.deletedAt.isNull()
                         .and(builder))
                 .offset(pageable.getOffset())
