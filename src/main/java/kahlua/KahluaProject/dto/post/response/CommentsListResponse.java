@@ -14,5 +14,5 @@ public class CommentsListResponse {
     private Long comments_count;
 
     @Schema(description = "댓글 리스트")
-    private List<CommentsCreateResponse> comments;
+    private List<CommentsItemResponse> comments;
 }
