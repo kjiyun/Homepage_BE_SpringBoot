@@ -60,16 +60,16 @@ public class CommentService {
         postRepository.findById(post_id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
-        List<CommentsCreateResponse> commentsCreateResponses = new ArrayList<>();
+        List<CommentsItemResponse> commentsItemResponses = new ArrayList<>();
 
         List<Comment> commentList = commentRepositoryCustom.findPureCommentListByPost(post_id);
 
         for (Comment comment : commentList) {
-            CommentsCreateResponse commentsCreateResponse = CommentConverter.toCommentCreateResponse(comment);
-            commentsCreateResponses.add(commentsCreateResponse);
+            CommentsItemResponse commentsItemResponse = CommentConverter.toCommentItemResponse(comment);
+            commentsItemResponses.add(commentsItemResponse);
         }
 
-        CommentsListResponse commentsListResponse = CommentConverter.toCommentListResponse(commentsCreateResponses);
+        CommentsListResponse commentsListResponse = CommentConverter.toCommentListResponse(commentsItemResponses);
         return commentsListResponse;
     }
 

@@ -51,10 +51,10 @@ public class CommentConverter {
                 .build();
     }
 
-    public static CommentsListResponse toCommentListResponse(List<CommentsCreateResponse> commentsCreateResponses) {
+    public static CommentsListResponse toCommentListResponse(List<CommentsItemResponse> commentsItemResponses) {
         return CommentsListResponse.builder()
-                .comments_count(commentsCreateResponses.stream().count())
-                .comments(commentsCreateResponses)
+                .comments_count(commentsItemResponses.stream().count())
+                .comments(commentsItemResponses)
                 .build();
     }
 }
