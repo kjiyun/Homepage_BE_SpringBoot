@@ -90,11 +90,16 @@ public class PostService {
             }
         }
 
-        existingPost.update(postUpdateRequest.getTitle(), postUpdateRequest.getContent());
-        postRepository.save(existingPost);
+        // 기존 필드를 가져와서 업데이트
+        List<PostImage> imageUrls = postUpdateRequest.getImageUrls() != null
+                ? PostConverter.toPostImage(postUpdateRequest.getImageUrls(), existingPost)
+                : existingPost.getImageUrls(); // `null`이면 기존 데이터 유지
 
-        List<PostImage> imageUrls = PostConverter.toPostImage(postUpdateRequest.getImageUrls(), existingPost);
         if (imageUrls.size() > 10) throw new GeneralException(ErrorStatus.IMAGE_NOT_UPLOAD);
+
+
+        existingPost.update(postUpdateRequest.getTitle(), postUpdateRequest.getContent(), imageUrls);
+        postRepository.save(existingPost);
 
         postImageRepository.saveAll(imageUrls);
         List<PostImageCreateResponse> imageUrlResponses = PostConverter.toPostImageCreateResponse(imageUrls);
@@ -102,7 +107,6 @@ public class PostService {
         PostUpdateResponse postUdpateResponse = PostConverter.toPostUpdateResponse(existingPost, user, imageUrlResponses);
 
         return postUdpateResponse;
-
     }
 
     @Transactional

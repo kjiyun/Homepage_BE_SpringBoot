@@ -11,6 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,12 +58,15 @@ public class Post extends BaseEntity {
         ImageUrls.add(postImage);
     }
 
-    public void update(String title, String content) {
+    public void update(String title, String content, List<PostImage> ImageUrls) {
         if (title != null) {
             this.title = title;
         }
         if (content != null) {
             this.content = content;
+        }
+        if (ImageUrls != null) {
+            this.ImageUrls = ImageUrls;
         }
     }
 
