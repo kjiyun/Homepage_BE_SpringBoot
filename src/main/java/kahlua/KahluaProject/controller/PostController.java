@@ -4,8 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kahlua.KahluaProject.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.post.request.PostCreateRequest;
+import kahlua.KahluaProject.dto.post.request.PostUpdateRequest;
 import kahlua.KahluaProject.dto.post.response.PostCreateResponse;
 import kahlua.KahluaProject.dto.post.response.PostGetResponse;
+import kahlua.KahluaProject.dto.post.response.PostUpdateResponse;
 import kahlua.KahluaProject.security.AuthDetails;
 import kahlua.KahluaProject.service.PostService;
 import kahlua.KahluaProject.service.TicketService;
@@ -30,6 +32,13 @@ public class PostController {
     public ApiResponse<PostCreateResponse> createPost(@RequestBody PostCreateRequest postCreateRequest, @AuthenticationPrincipal AuthDetails authDetails) {
         PostCreateResponse postCreateResponse = postService.createPost(postCreateRequest, authDetails.user());
         return ApiResponse.onSuccess(postCreateResponse);
+    }
+
+    @PatchMapping("/{post_id}/update")
+    @Operation(summary = "공지사항 수정", description = "공지 내용을 수정합니다.")
+    public ApiResponse<PostUpdateResponse> updatePost(@PathVariable("post_id") Long post_id, @RequestBody PostUpdateRequest postUpdateRequest, @AuthenticationPrincipal AuthDetails authDetails) {
+        PostUpdateResponse postUpdateResponse = postService.updatePost(post_id, postUpdateRequest, authDetails.user());
+        return ApiResponse.onSuccess(postUpdateResponse);
     }
 
     @PostMapping("/{post_id}/create_like")

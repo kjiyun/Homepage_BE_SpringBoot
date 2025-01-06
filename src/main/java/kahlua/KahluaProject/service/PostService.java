@@ -8,9 +8,11 @@ import kahlua.KahluaProject.domain.post.PostLikes;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.post.request.PostCreateRequest;
+import kahlua.KahluaProject.dto.post.request.PostUpdateRequest;
 import kahlua.KahluaProject.dto.post.response.PostCreateResponse;
 import kahlua.KahluaProject.dto.post.response.PostGetResponse;
 import kahlua.KahluaProject.dto.post.response.PostImageCreateResponse;
+import kahlua.KahluaProject.dto.post.response.PostUpdateResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.PostImageRepository;
 import kahlua.KahluaProject.repository.UserRepository;
@@ -65,6 +67,46 @@ public class PostService {
         PostCreateResponse postCreateResponse = PostConverter.toPostCreateResponse(post, user, imageUrlResponses);
 
         return postCreateResponse;
+    }
+
+    @Transactional
+    public PostUpdateResponse updatePost(Long post_id, PostUpdateRequest postUpdateRequest, User user) {
+
+        // 선택한 게시글이 존재하는 지 확인
+        Post existingPost = postRepository.findById(post_id)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        // 공지사항인 경우 admin인지 확인
+        if (postUpdateRequest.getPostType() == NOTICE) {
+            if (user.getUserType() != UserType.ADMIN) {
+                throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+            }
+        }
+
+        // 깔깔깔인 경우 kahlua 또는 admin인지 확인
+        if (postUpdateRequest.getPostType() == KAHLUA_TIME) {
+            if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
+                throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+            }
+        }
+
+        // 기존 필드를 가져와서 업데이트
+        List<PostImage> imageUrls = postUpdateRequest.getImageUrls() != null
+                ? PostConverter.toPostImage(postUpdateRequest.getImageUrls(), existingPost)
+                : existingPost.getImageUrls(); // `null`이면 기존 데이터 유지
+
+        if (imageUrls.size() > 10) throw new GeneralException(ErrorStatus.IMAGE_NOT_UPLOAD);
+
+
+        existingPost.update(postUpdateRequest.getTitle(), postUpdateRequest.getContent(), imageUrls);
+        postRepository.save(existingPost);
+
+        postImageRepository.saveAll(imageUrls);
+        List<PostImageCreateResponse> imageUrlResponses = PostConverter.toPostImageCreateResponse(imageUrls);
+
+        PostUpdateResponse postUdpateResponse = PostConverter.toPostUpdateResponse(existingPost, user, imageUrlResponses);
+
+        return postUdpateResponse;
     }
 
     @Transactional

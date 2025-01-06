@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostCreateRequest {
+public class PostUpdateRequest {
 
     @Schema(description = "게시글 제목", example = "2024년 9월 정기공연")
     private String title;
