@@ -68,6 +68,42 @@ public class PostService {
     }
 
     @Transactional
+    public PostCreateResponse updatePost(Long post_id, PostCreateRequest postCreateRequest, User user) {
+
+        // 선택한 게시글이 존재하는 지 확인
+        Post existingPost = postRepository.findById(post_id)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        // 공지사항인 경우 admin인지 확인
+        if (postCreateRequest.getPostType() == NOTICE) {
+            if (user.getUserType() != UserType.ADMIN) {
+                throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+            }
+        }
+
+        // 깔깔깔인 경우 kahlua 또는 admin인지 확인
+        if (postCreateRequest.getPostType() == KAHLUA_TIME) {
+            if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
+                throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+            }
+        }
+
+        Post post = PostConverter.toPost(postCreateRequest, user);
+        postRepository.save(post);
+
+        List<PostImage> imageUrls = PostConverter.toPostImage(postCreateRequest.getImageUrls(), post);
+        if (imageUrls.size() > 10) throw new GeneralException(ErrorStatus.IMAGE_NOT_UPLOAD);
+
+        postImageRepository.saveAll(imageUrls);
+        List<PostImageCreateResponse> imageUrlResponses = PostConverter.toPostImageCreateResponse(imageUrls);
+
+        PostCreateResponse postCreateResponse = PostConverter.toPostCreateResponse(post, user, imageUrlResponses);
+
+        return postCreateResponse;
+
+    }
+
+    @Transactional
     public boolean createPostLike(User user, Long post_id) {
 
         // 선택한 게시글이 존재하는 지 확인

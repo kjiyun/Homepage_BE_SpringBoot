@@ -32,6 +32,13 @@ public class PostController {
         return ApiResponse.onSuccess(postCreateResponse);
     }
 
+    @PutMapping("/{post_id}/update")
+    @Operation(summary = "공지사항 수정", description = "창립제, 악기 구비 등 깔루아 전체 공지 내용을 작성합니다.")
+    public ApiResponse<PostCreateResponse> updatePost(@PathVariable("post_id") Long post_id, @RequestBody PostCreateRequest postCreateRequest, @AuthenticationPrincipal AuthDetails authDetails) {
+        PostCreateResponse postCreateResponse = postService.updatePost(post_id, postCreateRequest, authDetails.user());
+        return ApiResponse.onSuccess(postCreateResponse);
+    }
+
     @PostMapping("/{post_id}/create_like")
     @Operation(summary = "좋아요 생성/삭제", description = "게시글을 좋아요 생성/삭제를 진행합니다.")
     public ResponseEntity<?> cratePostLike(@PathVariable("post_id") Long post_id, @AuthenticationPrincipal AuthDetails authDetails) {
