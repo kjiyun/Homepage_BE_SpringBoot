@@ -1,6 +1,7 @@
 package kahlua.KahluaProject.dto.post.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kahlua.KahluaProject.domain.post.PostType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -27,7 +28,10 @@ public class PostUpdateResponse {
     private int likes;
 
     @Schema(description = "게시글 사진 리스트", example = "https://bucketname.s3.region.amazonaws.com/image1.jpg")
-    private List<PostImageGetResponse> imageUrls;
+    private List<PostImageCreateResponse> imageUrls;
+
+    @Schema(description = "게시판 종류", example = "NOTICE")
+    private PostType postType;
 
     @Schema(description = "작성한 날짜", example = "2024-08-01T00:00:00")
     private LocalDateTime created_at;

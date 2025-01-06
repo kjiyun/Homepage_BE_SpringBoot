@@ -57,6 +57,15 @@ public class Post extends BaseEntity {
         ImageUrls.add(postImage);
     }
 
+    public void update(String title, String content) {
+        if (title != null) {
+            this.title = title;
+        }
+        if (content != null) {
+            this.content = content;
+        }
+    }
+
     public void increaseLikes() {
         this.likes++;
     }

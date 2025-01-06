@@ -6,10 +6,8 @@ import kahlua.KahluaProject.domain.post.PostLikes;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.dto.post.request.PostCreateRequest;
 import kahlua.KahluaProject.dto.post.request.PostImageCreateRequest;
-import kahlua.KahluaProject.dto.post.response.PostCreateResponse;
-import kahlua.KahluaProject.dto.post.response.PostGetResponse;
-import kahlua.KahluaProject.dto.post.response.PostImageCreateResponse;
-import kahlua.KahluaProject.dto.post.response.PostImageGetResponse;
+import kahlua.KahluaProject.dto.post.request.PostUpdateRequest;
+import kahlua.KahluaProject.dto.post.response.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +25,15 @@ public class PostConverter {
                 .build();
     }
 
+    public static Post toPostUpdate(PostUpdateRequest postUpdateRequest, User user) {
+        return Post.builder()
+                .title(postUpdateRequest.getTitle())
+                .content(postUpdateRequest.getContent())
+                .user(user)
+                .postType(postUpdateRequest.getPostType())
+                .build();
+    }
+
     public static PostLikes toPostLikes(Post post, User user) {
         return PostLikes.builder()
                 .post(post)
@@ -36,6 +43,20 @@ public class PostConverter {
 
     public static PostCreateResponse toPostCreateResponse(Post post, User user, List<PostImageCreateResponse> imageUrls) {
         return PostCreateResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .writer(user.getEmail())
+                .likes(post.getLikes())
+                .imageUrls(imageUrls)
+                .postType(post.getPostType())
+                .created_at(post.getCreatedAt())
+                .updated_at(post.getUpdatedAt())
+                .build();
+    }
+
+    public static PostUpdateResponse toPostUpdateResponse(Post post, User user, List<PostImageCreateResponse> imageUrls) {
+        return PostUpdateResponse.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
