@@ -58,16 +58,18 @@ public class Post extends BaseEntity {
         ImageUrls.add(postImage);
     }
 
-    public void update(String title, String content, List<PostImage> ImageUrls) {
+    public void update(String title, String content) {
         if (title != null) {
             this.title = title;
         }
         if (content != null) {
             this.content = content;
         }
-        if (ImageUrls != null) {
-            this.ImageUrls = ImageUrls;
-        }
+    }
+
+    public void updateImages(List<PostImage> newImages) {
+        this.ImageUrls.clear(); // 기존 이미지 리스트 비우기
+        this.ImageUrls.addAll(newImages);
     }
 
     public void increaseLikes() {
