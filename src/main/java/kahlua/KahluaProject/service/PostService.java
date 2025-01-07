@@ -90,19 +90,26 @@ public class PostService {
             }
         }
 
-        // 기존 필드를 가져와서 업데이트
-        List<PostImage> imageUrls = postUpdateRequest.getImageUrls() != null
-                ? PostConverter.toPostImage(postUpdateRequest.getImageUrls(), existingPost)
-                : existingPost.getImageUrls(); // `null`이면 기존 데이터 유지
+        if (postUpdateRequest.getImageUrls() != null) {
+            if (postUpdateRequest.getImageUrls().isEmpty()) {
+                postImageRepository.deleteAllByPost(existingPost);
+            } else {
+                List<PostImage> newImages = PostConverter.toPostImage(postUpdateRequest.getImageUrls(), existingPost);
+                if (newImages.size() > 10) throw new GeneralException(ErrorStatus.IMAGE_NOT_UPLOAD);
 
-        if (imageUrls.size() > 10) throw new GeneralException(ErrorStatus.IMAGE_NOT_UPLOAD);
+                // 기존 이미지를 DB에서 삭제
+                postImageRepository.deleteAllByPost(existingPost);
 
+                // 새로운 이미지 저장
+                existingPost.updateImages(newImages);
+                postImageRepository.saveAll(newImages);
+            }
+        }
 
-        existingPost.update(postUpdateRequest.getTitle(), postUpdateRequest.getContent(), imageUrls);
+        existingPost.update(postUpdateRequest.getTitle(), postUpdateRequest.getContent());
         postRepository.save(existingPost);
 
-        postImageRepository.saveAll(imageUrls);
-        List<PostImageCreateResponse> imageUrlResponses = PostConverter.toPostImageCreateResponse(imageUrls);
+        List<PostImageCreateResponse> imageUrlResponses = PostConverter.toPostImageCreateResponse(existingPost.getImageUrls());
 
         PostUpdateResponse postUdpateResponse = PostConverter.toPostUpdateResponse(existingPost, user, imageUrlResponses);
 
