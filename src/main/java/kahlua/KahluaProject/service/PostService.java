@@ -92,6 +92,7 @@ public class PostService {
 
         if (postUpdateRequest.getImageUrls() != null) {
             if (postUpdateRequest.getImageUrls().isEmpty()) {
+                existingPost.getImageUrls().clear();
                 postImageRepository.deleteAllByPost(existingPost);
             } else {
                 List<PostImage> newImages = PostConverter.toPostImage(postUpdateRequest.getImageUrls(), existingPost);
