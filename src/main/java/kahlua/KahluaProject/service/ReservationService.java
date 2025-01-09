@@ -11,6 +11,7 @@ import kahlua.KahluaProject.dto.reservation.response.ReservationListResponse;
 import kahlua.KahluaProject.dto.reservation.response.ReservationResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.reservation.ReservationRepository;
+import kahlua.KahluaProject.websocket.WebSocketException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,10 @@ public class ReservationService {
 
     @Transactional
     public ReservationResponse save(ReservationRequest reservationRequest, String date, Map<String, Object> header) {
+
+        if (reservationRepository.existByDateAndTime(toLocalDate(date), reservationRequest.startTime(), reservationRequest.endTime())) {
+            throw new WebSocketException("해당 시간에 예약내역이 존재합니다.");
+        }
 
         String email = getValueFromHeader(header, "email");
         User user = userService.getUserByEmail(email);
