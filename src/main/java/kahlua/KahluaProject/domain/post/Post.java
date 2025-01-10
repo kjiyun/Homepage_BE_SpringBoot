@@ -11,6 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class Post extends BaseEntity {
     @ColumnDefault("0")
     private int likes;  // likes 필드와 연결 필요
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<PostImage> ImageUrls = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
@@ -55,6 +56,20 @@ public class Post extends BaseEntity {
     public void addImage(PostImage postImage) {
         postImage = new PostImage(postImage.getUrl(), this);
         ImageUrls.add(postImage);
+    }
+
+    public void update(String title, String content) {
+        if (title != null) {
+            this.title = title;
+        }
+        if (content != null) {
+            this.content = content;
+        }
+    }
+
+    public void updateImages(List<PostImage> newImages) {
+        this.ImageUrls.clear(); // 기존 이미지 리스트 비우기
+        this.ImageUrls.addAll(newImages);
     }
 
     public void increaseLikes() {

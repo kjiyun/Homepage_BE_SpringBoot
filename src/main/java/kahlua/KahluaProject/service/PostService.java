@@ -8,9 +8,11 @@ import kahlua.KahluaProject.domain.post.PostLikes;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.post.request.PostCreateRequest;
+import kahlua.KahluaProject.dto.post.request.PostUpdateRequest;
 import kahlua.KahluaProject.dto.post.response.PostCreateResponse;
 import kahlua.KahluaProject.dto.post.response.PostGetResponse;
 import kahlua.KahluaProject.dto.post.response.PostImageCreateResponse;
+import kahlua.KahluaProject.dto.post.response.PostUpdateResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.PostImageRepository;
 import kahlua.KahluaProject.repository.UserRepository;
@@ -68,6 +70,54 @@ public class PostService {
     }
 
     @Transactional
+    public PostUpdateResponse updatePost(Long post_id, PostUpdateRequest postUpdateRequest, User user) {
+
+        // 선택한 게시글이 존재하는 지 확인
+        Post existingPost = postRepository.findById(post_id)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        // 공지사항인 경우 admin인지 확인
+        if (postUpdateRequest.getPostType() == NOTICE) {
+            if (user.getUserType() != UserType.ADMIN) {
+                throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+            }
+        }
+
+        // 깔깔깔인 경우 kahlua 또는 admin인지 확인
+        if (postUpdateRequest.getPostType() == KAHLUA_TIME) {
+            if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
+                throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+            }
+        }
+
+        if (postUpdateRequest.getImageUrls() != null) {
+            if (postUpdateRequest.getImageUrls().isEmpty()) {
+                existingPost.getImageUrls().clear();
+                postImageRepository.deleteAllByPost(existingPost);
+            } else {
+                List<PostImage> newImages = PostConverter.toPostImage(postUpdateRequest.getImageUrls(), existingPost);
+                if (newImages.size() > 10) throw new GeneralException(ErrorStatus.IMAGE_NOT_UPLOAD);
+
+                // 기존 이미지를 DB에서 삭제
+                postImageRepository.deleteAllByPost(existingPost);
+
+                // 새로운 이미지 저장
+                existingPost.updateImages(newImages);
+                postImageRepository.saveAll(newImages);
+            }
+        }
+
+        existingPost.update(postUpdateRequest.getTitle(), postUpdateRequest.getContent());
+        postRepository.save(existingPost);
+
+        List<PostImageCreateResponse> imageUrlResponses = PostConverter.toPostImageCreateResponse(existingPost.getImageUrls());
+
+        PostUpdateResponse postUdpateResponse = PostConverter.toPostUpdateResponse(existingPost, user, imageUrlResponses);
+
+        return postUdpateResponse;
+    }
+
+    @Transactional
     public boolean createPostLike(User user, Long post_id) {
 
         // 선택한 게시글이 존재하는 지 확인
@@ -106,7 +156,9 @@ public class PostService {
         Post existingPost = postRepository.findById(post_id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
 
-        return PostConverter.toPostGetResponse(existingPost);
+        boolean isLiked = postLikesRepository.findByPostAndUser(existingPost, user).isPresent();
+
+        return PostConverter.toPostGetResponse(existingPost, isLiked);
     }
 
     @Transactional
@@ -125,5 +177,19 @@ public class PostService {
     public Page<PostGetResponse> viewMyPostList(User user, String postType, String searchWord, Pageable pageable) {
 
         return postRepository.findMyPostByUserId(user.getId(), postType, searchWord, pageable);
+    }
+
+    @Transactional
+    public void delete(Long post_id, User user) {
+
+        // 공지사항 삭제의 경우 kahlua 혹은 ADMIN인지 확인
+        if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+
+        Post post = postRepository.findById(post_id)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
+
+        postRepository.delete(post);
     }
 }

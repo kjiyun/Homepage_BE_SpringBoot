@@ -28,21 +28,21 @@ public class ReservationController {
     // 예약 시간 선택한 사람에게 우선권 부여
     @MessageMapping("/reserve.proceed/{date}")
     @SendTo("/topic/public/{date}")
-    public ReservationResponse proceed(@DestinationVariable String reservationDate,
+    public ReservationResponse proceed(@DestinationVariable String date,
                                        @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
                                        @Payload ReservationProceedRequest reservationProceedRequest) {
 
-        return reservationService.proceed(reservationProceedRequest, reservationDate, simpSessionAttributes);
+        return reservationService.proceed(reservationProceedRequest, date, simpSessionAttributes);
     }
 
     // 예약 확정 후 예약내역 DB에 저장
     @MessageMapping("/reserve.complete/{date}")
     @SendTo("/topic/public/{date}")
-    public ReservationResponse complete(@DestinationVariable String reservationDate,
+    public ReservationResponse complete(@DestinationVariable String date,
                                        @Header("simpSessionAttributes") Map<String, Object> simpSessionAttributes,
                                        @Payload ReservationRequest reservationRequest) {
 
-        return reservationService.save(reservationRequest, reservationDate, simpSessionAttributes);
+        return reservationService.save(reservationRequest, date, simpSessionAttributes);
     }
 
     @GetMapping("/v1/reservation")

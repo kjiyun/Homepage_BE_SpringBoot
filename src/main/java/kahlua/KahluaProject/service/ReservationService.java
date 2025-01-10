@@ -11,6 +11,7 @@ import kahlua.KahluaProject.dto.reservation.response.ReservationListResponse;
 import kahlua.KahluaProject.dto.reservation.response.ReservationResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.reservation.ReservationRepository;
+import kahlua.KahluaProject.websocket.WebSocketException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,13 +30,13 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserService userService;
 
-    public ReservationResponse proceed(ReservationProceedRequest reservationProceedRequest, String reservationDate, Map<String, Object> header) {
+    public ReservationResponse proceed(ReservationProceedRequest reservationProceedRequest, String date, Map<String, Object> header) {
 
         String email = getValueFromHeader(header, "email");
 
         return ReservationResponse.builder()
                 .email(email)
-                .reservationDate(toLocalDate(reservationDate))
+                .reservationDate(toLocalDate(date))
                 .startTime(reservationProceedRequest.startTime())
                 .endTime(reservationProceedRequest.endTime())
                 .status(ReservationStatus.PROCEEDING)
@@ -43,12 +44,16 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationResponse save(ReservationRequest reservationRequest, String reservationDate, Map<String, Object> header) {
+    public ReservationResponse save(ReservationRequest reservationRequest, String date, Map<String, Object> header) {
+
+        if (reservationRepository.existByDateAndTime(toLocalDate(date), reservationRequest.startTime(), reservationRequest.endTime())) {
+            throw new WebSocketException("해당 시간에 예약내역이 존재합니다.");
+        }
 
         String email = getValueFromHeader(header, "email");
         User user = userService.getUserByEmail(email);
 
-        Reservation reservation = toReservation(reservationRequest, user, toLocalDate(reservationDate), ReservationStatus.RESERVED);
+        Reservation reservation = toReservation(reservationRequest, user, toLocalDate(date), ReservationStatus.RESERVED);
         Reservation savedReservation = reservationRepository.save(reservation);
 
         return toReservationResponse(savedReservation, email);

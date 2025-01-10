@@ -16,8 +16,6 @@ import java.util.List;
 @Entity
 @Builder
 @Getter
-@SQLDelete(sql = "UPDATE comment SET deleted_at = NOW() where comment_id = ?")
-@Where(clause = "deleted_at is NULL")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "comment")

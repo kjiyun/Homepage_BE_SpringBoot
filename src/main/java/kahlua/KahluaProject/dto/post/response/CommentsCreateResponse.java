@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Getter
 public class CommentsCreateResponse {
@@ -22,4 +24,7 @@ public class CommentsCreateResponse {
 
     @Schema(description = "대댓글인 경우 부모 댓글 id", example = "네 수고하세요.")
     private Long parentCommentId;
+
+    @Schema(description = "작성한 날짜", example = "2024-08-01T00:00:00")
+    private LocalDateTime created_at;
 }

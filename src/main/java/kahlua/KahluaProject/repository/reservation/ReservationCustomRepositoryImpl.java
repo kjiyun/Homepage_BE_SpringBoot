@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static kahlua.KahluaProject.domain.reservation.QReservation.reservation;
@@ -35,5 +36,16 @@ public class ReservationCustomRepositoryImpl implements ReservationCustomReposit
                 .where(reservation.user.eq(user))
                 .orderBy(reservation.reservationDate.asc(), reservation.startTime.asc())
                 .fetch();
+    }
+
+    @Override
+    public Boolean existByDateAndTime(LocalDate date, LocalTime startTime, LocalTime endTime) {
+        return jpaQueryFactory
+                .selectOne()
+                .from(reservation)
+                .where(reservation.reservationDate.eq(date)
+                        .and(reservation.startTime.lt(endTime) // 시작 시간이 새로운 예약 종료 시간보다 작고
+                        .and(reservation.endTime.gt(startTime)))) // 종료 시간이 새로운 예약 시작 시간보다 큰 경우
+                .fetchFirst() != null;
     }
 }

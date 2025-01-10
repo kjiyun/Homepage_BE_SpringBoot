@@ -74,7 +74,6 @@ public class CommentService {
     }
 
     @Transactional
-    @SoftDelete
     public CommentsItemResponse deleteComment(Long post_id, Long comment_id) {
 
         // 선택한 게시글이 존재하는 지 확인
@@ -84,9 +83,10 @@ public class CommentService {
         Comment comment = commentRepository.findById(comment_id)
                         .orElseThrow(() -> new GeneralException(ErrorStatus.COMMENT_NOT_FOUND));
 
-        if (comment.getDeletedAt() == null)
-            commentRepository.delete(comment);
-
+        if (comment.getDeletedAt() == null) {
+            comment.markAsDeleted();
+            commentRepository.save(comment);
+        }
 
         CommentsItemResponse commentsItemResponse = CommentConverter.toCommentItemResponse(comment);
         return commentsItemResponse;
