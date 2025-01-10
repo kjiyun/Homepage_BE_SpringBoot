@@ -12,6 +12,7 @@ import java.util.Map;
 
 public record AuthDetails(User user, Map<String, Object> attributes) implements UserDetails, OAuth2User {
 
+
     public AuthDetails(User user) {
         this(user, Map.of());  // attributes가 필요하지 않을 때 빈 맵 사용
     }

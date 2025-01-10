@@ -20,15 +20,16 @@ public class KakaoClient {
 
     private static final Logger log = LoggerFactory.getLogger(KakaoClient.class);
 
-    @Value("${kakao.client_id}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
 
-    private final String KAUTH_USER_URL_HOST = "https://kapi.kakao.com/v2/user/me";
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
+    private String KAUTH_USER_URL_HOST;
 
     private final RestClient restClient = RestClient.create();
     private final ObjectMapper objectMapper;
 
-    public KakaoToken getAccessTokenFromKakao(String code) {
+    public KakaoToken getAccessTokenFromKakao(String code, String redirectUri) {
         String response = restClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("https")
@@ -37,6 +38,7 @@ public class KakaoClient {
                         .queryParam("grant_type", "authorization_code")
                         .queryParam("client_id", clientId)
                         .queryParam("code", code)
+                        .queryParam("redirect_uri", redirectUri)
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .retrieve()
