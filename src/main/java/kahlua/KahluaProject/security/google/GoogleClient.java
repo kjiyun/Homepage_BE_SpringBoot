@@ -17,19 +17,19 @@ public class GoogleClient {
     private final ObjectMapper objectMapper;
     private final RestClient restClient = RestClient.create();
 
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    @Value("${spring.security.oauth2.client.registration.google-prod.client-id}")
     private String googleClientId;
 
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    @Value("${spring.security.oauth2.client.registration.google-prod.client-secret}")
     private String googleClientSecret;
 
-    @Value("${spring.security.oauth2.client.registration.google.authorization-grant-type}")
+    @Value("${spring.security.oauth2.client.registration.google-prod.authorization-grant-type}")
     private String googleGrantType;
 
-    @Value("${spring.security.oauth2.client.provider.google.token-uri}")
+    @Value("${spring.security.oauth2.client.provider.google-prod.token-uri}")
     private String googleTokenUri;
 
-    @Value("${spring.security.oauth2.client.provider.google.user-info-uri}")
+    @Value("${spring.security.oauth2.client.provider.google-prod.user-info-uri}")
     private String googleUserInfoUri;
 
     public GoogleToken getGoogleAccessToken(String code, String redirectUri) {

@@ -30,8 +30,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SocialLoginService {
 
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
-    private String googleRedirectUrl;
+    @Value("${spring.security.oauth2.client.registration.google-local.redirect-uri}")
+    private String googleLocalRedirectUrl;
+
+    @Value("${spring.security.oauth2.client.registration.google-prod.redirect-uri}")
+    private String googleProdRedirectUrl;
 
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
@@ -40,9 +43,15 @@ public class SocialLoginService {
     private final GoogleClient googleClient;
 
     @Transactional
-    public SignInResponse signInWithGoogle(String code) {
+    public SignInResponse signInWithGoogle(String code, String redirectUri) {
+
         // 구글로 액세스 토큰 요청하기
-        GoogleToken googleAccessToken = googleClient.getGoogleAccessToken(code, googleRedirectUrl);
+        GoogleToken googleAccessToken;
+        if(redirectUri.equals(googleLocalRedirectUrl)) {
+            googleAccessToken = googleClient.getGoogleAccessToken(code, googleLocalRedirectUrl);
+        } else {
+            googleAccessToken = googleClient.getGoogleAccessToken(code, googleProdRedirectUrl);
+        }
 
         // 구글에 있는 사용자 정보 반환
         GoogleProfile googleProfile = googleClient.getMemberInfo(googleAccessToken);
@@ -68,9 +77,9 @@ public class SocialLoginService {
     }
 
     @Transactional
-    public SignInResponse signInWithKakao(String code) {
+    public SignInResponse signInWithKakao(String code, String redirectUrl) {
         // 카카오로 액세스 토큰 요청하기
-        KakaoToken kakaoToken = kakaoClient.getAccessTokenFromKakao(code);
+        KakaoToken kakaoToken = kakaoClient.getAccessTokenFromKakao(code, redirectUrl);
 
         // 카카오에 있는 사용자 정보 반환
         KakaoProfile kakaoProfile = kakaoClient.getMemberInfo(kakaoToken);
