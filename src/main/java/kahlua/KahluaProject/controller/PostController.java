@@ -35,7 +35,8 @@ public class PostController {
     }
 
     @PatchMapping("/{post_id}/update")
-    @Operation(summary = "공지사항 수정", description = "공지 내용을 수정합니다.")
+    @Operation(summary = "공지사항 수정", description = "공지 내용을 수정합니다. 이미지의 경우, 기존 이미지를 삭제하고 싶은 경우 빈 리스트로 전달하고 </br>" +
+            "기존 이미지를 유지하고 싶은 경우 null 값으로 데이터를 전송합니다.")
     public ApiResponse<PostUpdateResponse> updatePost(@PathVariable("post_id") Long post_id, @RequestBody PostUpdateRequest postUpdateRequest, @AuthenticationPrincipal AuthDetails authDetails) {
         PostUpdateResponse postUpdateResponse = postService.updatePost(post_id, postUpdateRequest, authDetails.user());
         return ApiResponse.onSuccess(postUpdateResponse);
