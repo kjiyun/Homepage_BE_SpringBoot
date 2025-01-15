@@ -57,5 +57,6 @@ public class User extends BaseEntity {
         this.name = userInfoRequest.name();
         this.term = userInfoRequest.term();
         this.session = Session.valueOf(userInfoRequest.session());
+        this.userType = UserType.PENDING;
     }
 }
