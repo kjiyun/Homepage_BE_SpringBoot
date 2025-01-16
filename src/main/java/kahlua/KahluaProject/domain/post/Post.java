@@ -40,7 +40,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private PostType postType;
 
