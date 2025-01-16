@@ -67,7 +67,9 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     @Override
     public Page<PostGetResponse> findMyPostByUserId(Long user_id, String postType, String searchWord, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(eqPostType(postType));
+        if (postType != null) {
+            builder.and(eqPostType(postType));
+        }
         builder.and(likeTitle(searchWord));
         builder.and(post.user.id.eq(user_id));
 

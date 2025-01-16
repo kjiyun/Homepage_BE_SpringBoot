@@ -1,6 +1,7 @@
 package kahlua.KahluaProject.dto.post.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kahlua.KahluaProject.domain.post.PostType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -28,6 +29,9 @@ public class PostGetResponse {
 
     @Schema(description = "게시글 좋아요 여부", example = "TRUE")
     private boolean isLiked;
+
+    @Schema(description = "게시글 종류", example = "NOTICE")
+    private PostType postType;
 
     //게시글 댓글 수
     @Schema(description = "게시글 댓글 수", example = "5")

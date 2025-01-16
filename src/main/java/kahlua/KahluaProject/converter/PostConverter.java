@@ -123,6 +123,7 @@ public class PostConverter {
                         .content(post.getContent())
                         .writer(post.getUser() != null ? post.getUser().getName() : null)
                         .likes(post.getLikes())
+                        .postType(post.getPostType())
                         .commentsCount(post.getComments().size())
                         .imageUrls(post.getImageUrls().stream()
                                 .map(postImage -> PostImageGetResponse.builder()
