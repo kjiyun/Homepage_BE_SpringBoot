@@ -1,9 +1,13 @@
 package kahlua.KahluaProject.service;
 
+import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.converter.TicketConverter;
 import kahlua.KahluaProject.converter.TicketInfoConverter;
 import kahlua.KahluaProject.domain.ticketInfo.PerformanceStatus;
 import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
 import kahlua.KahluaProject.dto.ticketInfo.response.PerformanceRes;
+import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
+import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ticket.TicketInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,5 +65,14 @@ public class PerformanceService {
         } else{return OPEN;}
     }
 
+    public PerformanceRes.performanceInfoDto getPerformanceInfo(Long ticketInfoId){
+        TicketInfo ticketInfo = ticketInfoRepository.findById(ticketInfoId)
+                .orElseThrow(()->new GeneralException(ErrorStatus.TICKETINFO_NOT_FOUND));
+
+        return PerformanceRes.performanceInfoDto.builder()
+                .ticketInfoResponse(TicketConverter.toTicketInfoResponse(ticketInfo))
+                .status(checkStatus(ticketInfo))
+                .build();
+    }
 
 }

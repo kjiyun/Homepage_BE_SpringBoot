@@ -42,4 +42,13 @@ public class PerformanceRes {
         @Schema(description = "공연 상태")
         PerformanceStatus status;
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class performanceInfoDto{
+        TicketInfoResponse ticketInfoResponse;
+        @Schema(description = "공연 상태")
+        PerformanceStatus status;
+    }
 }

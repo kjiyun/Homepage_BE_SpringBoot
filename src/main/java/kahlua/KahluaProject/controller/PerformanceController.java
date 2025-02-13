@@ -4,12 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kahlua.KahluaProject.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.ticketInfo.response.PerformanceRes;
+import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
 import kahlua.KahluaProject.service.PerformanceService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "공연 페이지", description = "공연페이지 관련 API")
 @RestController
@@ -26,6 +24,10 @@ public class PerformanceController {
         return ApiResponse.onSuccess(performanceService.getPerformances(cursor, limit));
     }
 
-
+    @GetMapping("/{ticketInfoId}")
+    @Operation(summary = "공연 상세정보 조회 API", description = "특정 공연의 상세정보를 조회하는 API입니다.")
+    public ApiResponse<PerformanceRes.performanceInfoDto> getPerformanceInfo(@PathVariable Long ticketInfoId){
+        return ApiResponse.onSuccess(performanceService.getPerformanceInfo(ticketInfoId));
+    }
 }
 
