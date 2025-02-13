@@ -33,6 +33,9 @@ public class PerformanceRes {
         @Schema(description = "공연 제목")
         String title;
 
+        @Schema(description = "공연 설명", example="#스물다섯_스물하나 #데이식스 #잔나비 #YB밴드 #백예린 #미도와_파라솔 ")
+        String content;
+
         @Schema(description = "공연 포스터 이미지")
         String posterUrl;
 

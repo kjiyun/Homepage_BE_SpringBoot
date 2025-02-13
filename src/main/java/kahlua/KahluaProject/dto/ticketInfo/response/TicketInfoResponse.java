@@ -20,6 +20,8 @@ public record TicketInfoResponse(
         @Schema(description = "공연 제목", example = "2024년 3월 정기 공연")
         String title,
 
+
+
         @Schema(description = "장소", example = "001 클럽")
         String venue,
 

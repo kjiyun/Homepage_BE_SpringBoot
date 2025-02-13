@@ -14,7 +14,8 @@ public class TicketInfoConverter {
     public static PerformanceRes.performanceDto toPerformanceDto(TicketInfo info,PerformanceStatus status){
         return PerformanceRes.performanceDto.builder()
                 .ticketInfoId(info.getId())
-                .title(info.getTicketInfoData().toString())
+                .title(info.getTicketInfoData().title())
+                .content(info.getTicketInfoData().content())
                 .status(status)
                 .posterUrl(info.getPosterImageUrl())
                 .build();

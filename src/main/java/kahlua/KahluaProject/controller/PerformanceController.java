@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "공연 페이지", description = "공연페이지 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/performance")
+@RequestMapping("/v1/performances")
 public class PerformanceController {
     private final PerformanceService performanceService;
 
@@ -28,3 +28,4 @@ public class PerformanceController {
 
 
 }
+
