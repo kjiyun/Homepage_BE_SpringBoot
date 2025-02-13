@@ -11,37 +11,37 @@ import org.springframework.http.HttpStatus;
 public enum ErrorStatus implements BaseCode {
 
     // 에러 응답 (둘 중 하나 삭제)
-    INTERNER_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", "서버 에러"),
+    INTERNER_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal_Server_Error", "서버 에러"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR", "서버 에러"),
 
     // 로그인 실패
-    LOGIN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "LOGIN FAIL", "아이디 또는 비밀번호를 확인하세요"),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER NOT FOUND", "사용자를 찾을 수 없습니다."),
+    LOGIN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "LOGIN_FAIL", "아이디 또는 비밀번호를 확인하세요"),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "FORBIDDEN", "금지된 접근입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "권한이 없습니다."),
-    PASSWORD_NOT_MATCH(HttpStatus.NOT_FOUND, "PASSWORD NOT MATCH", "비밀번호가 틀렸습니다."),
-    PASSWORD_INVALID(HttpStatus.NOT_FOUND, "PASSWORD INVALID", "유효하지 않은 password입니다."),
-    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN INVALID", "토큰이 유효하지 않습니다."),
-    TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "TOKEN INVALID", "토큰을 찾을 수 없습니다."),
-    ALREADY_EXIST_USER(HttpStatus.BAD_REQUEST, "ALREADY EXIST USER", "이미 존재하는 회원입니다."),
-    REDIS_NOT_FOUND(HttpStatus.NOT_FOUND, "REDIS NOT FOUND", "Redis 설정에 오류가 발생했습니다."),
+    PASSWORD_NOT_MATCH(HttpStatus.NOT_FOUND, "PASSWORD_NOT_MATCH", "비밀번호가 틀렸습니다."),
+    PASSWORD_INVALID(HttpStatus.NOT_FOUND, "PASSWORD_INVALID", "유효하지 않은 password입니다."),
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN_INVALID", "토큰이 유효하지 않습니다."),
+    TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "TOKEN_INVALID", "토큰을 찾을 수 없습니다."),
+    ALREADY_EXIST_USER(HttpStatus.BAD_REQUEST, "ALREADY_EXIST_USER", "이미 존재하는 회원입니다."),
+    REDIS_NOT_FOUND(HttpStatus.NOT_FOUND, "REDIS_NOT_FOUND", "Redis 설정에 오류가 발생했습니다."),
 
 
     // 세션 에러
     SESSION_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "유효하지 않은 세션입니다."),
 
     // 티켓 에러
-    TICKET_NOT_FOUND(HttpStatus.NOT_FOUND, "TICKET NOT FOUND", "티켓을 찾을 수 없습니다."),
-    TICKET_COLUMN_INVALID(HttpStatus.BAD_REQUEST, "TICKET COLUMN INVALID", "올바르지 않은 티켓 속성입니다."),
-    ALREADY_EXIST_STUDENT_ID(HttpStatus.BAD_REQUEST, "ALREADY EXIST STUDENT_ID", "이미 존재하는 학번입니다."),
+    TICKET_NOT_FOUND(HttpStatus.NOT_FOUND, "TICKET_NOT_FOUND", "티켓을 찾을 수 없습니다."),
+    TICKET_COLUMN_INVALID(HttpStatus.BAD_REQUEST, "TICKET_COLUMN_INVALID", "올바르지 않은 티켓 속성입니다."),
+    ALREADY_EXIST_STUDENT_ID(HttpStatus.BAD_REQUEST, "ALREADY_EXIST_STUDENT_ID", "이미 존재하는 학번입니다."),
 
     //지원하기 에러
-    ALREADY_EXIST_APPLICANT(HttpStatus.BAD_REQUEST, "ALREADY EXIST APPLICANT", "이미 존재하는 지원자입니다."),
-    APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT NOT FOUND", "존재하지 않는 지원자입니다."),
-    APPLY_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLY INFO NOT FOUND", "존재하지 않는 지원정보 입니다." ),
+    ALREADY_EXIST_APPLICANT(HttpStatus.BAD_REQUEST, "ALREADY_EXIST_APPLICANT", "이미 존재하는 지원자입니다."),
+    APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT_NOT_FOUND", "존재하지 않는 지원자입니다."),
+    APPLY_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLY_INFO_NOT_FOUND", "존재하지 않는 지원정보 입니다." ),
 
     // 웹소켓 에러
-    WEBSOCKET_SESSION_UNAUTHORIZED(HttpStatus.BAD_REQUEST, "WEBSOCKET ERROR", "웹소켓 연결 과정에서 에러가 발생했습니다."),
+    WEBSOCKET_SESSION_UNAUTHORIZED(HttpStatus.BAD_REQUEST, "WEBSOCKET_ERROR", "웹소켓 연결 과정에서 에러가 발생했습니다."),
 
     // 게시판 에러
     IMAGE_NOT_UPLOAD(HttpStatus.BAD_REQUEST, "IMAGE_NOT_UPLOAD", "이미지 업로드 개수를 초과하였습니다."),
@@ -51,9 +51,12 @@ public enum ErrorStatus implements BaseCode {
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT_NOT_FOUND", "존재하지 않는 댓글입니다."),
 
     // 예약 에러
-    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION NOT FOUND", "예약내역을 찾을 수 없습니다.");
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND", "예약내역을 찾을 수 없습니다."),
 
-    
+    //공연 관련 에러
+    TICKETINFO_NOT_FOUND(HttpStatus.NOT_FOUND,"TICKET_INFO<NOT_FOUND","공연 정보를 찾을 수 없습니다."),
+
+    ;
 
 
     private final HttpStatus httpStatus;

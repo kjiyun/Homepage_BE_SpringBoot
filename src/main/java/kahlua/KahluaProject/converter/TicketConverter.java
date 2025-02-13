@@ -107,6 +107,7 @@ public class TicketConverter {
                 .id(ticketInfo.getId())
                 .posterImageUrl(ticketInfo.getPosterImageUrl())
                 .title(ticketInfo.getTicketInfoData().title())
+                .content(ticketInfo.getTicketInfoData().content())
                 .venue(ticketInfo.getTicketInfoData().venue())
                 .address(ticketInfo.getTicketInfoData().address())
                 .dateTime(ticketInfo.getTicketInfoData().dateTime())
