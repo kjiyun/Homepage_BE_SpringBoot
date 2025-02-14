@@ -1,10 +1,21 @@
 package kahlua.KahluaProject.service;
 
+import jakarta.transaction.Transactional;
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.converter.PostConverter;
 import kahlua.KahluaProject.converter.TicketConverter;
 import kahlua.KahluaProject.converter.TicketInfoConverter;
+import kahlua.KahluaProject.domain.post.Post;
+import kahlua.KahluaProject.domain.post.PostImage;
+import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.domain.ticketInfo.PerformanceStatus;
 import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
+import kahlua.KahluaProject.domain.user.User;
+import kahlua.KahluaProject.domain.user.UserType;
+import kahlua.KahluaProject.dto.post.request.PostCreateRequest;
+import kahlua.KahluaProject.dto.post.response.PostCreateResponse;
+import kahlua.KahluaProject.dto.post.response.PostImageCreateResponse;
+import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
 import kahlua.KahluaProject.dto.ticketInfo.response.PerformanceRes;
 import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
 import kahlua.KahluaProject.exception.GeneralException;
@@ -19,6 +30,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kahlua.KahluaProject.domain.post.PostType.KAHLUA_TIME;
+import static kahlua.KahluaProject.domain.post.PostType.NOTICE;
 import static kahlua.KahluaProject.domain.ticketInfo.PerformanceStatus.CLOSED;
 import static kahlua.KahluaProject.domain.ticketInfo.PerformanceStatus.OPEN;
 
@@ -75,4 +88,13 @@ public class PerformanceService {
                 .build();
     }
 
+    public TicketInfoResponse createPerformance(TicketInfoRequest request, User user) {
+        if(user.getUserType() != UserType.ADMIN) {
+            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+        }
+        TicketInfo ticketInfo = TicketInfoConverter.toCreateTicketInfo(request);
+        ticketInfoRepository.save(ticketInfo);
+
+        return TicketInfoConverter.toCreateTicketInfoResponse(ticketInfo);
+    }
 }
