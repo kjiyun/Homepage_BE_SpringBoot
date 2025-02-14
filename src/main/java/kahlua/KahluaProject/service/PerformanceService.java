@@ -60,7 +60,7 @@ public class PerformanceService {
     }
 
     public PerformanceStatus checkStatus(TicketInfo ticketInfo) {
-        if (LocalDateTime.now().isAfter(ticketInfo.getTicketInfoData().dateTime())){
+        if (LocalDateTime.now().isAfter(ticketInfo.getTicketInfoData().bookingEndDate()) && LocalDateTime.now().isBefore(ticketInfo.getTicketInfoData().bookingStartDate())) {
             return CLOSED;
         } else{return OPEN;}
     }
