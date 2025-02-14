@@ -3,14 +3,14 @@ package kahlua.KahluaProject.domain.ticketInfo;
 import jakarta.persistence.*;
 import kahlua.KahluaProject.domain.BaseEntity;
 import kahlua.KahluaProject.vo.TicketInfoData;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TicketInfo extends BaseEntity {
 
