@@ -14,6 +14,9 @@ public record TicketInfoRequest(
         @Schema(description = "공연 제목", example = "2024년 3월 정기 공연")
         String title,
 
+        @Schema(description = "공연 설명", example="#스물다섯_스물하나 #데이식스 #잔나비 #YB밴드 #백예린 #미도와_파라솔")
+        String content,
+
         @Schema(description = "장소", example = "001 클럽")
         String venue,
 
