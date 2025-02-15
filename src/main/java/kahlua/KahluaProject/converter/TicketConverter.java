@@ -86,37 +86,4 @@ public class TicketConverter {
                 .status(ticket.getStatus())
                 .build();
     }
-
-    public static TicketInfoData toTicketInfo(TicketInfoRequest ticketInfoRequest) {
-        return TicketInfoData.builder()
-                .title(ticketInfoRequest.title())
-                .venue(ticketInfoRequest.venue())
-                .address(ticketInfoRequest.address())
-                .dateTime(ticketInfoRequest.dateTime())
-                .freshmanPrice(ticketInfoRequest.freshmanPrice())
-                .freshmanMaxPurchase(ticketInfoRequest.freshmanMaxPurchase())
-                .generalPrice(ticketInfoRequest.generalPrice())
-                .generalMaxPurchase(ticketInfoRequest.generalMaxPurchase())
-                .bookingStartDate(ticketInfoRequest.bookingStartDate())
-                .bookingEndDate(ticketInfoRequest.bookingEndDate())
-                .build();
-    }
-
-    public static TicketInfoResponse toTicketInfoResponse(TicketInfo ticketInfo) {
-        return TicketInfoResponse.builder()
-                .id(ticketInfo.getId())
-                .posterImageUrl(ticketInfo.getPosterImageUrl())
-                .title(ticketInfo.getTicketInfoData().title())
-                .content(ticketInfo.getTicketInfoData().content())
-                .venue(ticketInfo.getTicketInfoData().venue())
-                .address(ticketInfo.getTicketInfoData().address())
-                .dateTime(ticketInfo.getTicketInfoData().dateTime())
-                .freshmanPrice(ticketInfo.getTicketInfoData().freshmanPrice())
-                .freshmanMaxPurchase(ticketInfo.getTicketInfoData().freshmanMaxPurchase())
-                .generalPrice(ticketInfo.getTicketInfoData().generalPrice())
-                .generalMaxPurchase(ticketInfo.getTicketInfoData().generalMaxPurchase())
-                .bookingStartDate(ticketInfo.getTicketInfoData().bookingStartDate())
-                .bookingEndDate(ticketInfo.getTicketInfoData().bookingEndDate())
-                .build();
-    }
 }

@@ -20,6 +20,7 @@ import kahlua.KahluaProject.dto.ticketInfo.response.PerformanceRes;
 import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ticket.TicketInfoRepository;
+import kahlua.KahluaProject.vo.TicketInfoData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -83,7 +84,7 @@ public class PerformanceService {
                 .orElseThrow(()->new GeneralException(ErrorStatus.TICKETINFO_NOT_FOUND));
 
         return PerformanceRes.performanceInfoDto.builder()
-                .ticketInfoResponse(TicketConverter.toTicketInfoResponse(ticketInfo))
+                .ticketInfoResponse(TicketInfoConverter.toTicketInfoResponse(ticketInfo))
                 .status(checkStatus(ticketInfo))
                 .build();
     }
@@ -92,9 +93,10 @@ public class PerformanceService {
         if(user.getUserType() != UserType.ADMIN) {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
-        TicketInfo ticketInfo = TicketInfoConverter.toCreateTicketInfo(request);
+        String posterImageUrl = request.posterImageUrl();
+        TicketInfoData ticketInfoData = TicketInfoConverter.toTicketInfo(request);
+        TicketInfo ticketInfo = TicketInfo.create(posterImageUrl, ticketInfoData);
         ticketInfoRepository.save(ticketInfo);
-
-        return TicketInfoConverter.toCreateTicketInfoResponse(ticketInfo);
+        return TicketInfoConverter.toTicketInfoResponse(ticketInfo);
     }
 }

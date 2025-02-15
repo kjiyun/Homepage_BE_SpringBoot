@@ -19,42 +19,37 @@ public class TicketInfoConverter {
                 .build();
     }
 
-    public static TicketInfo toCreateTicketInfo(TicketInfoRequest request) {
-        TicketInfoData ticketInfoData = new TicketInfoData(
-                request.title(),
-                request.content(),
-                request.venue(),
-                request.address(),
-                request.dateTime(),
-                request.freshmanPrice(),
-                request.freshmanMaxPurchase(),
-                request.generalPrice(),
-                request.generalMaxPurchase(),
-                request.bookingStartDate(),
-                request.bookingEndDate()
-        );
-        return TicketInfo.builder()
-                .posterImageUrl(request.posterImageUrl())
-                .ticketInfoData(ticketInfoData)
+    public static TicketInfoData toTicketInfo(TicketInfoRequest ticketInfoRequest) {
+        return TicketInfoData.builder()
+                .title(ticketInfoRequest.title())
+                .content(ticketInfoRequest.content())
+                .venue(ticketInfoRequest.venue())
+                .address(ticketInfoRequest.address())
+                .dateTime(ticketInfoRequest.dateTime())
+                .freshmanPrice(ticketInfoRequest.freshmanPrice())
+                .freshmanMaxPurchase(ticketInfoRequest.freshmanMaxPurchase())
+                .generalPrice(ticketInfoRequest.generalPrice())
+                .generalMaxPurchase(ticketInfoRequest.generalMaxPurchase())
+                .bookingStartDate(ticketInfoRequest.bookingStartDate())
+                .bookingEndDate(ticketInfoRequest.bookingEndDate())
                 .build();
     }
 
-    public static TicketInfoResponse toCreateTicketInfoResponse(TicketInfo ticketInfo) {
-        TicketInfoData data = ticketInfo.getTicketInfoData();
+    public static TicketInfoResponse toTicketInfoResponse(TicketInfo ticketInfo) {
         return TicketInfoResponse.builder()
                 .id(ticketInfo.getId())
                 .posterImageUrl(ticketInfo.getPosterImageUrl())
-                .title(data.title())
-                .content(data.content())
-                .venue(data.venue())
-                .address(data.address())
-                .dateTime(data.dateTime())
-                .freshmanPrice(data.freshmanPrice())
-                .freshmanMaxPurchase(data.freshmanMaxPurchase())
-                .generalPrice(data.generalPrice())
-                .generalMaxPurchase(data.generalMaxPurchase())
-                .bookingStartDate(data.bookingStartDate())
-                .bookingEndDate(data.bookingEndDate())
+                .title(ticketInfo.getTicketInfoData().title())
+                .content(ticketInfo.getTicketInfoData().content())
+                .venue(ticketInfo.getTicketInfoData().venue())
+                .address(ticketInfo.getTicketInfoData().address())
+                .dateTime(ticketInfo.getTicketInfoData().dateTime())
+                .freshmanPrice(ticketInfo.getTicketInfoData().freshmanPrice())
+                .freshmanMaxPurchase(ticketInfo.getTicketInfoData().freshmanMaxPurchase())
+                .generalPrice(ticketInfo.getTicketInfoData().generalPrice())
+                .generalMaxPurchase(ticketInfo.getTicketInfoData().generalMaxPurchase())
+                .bookingStartDate(ticketInfo.getTicketInfoData().bookingStartDate())
+                .bookingEndDate(ticketInfo.getTicketInfoData().bookingEndDate())
                 .build();
     }
 }
