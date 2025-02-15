@@ -22,6 +22,9 @@ public class TicketInfo extends BaseEntity {
     @Column(nullable = false, columnDefinition = "text")
     private String posterImageUrl;
 
+    @Column(nullable = false, columnDefinition = "text")
+    private String youtubeUrl;
+
     @Column(columnDefinition = "json")
     @JdbcTypeCode(SqlTypes.JSON)
     private TicketInfoData ticketInfoData;

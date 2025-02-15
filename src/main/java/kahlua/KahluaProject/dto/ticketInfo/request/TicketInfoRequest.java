@@ -8,6 +8,9 @@ public record TicketInfoRequest(
         @Schema(description = "공연 포스터 이미지", example = "https://kahlua.com/1.jpg")
         String posterImageUrl,
 
+        @Schema(description = "공연 영성 링크", example = "https://youtu.be/QaGbEsecSVE?si=2g2krmBXw1qQZcaW")
+        String youtubeUrl,
+
         @Schema(description = "공연 제목", example = "2024년 3월 정기 공연")
         String title,
 

@@ -106,6 +106,7 @@ public class TicketConverter {
         return TicketInfoResponse.builder()
                 .id(ticketInfo.getId())
                 .posterImageUrl(ticketInfo.getPosterImageUrl())
+                .youtubeUrl(ticketInfo.getYoutubeUrl())
                 .title(ticketInfo.getTicketInfoData().title())
                 .content(ticketInfo.getTicketInfoData().content())
                 .venue(ticketInfo.getTicketInfoData().venue())

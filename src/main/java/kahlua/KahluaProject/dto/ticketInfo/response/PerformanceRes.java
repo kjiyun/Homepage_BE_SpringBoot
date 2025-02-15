@@ -48,6 +48,7 @@ public class PerformanceRes {
     @AllArgsConstructor
     public static class performanceInfoDto{
         TicketInfoResponse ticketInfoResponse;
+
         @Schema(description = "공연 상태")
         PerformanceStatus status;
     }
