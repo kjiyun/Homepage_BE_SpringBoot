@@ -18,8 +18,6 @@ import static kahlua.KahluaProject.domain.ticketInfo.QTicketInfo.ticketInfo;
 @RequiredArgsConstructor
 public class TicketInfoCustomRepositoryImpl implements TicketInfoCustomRepository {
 
-    @PersistenceContext
-    private EntityManager em;
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
