@@ -1,4 +1,4 @@
-package kahlua.KahluaProject.repository.ticket;
+package kahlua.KahluaProject.repository.ticket.TicketRepository;
 
 
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -16,7 +16,7 @@ import static kahlua.KahluaProject.domain.ticket.QTicket.ticket;
 
 @Repository
 @RequiredArgsConstructor
-public class TicketCustomRepositoryImpl implements TicketCustomRepository{
+public class TicketCustomRepositoryImpl implements TicketCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 

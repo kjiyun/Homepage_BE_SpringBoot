@@ -1,4 +1,4 @@
-package kahlua.KahluaProject.repository.ticket;
+package kahlua.KahluaProject.repository.ticket.TicketRepository;
 
 import kahlua.KahluaProject.domain.ticket.Status;
 import kahlua.KahluaProject.domain.ticket.Ticket;
