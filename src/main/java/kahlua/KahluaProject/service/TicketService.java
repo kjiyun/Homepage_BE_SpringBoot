@@ -3,6 +3,7 @@ package kahlua.KahluaProject.service;
 import jakarta.transaction.Transactional;
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.TicketConverter;
+import kahlua.KahluaProject.converter.TicketInfoConverter;
 import kahlua.KahluaProject.domain.ticket.Participants;
 import kahlua.KahluaProject.domain.ticket.Status;
 import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
@@ -364,13 +365,14 @@ public class TicketService {
 
         //business logic: ticket 정보 수정
         String posterImageUrl = ticketUpdateRequest.posterImageUrl();
-        TicketInfoData ticketInfoData = TicketConverter.toTicketInfo(ticketUpdateRequest);
-        ticketInfo.update(posterImageUrl, ticketInfoData);
+        String youtubeUrl = ticketUpdateRequest.youtubeUrl();
+        TicketInfoData ticketInfoData = TicketInfoConverter.toTicketInfo(ticketUpdateRequest);
+        ticketInfo.update(posterImageUrl, youtubeUrl, ticketInfoData);
 
         TicketInfo updatedTicketInfo = ticketInfoRepository.save(ticketInfo);
 
         //return: 수정된 ticket 정보 반환
-        return TicketConverter.toTicketInfoResponse(updatedTicketInfo);
+        return TicketInfoConverter.toTicketInfoResponse(updatedTicketInfo);
     }
 
     public TicketInfoResponse getTicketInfo(Long ticketInfoId) {
@@ -379,7 +381,7 @@ public class TicketService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
 
         //return: ticket 정보 반환
-        return TicketConverter.toTicketInfoResponse(ticketInfo);
+        return TicketInfoConverter.toTicketInfoResponse(ticketInfo);
     }
 
     public TicketStatisticsResponse getTicketStatistics(User user) {
