@@ -6,13 +6,10 @@ import kahlua.KahluaProject.converter.TicketInfoConverter;
 import kahlua.KahluaProject.domain.ticketInfo.PerformanceStatus;
 import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
 import kahlua.KahluaProject.dto.ticketInfo.response.PerformanceRes;
-import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
 import kahlua.KahluaProject.exception.GeneralException;
-import kahlua.KahluaProject.repository.ticket.TicketInfoRepository;
+import kahlua.KahluaProject.repository.ticket.TicketInfoRepository.TicketInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -29,19 +26,20 @@ public class PerformanceService {
     private final TicketInfoRepository ticketInfoRepository;
 
     public PerformanceRes.performanceListDto getPerformances(Long cursor, int limit){
-        Pageable pageable = PageRequest.of(0, limit+1);
 
         List<TicketInfo> ticketInfos;
         if (cursor == null) {
-            ticketInfos = ticketInfoRepository.findAllByOrderByIdDesc(pageable);
+            ticketInfos = ticketInfoRepository.findTicketInfos(limit+1);
         } else {
-            ticketInfos = ticketInfoRepository.findAllByIdLessThanOrderByIdDesc(cursor, pageable);
+            TicketInfo cursorTicketInfo= ticketInfoRepository.findById(cursor)
+                    .orElseThrow(()->new GeneralException(ErrorStatus.TICKETINFO_NOT_FOUND));
+            LocalDateTime cursorDateTime=cursorTicketInfo.getTicketInfoData().dateTime();
+            ticketInfos = ticketInfoRepository.findTicketInfosByDateTime(cursorDateTime, limit+1);
         }
 
 
         Long nextCursor = null;
         boolean hasNext= ticketInfos.size() > limit;
-
         if (hasNext){
             TicketInfo lastTicketInfo= ticketInfos.get(limit-1);
             nextCursor=lastTicketInfo.getId();
