@@ -9,7 +9,7 @@ import kahlua.KahluaProject.domain.ticket.Status;
 import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
 import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
 import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
-import kahlua.KahluaProject.repository.ticket.TicketInfoRepository;
+import kahlua.KahluaProject.repository.ticket.TicketInfoRepository.TicketInfoRepository;
 import kahlua.KahluaProject.vo.TicketInfoData;
 import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.domain.ticket.Type;
@@ -19,7 +19,7 @@ import kahlua.KahluaProject.dto.ticket.request.TicketCreateRequest;
 import kahlua.KahluaProject.dto.ticket.response.*;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ParticipantsRepository;
-import kahlua.KahluaProject.repository.ticket.TicketRepository;
+import kahlua.KahluaProject.repository.ticket.TicketRepository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -365,8 +365,9 @@ public class TicketService {
 
         //business logic: ticket 정보 수정
         String posterImageUrl = ticketUpdateRequest.posterImageUrl();
+        String youtubeUrl = ticketUpdateRequest.youtubeUrl();
         TicketInfoData ticketInfoData = TicketInfoConverter.toTicketInfo(ticketUpdateRequest);
-        ticketInfo.update(posterImageUrl, ticketInfoData);
+        ticketInfo.update(posterImageUrl, youtubeUrl, ticketInfoData);
 
         TicketInfo updatedTicketInfo = ticketInfoRepository.save(ticketInfo);
 

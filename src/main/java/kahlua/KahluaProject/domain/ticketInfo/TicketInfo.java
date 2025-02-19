@@ -29,15 +29,17 @@ public class TicketInfo extends BaseEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     private TicketInfoData ticketInfoData;
 
-    public static TicketInfo create(String posterImageUrl, TicketInfoData ticketInfoData) {
+    public static TicketInfo create(String posterImageUrl, String youtubeUrl,TicketInfoData ticketInfoData) {
         return TicketInfo.builder()
                 .posterImageUrl(posterImageUrl)
+                .youtubeUrl(youtubeUrl)
                 .ticketInfoData(ticketInfoData)
                 .build();
     }
 
-    public void update(String posterImageUrl, TicketInfoData ticketInfoData) {
+    public void update(String posterImageUrl, String youtubeUrl, TicketInfoData ticketInfoData) {
         this.posterImageUrl = posterImageUrl;
+        this.youtubeUrl = youtubeUrl;
         this.ticketInfoData =ticketInfoData;
     }
 }

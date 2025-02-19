@@ -3,18 +3,12 @@ package kahlua.KahluaProject.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kahlua.KahluaProject.apipayload.ApiResponse;
-import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
-import kahlua.KahluaProject.dto.post.request.PostCreateRequest;
-import kahlua.KahluaProject.dto.post.response.PostCreateResponse;
-import kahlua.KahluaProject.dto.ticket.request.TicketCreateRequest;
-import kahlua.KahluaProject.dto.ticket.response.TicketCreateResponse;
 import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
 import kahlua.KahluaProject.dto.ticketInfo.response.PerformanceRes;
 import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
 import kahlua.KahluaProject.security.AuthDetails;
 import kahlua.KahluaProject.service.PerformanceService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,6 +1,5 @@
 package kahlua.KahluaProject.service;
 
-import jakarta.servlet.http.HttpServletResponse;
 import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.domain.apply.Apply;
 import kahlua.KahluaProject.domain.ticket.Participants;
@@ -9,7 +8,7 @@ import kahlua.KahluaProject.domain.ticket.Type;
 import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ApplyRepository;
 import kahlua.KahluaProject.repository.ParticipantsRepository;
-import kahlua.KahluaProject.repository.ticket.TicketRepository;
+import kahlua.KahluaProject.repository.ticket.TicketRepository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
