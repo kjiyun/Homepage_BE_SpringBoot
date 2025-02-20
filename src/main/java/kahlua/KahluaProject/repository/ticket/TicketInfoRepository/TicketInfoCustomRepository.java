@@ -8,5 +8,5 @@ import java.util.List;
 public interface TicketInfoCustomRepository {
     List<TicketInfo> findTicketInfos(int limit);
 
-    List<TicketInfo> findTicketInfosByDateTime(LocalDateTime dateTime, int limit);
+    List<TicketInfo> findTicketInfosOrderByDateTime(LocalDateTime dateTime, int limit);
 }
