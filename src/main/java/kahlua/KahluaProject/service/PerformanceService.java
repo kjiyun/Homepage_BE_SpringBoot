@@ -30,15 +30,14 @@ public class PerformanceService {
     public PerformanceRes.performanceListDto getPerformances(Long cursor, int limit){
 
         List<TicketInfo> ticketInfos;
-        if (cursor == null) {
+        if (cursor == null || cursor == 0) {
             ticketInfos = ticketInfoRepository.findTicketInfos(limit+1);
         } else {
             TicketInfo cursorTicketInfo= ticketInfoRepository.findById(cursor)
                     .orElseThrow(()->new GeneralException(ErrorStatus.TICKETINFO_NOT_FOUND));
             LocalDateTime cursorDateTime=cursorTicketInfo.getTicketInfoData().dateTime();
-            ticketInfos = ticketInfoRepository.findTicketInfosByDateTime(cursorDateTime, limit+1);
+            ticketInfos = ticketInfoRepository.findTicketInfosOrderByDateTime(cursorDateTime, limit+1);
         }
-
 
         Long nextCursor = null;
         boolean hasNext= ticketInfos.size() > limit;
