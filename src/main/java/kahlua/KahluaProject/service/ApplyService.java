@@ -1,7 +1,7 @@
 package kahlua.KahluaProject.service;
 
 import jakarta.transaction.Transactional;
-import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.ApplyConverter;
 import kahlua.KahluaProject.domain.apply.Apply;
 import kahlua.KahluaProject.domain.apply.Preference;
@@ -13,7 +13,7 @@ import kahlua.KahluaProject.dto.apply.response.*;
 import kahlua.KahluaProject.dto.applyInfo.request.ApplyInfoRequest;
 import kahlua.KahluaProject.dto.applyInfo.response.ApplyInfoResponse;
 import kahlua.KahluaProject.dto.apply.response.ApplyStatisticsResponse;
-import kahlua.KahluaProject.global.exception.GeneralException;
+import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.ApplyInfoRepository;
 import kahlua.KahluaProject.repository.ApplyRepository;
 import kahlua.KahluaProject.vo.ApplyInfoData;

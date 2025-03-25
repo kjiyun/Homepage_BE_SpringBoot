@@ -1,6 +1,6 @@
 package kahlua.KahluaProject.service;
 
-import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.AuthConverter;
 import kahlua.KahluaProject.converter.UserConverter;
 import kahlua.KahluaProject.domain.user.Credential;
@@ -10,9 +10,9 @@ import kahlua.KahluaProject.dto.user.request.SignUpRequest;
 import kahlua.KahluaProject.dto.user.response.SignInResponse;
 import kahlua.KahluaProject.dto.user.response.TokenResponse;
 import kahlua.KahluaProject.dto.user.response.UserResponse;
-import kahlua.KahluaProject.global.exception.GeneralException;
-import kahlua.KahluaProject.global.redis.RedisClient;
-import kahlua.KahluaProject.global.security.jwt.JwtProvider;
+import kahlua.KahluaProject.exception.GeneralException;
+import kahlua.KahluaProject.redis.RedisClient;
+import kahlua.KahluaProject.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

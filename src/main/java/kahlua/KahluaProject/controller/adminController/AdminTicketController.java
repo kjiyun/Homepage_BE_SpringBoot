@@ -2,13 +2,14 @@ package kahlua.KahluaProject.controller.adminController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kahlua.KahluaProject.global.apipayload.ApiResponse;
+import jakarta.servlet.http.HttpServletResponse;
+import kahlua.KahluaProject.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketListResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketStatisticsResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketUpdateResponse;
-import kahlua.KahluaProject.dto.performance.request.PerformanceRequest;
-import kahlua.KahluaProject.dto.performance.response.PerformanceResponse;
-import kahlua.KahluaProject.global.security.AuthDetails;
+import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
+import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
+import kahlua.KahluaProject.security.AuthDetails;
 import kahlua.KahluaProject.service.ExcelConvertService;
 import kahlua.KahluaProject.service.TicketService;
 import lombok.RequiredArgsConstructor;
@@ -99,10 +100,16 @@ public class AdminTicketController {
                 .body(new InputStreamResource(in));
     }
 
-    @PutMapping("/{performance_id}")
-    @Operation(summary = "공연 정보 수정", description = "공연 정보를 수정합니다")
-    public ApiResponse<PerformanceResponse> updatePerformance(@PathVariable("performance_id") Long performanceId, @RequestBody PerformanceRequest performanceRequest, @AuthenticationPrincipal AuthDetails authDetails) {
-        return ApiResponse.onSuccess(ticketService.updatePerformance(performanceId, performanceRequest, authDetails.user()));
+    @PutMapping("/{ticket_info_id}")
+    @Operation(summary = "티켓 정보 수정", description = "티켓 정보를 수정합니다")
+    public ApiResponse<TicketInfoResponse> updateTicketInfo(@PathVariable("ticket_info_id") Long ticketInfoId, @RequestBody TicketInfoRequest ticketUpdateRequest, @AuthenticationPrincipal AuthDetails authDetails) {
+        return ApiResponse.onSuccess(ticketService.updateTicketInfo(ticketInfoId, ticketUpdateRequest, authDetails.user()));
+    }
+
+    @GetMapping("/{ticket_info_id}")
+    @Operation(summary = "티켓 정보 조회", description = "티켓 정보를 조회합니다")
+    public ApiResponse<TicketInfoResponse> getTicketInfo(@PathVariable("ticket_info_id") Long ticketInfoId) {
+        return ApiResponse.onSuccess(ticketService.getTicketInfo(ticketInfoId));
     }
 
     @GetMapping("/statistics")

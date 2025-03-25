@@ -2,7 +2,7 @@ package kahlua.KahluaProject.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kahlua.KahluaProject.global.apipayload.ApiResponse;
+import kahlua.KahluaProject.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.apply.request.ApplyCreateRequest;
 import kahlua.KahluaProject.dto.apply.response.ApplyCreateResponse;
 import kahlua.KahluaProject.dto.apply.response.ApplyGetResponse;

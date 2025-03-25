@@ -1,10 +1,13 @@
 package kahlua.KahluaProject.service;
 
 import jakarta.mail.internet.MimeMessage;
+import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.domain.apply.Apply;
 import kahlua.KahluaProject.domain.apply.Preference;
 import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.domain.ticket.Type;
+import kahlua.KahluaProject.exception.GeneralException;
+import kahlua.KahluaProject.repository.ApplyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;

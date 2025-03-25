@@ -1,89 +1,89 @@
 package kahlua.KahluaProject.service;
 
-import kahlua.KahluaProject.domain.performance.Performance;
-import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
-import kahlua.KahluaProject.converter.PerformanceConverter;
-import kahlua.KahluaProject.domain.performance.PerformanceStatus;
+import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.converter.TicketInfoConverter;
+import kahlua.KahluaProject.domain.ticketInfo.PerformanceStatus;
+import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.domain.user.UserType;
-import kahlua.KahluaProject.dto.performance.request.PerformanceRequest;
-import kahlua.KahluaProject.dto.performance.response.PerformanceListResponse;
-import kahlua.KahluaProject.dto.performance.response.PerformanceResponse;
-import kahlua.KahluaProject.global.exception.GeneralException;
-import kahlua.KahluaProject.repository.ticket.PerformanceRepository.PerformanceRepository;
-import kahlua.KahluaProject.vo.PerformanceData;
+import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
+import kahlua.KahluaProject.dto.ticketInfo.response.PerformanceRes;
+import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
+import kahlua.KahluaProject.exception.GeneralException;
+import kahlua.KahluaProject.repository.ticket.TicketInfoRepository.TicketInfoRepository;
+import kahlua.KahluaProject.vo.TicketInfoData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import static kahlua.KahluaProject.domain.performance.PerformanceStatus.CLOSED;
-import static kahlua.KahluaProject.domain.performance.PerformanceStatus.OPEN;
+import static kahlua.KahluaProject.domain.ticketInfo.PerformanceStatus.CLOSED;
+import static kahlua.KahluaProject.domain.ticketInfo.PerformanceStatus.OPEN;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class PerformanceService {
-    private final PerformanceRepository performanceRepository;
+    private final TicketInfoRepository ticketInfoRepository;
 
-    public PerformanceListResponse.performanceListDto getPerformances(Long cursor, int limit){
+    public PerformanceRes.performanceListDto getPerformances(Long cursor, int limit){
 
-        List<Performance> performances;
+        List<TicketInfo> ticketInfos;
         if (cursor == null || cursor == 0) {
-            performances = performanceRepository.findPerformances(limit+1);
+            ticketInfos = ticketInfoRepository.findTicketInfos(limit+1);
         } else {
-            Performance cursorPerformance = performanceRepository.findById(cursor)
+            TicketInfo cursorTicketInfo= ticketInfoRepository.findById(cursor)
                     .orElseThrow(()->new GeneralException(ErrorStatus.TICKETINFO_NOT_FOUND));
-            LocalDateTime cursorDateTime= cursorPerformance.getPerformanceData().dateTime();
-            performances = performanceRepository.findPerformancesOrderByDateTime(cursorDateTime, limit+1);
+            LocalDateTime cursorDateTime=cursorTicketInfo.getTicketInfoData().dateTime();
+            ticketInfos = ticketInfoRepository.findTicketInfosOrderByDateTime(cursorDateTime, limit+1);
         }
 
         Long nextCursor = null;
-        boolean hasNext= performances.size() > limit;
+        boolean hasNext= ticketInfos.size() > limit;
 
         if (hasNext){
-            Performance lastPerformance = performances.get(limit-1);
-            nextCursor= lastPerformance.getId();
-            performances = performances.subList(0,limit);
+            TicketInfo lastTicketInfo= ticketInfos.get(limit-1);
+            nextCursor=lastTicketInfo.getId();
+            ticketInfos=ticketInfos.subList(0,limit);
         }
 
-        List<PerformanceListResponse.performanceDto> ticketInfoDtos= performances.stream()
-                .map(ticketInfo -> PerformanceConverter.toPerformanceSummaryDto(ticketInfo,checkStatus(ticketInfo)))
+        List<PerformanceRes.performanceDto> ticketInfoDtos=ticketInfos.stream()
+                .map(ticketInfo -> TicketInfoConverter.toPerformanceDto(ticketInfo,checkStatus(ticketInfo)))
                 .collect(Collectors.toList());
 
-        return PerformanceListResponse.performanceListDto.builder()
+        return PerformanceRes.performanceListDto.builder()
                 .performances(ticketInfoDtos)
                 .nextcursor(nextCursor)
                 .hasNext(hasNext)
                 .build();
     }
 
-    public PerformanceStatus checkStatus(Performance performance) {
-        if (LocalDateTime.now().isAfter(performance.getPerformanceData().bookingEndDate()) || LocalDateTime.now().isBefore(performance.getPerformanceData().bookingStartDate())) {
+    public PerformanceStatus checkStatus(TicketInfo ticketInfo) {
+        if (LocalDateTime.now().isAfter(ticketInfo.getTicketInfoData().bookingEndDate()) || LocalDateTime.now().isBefore(ticketInfo.getTicketInfoData().bookingStartDate())) {
             return CLOSED;
         } else{return OPEN;}
     }
 
-    public PerformanceListResponse.performanceInfoDto getPerformanceInfo(Long ticketInfoId){
-        Performance performance = performanceRepository.findById(ticketInfoId)
+    public PerformanceRes.performanceInfoDto getPerformanceInfo(Long ticketInfoId){
+        TicketInfo ticketInfo = ticketInfoRepository.findById(ticketInfoId)
                 .orElseThrow(()->new GeneralException(ErrorStatus.TICKETINFO_NOT_FOUND));
 
-        return PerformanceListResponse.performanceInfoDto.builder()
-                .performanceResponse(PerformanceConverter.toPerformanceDto(performance))
-                .status(checkStatus(performance))
+        return PerformanceRes.performanceInfoDto.builder()
+                .ticketInfoResponse(TicketInfoConverter.toTicketInfoResponse(ticketInfo))
+                .status(checkStatus(ticketInfo))
                 .build();
     }
 
-    public PerformanceResponse createPerformance(PerformanceRequest request, User user) {
+    public TicketInfoResponse createPerformance(TicketInfoRequest request, User user) {
         if(user.getUserType() != UserType.ADMIN) {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
         String posterImageUrl = request.posterImageUrl();
         String youtubeUrl = request.youtubeUrl();
-        PerformanceData performanceData = PerformanceConverter.toPerformance(request);
-        Performance performance = Performance.create(posterImageUrl, youtubeUrl, performanceData);
-        performanceRepository.save(performance);
-        return PerformanceConverter.toPerformanceDto(performance);
+        TicketInfoData ticketInfoData = TicketInfoConverter.toTicketInfo(request);
+        TicketInfo ticketInfo = TicketInfo.create(posterImageUrl, youtubeUrl, ticketInfoData);
+        ticketInfoRepository.save(ticketInfo);
+        return TicketInfoConverter.toTicketInfoResponse(ticketInfo);
     }
 }

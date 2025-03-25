@@ -2,14 +2,15 @@ package kahlua.KahluaProject.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kahlua.KahluaProject.global.apipayload.ApiResponse;
+import kahlua.KahluaProject.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.post.request.PostCreateRequest;
 import kahlua.KahluaProject.dto.post.request.PostUpdateRequest;
 import kahlua.KahluaProject.dto.post.response.PostCreateResponse;
 import kahlua.KahluaProject.dto.post.response.PostGetResponse;
 import kahlua.KahluaProject.dto.post.response.PostUpdateResponse;
-import kahlua.KahluaProject.global.security.AuthDetails;
+import kahlua.KahluaProject.security.AuthDetails;
 import kahlua.KahluaProject.service.PostService;
+import kahlua.KahluaProject.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
