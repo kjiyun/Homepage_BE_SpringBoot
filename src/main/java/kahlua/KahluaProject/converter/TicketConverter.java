@@ -2,11 +2,15 @@ package kahlua.KahluaProject.converter;
 
 import kahlua.KahluaProject.domain.ticket.Participants;
 import kahlua.KahluaProject.domain.ticket.Ticket;
+import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
 import kahlua.KahluaProject.dto.ticket.request.TicketCreateRequest;
 import kahlua.KahluaProject.dto.ticket.response.ParticipantsResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketCreateResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketGetResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketUpdateResponse;
+import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
+import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
+import kahlua.KahluaProject.vo.TicketInfoData;
 
 import java.util.List;
 import java.util.stream.Collectors;

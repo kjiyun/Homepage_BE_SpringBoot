@@ -1,8 +1,10 @@
 package kahlua.KahluaProject.domain.ticket;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import kahlua.KahluaProject.domain.BaseEntity;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 
 import static kahlua.KahluaProject.domain.ticket.Type.FRESHMAN;
 import static kahlua.KahluaProject.domain.ticket.Type.GENERAL;

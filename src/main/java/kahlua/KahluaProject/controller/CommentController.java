@@ -1,13 +1,14 @@
 package kahlua.KahluaProject.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kahlua.KahluaProject.global.apipayload.ApiResponse;
+import kahlua.KahluaProject.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.post.request.CommentsCreateRequest;
 import kahlua.KahluaProject.dto.post.response.CommentsCreateResponse;
 import kahlua.KahluaProject.dto.post.response.CommentsItemResponse;
 import kahlua.KahluaProject.dto.post.response.CommentsListResponse;
-import kahlua.KahluaProject.global.security.AuthDetails;
+import kahlua.KahluaProject.security.AuthDetails;
 import kahlua.KahluaProject.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

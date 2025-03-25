@@ -1,7 +1,7 @@
 package kahlua.KahluaProject.service;
 
 import jakarta.persistence.EntityManager;
-import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.CommentConverter;
 import kahlua.KahluaProject.domain.post.Comment;
 import kahlua.KahluaProject.domain.post.Post;
@@ -10,16 +10,18 @@ import kahlua.KahluaProject.dto.post.request.CommentsCreateRequest;
 import kahlua.KahluaProject.dto.post.response.CommentsCreateResponse;
 import kahlua.KahluaProject.dto.post.response.CommentsItemResponse;
 import kahlua.KahluaProject.dto.post.response.CommentsListResponse;
-import kahlua.KahluaProject.global.exception.GeneralException;
+import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.comment.CommentRepository;
 import kahlua.KahluaProject.repository.comment.CommentRepositoryCustom;
 import kahlua.KahluaProject.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.SoftDelete;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

@@ -1,12 +1,12 @@
 package kahlua.KahluaProject.service;
 
-import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.UserConverter;
 import kahlua.KahluaProject.domain.user.*;
 import kahlua.KahluaProject.dto.user.request.SignUpRequest;
 import kahlua.KahluaProject.dto.user.request.UserInfoRequest;
 import kahlua.KahluaProject.dto.user.response.UserResponse;
-import kahlua.KahluaProject.global.exception.GeneralException;
+import kahlua.KahluaProject.exception.GeneralException;
 import kahlua.KahluaProject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
