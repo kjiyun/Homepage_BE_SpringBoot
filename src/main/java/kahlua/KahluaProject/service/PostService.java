@@ -1,6 +1,6 @@
 package kahlua.KahluaProject.service;
 
-import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.PostConverter;
 import kahlua.KahluaProject.domain.post.Post;
 import kahlua.KahluaProject.domain.post.PostImage;
@@ -13,9 +13,8 @@ import kahlua.KahluaProject.dto.post.response.PostCreateResponse;
 import kahlua.KahluaProject.dto.post.response.PostGetResponse;
 import kahlua.KahluaProject.dto.post.response.PostImageCreateResponse;
 import kahlua.KahluaProject.dto.post.response.PostUpdateResponse;
-import kahlua.KahluaProject.exception.GeneralException;
+import kahlua.KahluaProject.global.exception.GeneralException;
 import kahlua.KahluaProject.repository.PostImageRepository;
-import kahlua.KahluaProject.repository.UserRepository;
 import kahlua.KahluaProject.repository.post.PostLikesRepository;
 import kahlua.KahluaProject.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
