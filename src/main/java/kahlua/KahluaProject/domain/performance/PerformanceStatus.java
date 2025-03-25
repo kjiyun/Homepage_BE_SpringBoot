@@ -1,4 +1,4 @@
-package kahlua.KahluaProject.domain.ticketInfo;
+package kahlua.KahluaProject.domain.performance;
 
 public enum PerformanceStatus {
     OPEN,

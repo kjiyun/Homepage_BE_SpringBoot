@@ -1,16 +1,16 @@
 package kahlua.KahluaProject.service;
 
 import jakarta.transaction.Transactional;
+import kahlua.KahluaProject.domain.performance.Performance;
 import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.TicketConverter;
-import kahlua.KahluaProject.converter.TicketInfoConverter;
+import kahlua.KahluaProject.converter.PerformanceConverter;
 import kahlua.KahluaProject.domain.ticket.Participants;
 import kahlua.KahluaProject.domain.ticket.Status;
-import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
-import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
-import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
-import kahlua.KahluaProject.repository.ticket.TicketInfoRepository.TicketInfoRepository;
-import kahlua.KahluaProject.vo.TicketInfoData;
+import kahlua.KahluaProject.dto.performance.request.PerformanceRequest;
+import kahlua.KahluaProject.dto.performance.response.PerformanceResponse;
+import kahlua.KahluaProject.repository.ticket.PerformanceRepository.PerformanceRepository;
+import kahlua.KahluaProject.vo.PerformanceData;
 import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.domain.ticket.Type;
 import kahlua.KahluaProject.domain.user.User;
@@ -35,7 +35,7 @@ public class TicketService {
     private final ParticipantsService participantsService;
     private final ParticipantsRepository participantsRepository;
     private final MailService mailService;
-    private final TicketInfoRepository ticketInfoRepository;
+    private final PerformanceRepository performanceRepository;
 
 
     @Transactional
@@ -354,9 +354,9 @@ public class TicketService {
         return total;
     }
 
-    public TicketInfoResponse updateTicketInfo(Long ticketInfoId, TicketInfoRequest ticketUpdateRequest, User user) {
+    public PerformanceResponse updatePerformance(Long ticketInfoId, PerformanceRequest ticketUpdateRequest, User user) {
         //validation: ticketId 존재 여부 확인/ user가 admin인지 확인
-        TicketInfo ticketInfo = ticketInfoRepository.findById(ticketInfoId)
+        Performance performance = performanceRepository.findById(ticketInfoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
 
         if (user.getUserType() != UserType.ADMIN) {
@@ -366,22 +366,13 @@ public class TicketService {
         //business logic: ticket 정보 수정
         String posterImageUrl = ticketUpdateRequest.posterImageUrl();
         String youtubeUrl = ticketUpdateRequest.youtubeUrl();
-        TicketInfoData ticketInfoData = TicketInfoConverter.toTicketInfo(ticketUpdateRequest);
-        ticketInfo.update(posterImageUrl, youtubeUrl, ticketInfoData);
+        PerformanceData performanceData = PerformanceConverter.toPerformance(ticketUpdateRequest);
+        performance.update(posterImageUrl, youtubeUrl, performanceData);
 
-        TicketInfo updatedTicketInfo = ticketInfoRepository.save(ticketInfo);
+        Performance updatedPerformance = performanceRepository.save(performance);
 
         //return: 수정된 ticket 정보 반환
-        return TicketInfoConverter.toTicketInfoResponse(updatedTicketInfo);
-    }
-
-    public TicketInfoResponse getTicketInfo(Long ticketInfoId) {
-        //validation: ticketId 존재 여부 확인
-        TicketInfo ticketInfo = ticketInfoRepository.findById(ticketInfoId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
-
-        //return: ticket 정보 반환
-        return TicketInfoConverter.toTicketInfoResponse(ticketInfo);
+        return PerformanceConverter.toPerformanceDto(updatedPerformance);
     }
 
     public TicketStatisticsResponse getTicketStatistics(User user) {

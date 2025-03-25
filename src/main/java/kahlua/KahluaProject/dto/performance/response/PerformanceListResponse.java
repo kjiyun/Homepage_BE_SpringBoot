@@ -1,7 +1,7 @@
-package kahlua.KahluaProject.dto.ticketInfo.response;
+package kahlua.KahluaProject.dto.performance.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import kahlua.KahluaProject.domain.ticketInfo.PerformanceStatus;
+import kahlua.KahluaProject.domain.performance.PerformanceStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Getter;
 import java.util.List;
 
 
-public class PerformanceRes {
+public class PerformanceListResponse {
 
     @Getter
     @Builder
@@ -47,7 +47,7 @@ public class PerformanceRes {
     @Builder
     @AllArgsConstructor
     public static class performanceInfoDto{
-        TicketInfoResponse ticketInfoResponse;
+        PerformanceResponse performanceResponse;
 
         @Schema(description = "공연 상태")
         PerformanceStatus status;

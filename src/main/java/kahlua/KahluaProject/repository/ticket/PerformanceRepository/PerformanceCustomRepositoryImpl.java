@@ -1,29 +1,30 @@
-package kahlua.KahluaProject.repository.ticket.TicketInfoRepository;
+package kahlua.KahluaProject.repository.ticket.PerformanceRepository;
 
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
+import kahlua.KahluaProject.domain.performance.Performance;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static kahlua.KahluaProject.domain.ticketInfo.QTicketInfo.ticketInfo;
+import static kahlua.KahluaProject.domain.performance.QPerformance.performance;
+
 
 
 @Repository
 @RequiredArgsConstructor
-public class TicketInfoCustomRepositoryImpl implements TicketInfoCustomRepository {
+public class PerformanceCustomRepositoryImpl implements PerformanceCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<TicketInfo> findTicketInfos(int limit) {
+    public List<Performance> findPerformances(int limit) {
         return jpaQueryFactory
-                .selectFrom(ticketInfo)
+                .selectFrom(performance)
                 .orderBy(
-                        Expressions.stringTemplate("JSON_UNQUOTE(JSON_EXTRACT({0}, '$.date_time'))", ticketInfo.ticketInfoData)
+                        Expressions.stringTemplate("JSON_UNQUOTE(JSON_EXTRACT({0}, '$.date_time'))", performance.performanceData)
                                 .desc()
                 )
                 .limit(limit)
@@ -31,7 +32,7 @@ public class TicketInfoCustomRepositoryImpl implements TicketInfoCustomRepositor
     }
 
     @Override
-    public List<TicketInfo> findTicketInfosOrderByDateTime(LocalDateTime cursorDateTime, int limit) {
+    public List<Performance> findPerformancesOrderByDateTime(LocalDateTime cursorDateTime, int limit) {
         DateTimeExpression<LocalDateTime> dbDateTimeExpr = Expressions.dateTimeTemplate(
                 LocalDateTime.class,
                 "STR_TO_DATE(CONCAT("
@@ -42,7 +43,7 @@ public class TicketInfoCustomRepositoryImpl implements TicketInfoCustomRepositor
                         + "LPAD(CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.date_time[4]'))), 2, '0'), ':',"
                         + "LPAD(CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.date_time[5]'))), 2, '0')"
                         + "), '%Y-%m-%d %H:%i:%s')",
-                ticketInfo.ticketInfoData
+                performance.performanceData
         );
 
         String cursorFormatted = cursorDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -55,7 +56,7 @@ public class TicketInfoCustomRepositoryImpl implements TicketInfoCustomRepositor
 
         //cursorDateTime보다 과거, 최신순, 페이징
         return jpaQueryFactory
-                .selectFrom(ticketInfo)
+                .selectFrom(performance)
                 .where(dbDateTimeExpr.lt(cursorDateTimeExpr))
                 .orderBy(dbDateTimeExpr.desc())
                 .limit(limit)

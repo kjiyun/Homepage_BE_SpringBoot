@@ -1,4 +1,4 @@
-package kahlua.KahluaProject.dto.ticketInfo.response;
+package kahlua.KahluaProject.dto.performance.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record TicketInfoResponse(
+public record PerformanceResponse(
 
         @Schema(description = "아이디", example = "1")
         Long id,

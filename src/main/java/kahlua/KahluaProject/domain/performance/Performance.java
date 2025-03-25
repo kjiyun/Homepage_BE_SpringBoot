@@ -1,8 +1,8 @@
-package kahlua.KahluaProject.domain.ticketInfo;
+package kahlua.KahluaProject.domain.performance;
 
 import jakarta.persistence.*;
 import kahlua.KahluaProject.domain.BaseEntity;
-import kahlua.KahluaProject.vo.TicketInfoData;
+import kahlua.KahluaProject.vo.PerformanceData;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -12,7 +12,7 @@ import org.hibernate.type.SqlTypes;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TicketInfo extends BaseEntity {
+public class Performance extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,19 +27,19 @@ public class TicketInfo extends BaseEntity {
 
     @Column(columnDefinition = "json")
     @JdbcTypeCode(SqlTypes.JSON)
-    private TicketInfoData ticketInfoData;
+    private PerformanceData performanceData;
 
-    public static TicketInfo create(String posterImageUrl, String youtubeUrl,TicketInfoData ticketInfoData) {
-        return TicketInfo.builder()
+    public static Performance create(String posterImageUrl, String youtubeUrl, PerformanceData performanceData) {
+        return Performance.builder()
                 .posterImageUrl(posterImageUrl)
                 .youtubeUrl(youtubeUrl)
-                .ticketInfoData(ticketInfoData)
+                .performanceData(performanceData)
                 .build();
     }
 
-    public void update(String posterImageUrl, String youtubeUrl, TicketInfoData ticketInfoData) {
+    public void update(String posterImageUrl, String youtubeUrl, PerformanceData performanceData) {
         this.posterImageUrl = posterImageUrl;
         this.youtubeUrl = youtubeUrl;
-        this.ticketInfoData =ticketInfoData;
+        this.performanceData = performanceData;
     }
 }

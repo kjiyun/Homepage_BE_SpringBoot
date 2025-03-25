@@ -3,9 +3,9 @@ package kahlua.KahluaProject.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kahlua.KahluaProject.global.apipayload.ApiResponse;
-import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
-import kahlua.KahluaProject.dto.ticketInfo.response.PerformanceRes;
-import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
+import kahlua.KahluaProject.dto.performance.request.PerformanceRequest;
+import kahlua.KahluaProject.dto.performance.response.PerformanceListResponse;
+import kahlua.KahluaProject.dto.performance.response.PerformanceResponse;
 import kahlua.KahluaProject.global.security.AuthDetails;
 import kahlua.KahluaProject.service.PerformanceService;
 import lombok.RequiredArgsConstructor;
@@ -21,22 +21,22 @@ public class PerformanceController {
 
     @GetMapping
     @Operation(summary = "공연 리스트 조회 API", description = "공연들을 조회하는 API입니다.")
-    public ApiResponse<PerformanceRes.performanceListDto> getPerformances(
+    public ApiResponse<PerformanceListResponse.performanceListDto> getPerformances(
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "8") int limit){
         return ApiResponse.onSuccess(performanceService.getPerformances(cursor, limit));
     }
 
-    @GetMapping("/{ticketInfoId}")
+    @GetMapping("/{performance_id}")
     @Operation(summary = "공연 상세정보 조회 API", description = "특정 공연의 상세정보를 조회하는 API입니다.")
-    public ApiResponse<PerformanceRes.performanceInfoDto> getPerformanceInfo(@PathVariable Long ticketInfoId){
-        return ApiResponse.onSuccess(performanceService.getPerformanceInfo(ticketInfoId));
+    public ApiResponse<PerformanceListResponse.performanceInfoDto> getPerformanceInfo(@PathVariable Long performance_id){
+        return ApiResponse.onSuccess(performanceService.getPerformanceInfo(performance_id));
     }
 
     @PostMapping("/create")
     @Operation(summary = "공연정보 생성 API", description = "새로운 공연을 생성하는 API입니다.")
-    public ApiResponse<TicketInfoResponse> createPerformance(@RequestBody TicketInfoRequest ticketCreateRequest, @AuthenticationPrincipal AuthDetails authDetails){
-        TicketInfoResponse ticketinfoResponse = performanceService.createPerformance(ticketCreateRequest, authDetails.user());
+    public ApiResponse<PerformanceResponse> createPerformance(@RequestBody PerformanceRequest ticketCreateRequest, @AuthenticationPrincipal AuthDetails authDetails){
+        PerformanceResponse ticketinfoResponse = performanceService.createPerformance(ticketCreateRequest, authDetails.user());
         return ApiResponse.onSuccess(ticketinfoResponse);
     }
 }
