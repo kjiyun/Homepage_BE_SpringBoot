@@ -375,6 +375,15 @@ public class TicketService {
         return PerformanceConverter.toPerformanceDto(updatedPerformance);
     }
 
+    public PerformanceResponse getTicketInfo(Long performanceId) {
+        //validation: ticketId 존재 여부 확인
+        Performance performance = performanceRepository.findById(performanceId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
+
+        //return: ticket 정보 반환
+        return PerformanceConverter.toPerformanceDto(performance);
+    }
+
     public TicketStatisticsResponse getTicketStatistics(User user) {
         //validation: user가 admin인지 확인
         if (user.getUserType() != UserType.ADMIN) {
