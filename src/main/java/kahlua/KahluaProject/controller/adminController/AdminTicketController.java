@@ -2,14 +2,13 @@ package kahlua.KahluaProject.controller.adminController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
-import kahlua.KahluaProject.apipayload.ApiResponse;
+import kahlua.KahluaProject.global.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketListResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketStatisticsResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketUpdateResponse;
 import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
 import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
-import kahlua.KahluaProject.security.AuthDetails;
+import kahlua.KahluaProject.global.security.AuthDetails;
 import kahlua.KahluaProject.service.ExcelConvertService;
 import kahlua.KahluaProject.service.TicketService;
 import lombok.RequiredArgsConstructor;

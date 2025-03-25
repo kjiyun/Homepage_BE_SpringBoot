@@ -2,15 +2,14 @@ package kahlua.KahluaProject.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kahlua.KahluaProject.apipayload.ApiResponse;
+import kahlua.KahluaProject.global.apipayload.ApiResponse;
 import kahlua.KahluaProject.converter.UserConverter;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.dto.user.request.UserInfoRequest;
 import kahlua.KahluaProject.dto.user.response.UserResponse;
-import kahlua.KahluaProject.security.AuthDetails;
+import kahlua.KahluaProject.global.security.AuthDetails;
 import kahlua.KahluaProject.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 

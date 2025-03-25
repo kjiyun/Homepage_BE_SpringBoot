@@ -1,7 +1,7 @@
 package kahlua.KahluaProject.service;
 
 import jakarta.transaction.Transactional;
-import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.TicketConverter;
 import kahlua.KahluaProject.converter.TicketInfoConverter;
 import kahlua.KahluaProject.domain.ticket.Participants;
@@ -17,7 +17,7 @@ import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.ticket.request.TicketCreateRequest;
 import kahlua.KahluaProject.dto.ticket.response.*;
-import kahlua.KahluaProject.exception.GeneralException;
+import kahlua.KahluaProject.global.exception.GeneralException;
 import kahlua.KahluaProject.repository.ParticipantsRepository;
 import kahlua.KahluaProject.repository.ticket.TicketRepository.TicketRepository;
 import lombok.RequiredArgsConstructor;

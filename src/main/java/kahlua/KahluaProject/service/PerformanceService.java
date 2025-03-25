@@ -1,6 +1,6 @@
 package kahlua.KahluaProject.service;
 
-import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.TicketInfoConverter;
 import kahlua.KahluaProject.domain.ticketInfo.PerformanceStatus;
 import kahlua.KahluaProject.domain.ticketInfo.TicketInfo;
@@ -9,7 +9,7 @@ import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.ticketInfo.request.TicketInfoRequest;
 import kahlua.KahluaProject.dto.ticketInfo.response.PerformanceRes;
 import kahlua.KahluaProject.dto.ticketInfo.response.TicketInfoResponse;
-import kahlua.KahluaProject.exception.GeneralException;
+import kahlua.KahluaProject.global.exception.GeneralException;
 import kahlua.KahluaProject.repository.ticket.TicketInfoRepository.TicketInfoRepository;
 import kahlua.KahluaProject.vo.TicketInfoData;
 import lombok.RequiredArgsConstructor;
