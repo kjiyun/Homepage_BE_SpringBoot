@@ -1,11 +1,11 @@
 package kahlua.KahluaProject.service;
 
-import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.domain.apply.Apply;
 import kahlua.KahluaProject.domain.ticket.Participants;
 import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.domain.ticket.Type;
-import kahlua.KahluaProject.exception.GeneralException;
+import kahlua.KahluaProject.global.exception.GeneralException;
 import kahlua.KahluaProject.repository.ApplyRepository;
 import kahlua.KahluaProject.repository.ParticipantsRepository;
 import kahlua.KahluaProject.repository.ticket.TicketRepository.TicketRepository;
