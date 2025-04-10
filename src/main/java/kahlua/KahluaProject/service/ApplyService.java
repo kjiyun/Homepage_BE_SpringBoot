@@ -1,6 +1,7 @@
 package kahlua.KahluaProject.service;
 
 import jakarta.transaction.Transactional;
+import kahlua.KahluaProject.global.aop.checkAdmin.CheckUserType;
 import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.ApplyConverter;
 import kahlua.KahluaProject.domain.apply.Apply;
@@ -69,12 +70,8 @@ public class ApplyService {
         return applyAdminGetResponse;
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     public ApplyListResponse getApplyList(User user) {
-
-        if(user.getUserType() != UserType.ADMIN){
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
-
         List<Apply> applies = applyRepository.findAll();
         List<ApplyItemResponse> applyItemResponses = new ArrayList<>();
         Long total = applyRepository.count();
@@ -103,12 +100,8 @@ public class ApplyService {
         return applyListResponse;
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     public ApplyListResponse getApplyListByPreference(User user, Preference preference) {
-
-        if(user.getUserType() != UserType.ADMIN){
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
-
         List<Apply> firstPreferenceApplies = applyRepository.findAllByFirstPreference(preference);
         List<Apply> secondPreferenceApplies = applyRepository.findAllBySecondPreference(preference);
 
@@ -154,14 +147,11 @@ public class ApplyService {
         return applyListResponse;
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     public ApplyInfoResponse updateApplyInfo(Long applyInfoId, ApplyInfoRequest applyInfoRequest, User user) {
         //validation: applyId 유효성, 관리자 권한 확인
         ApplyInfo applyInfo = applyInfoRepository.findById(applyInfoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.APPLY_INFO_NOT_FOUND));
-
-        if(user.getUserType() != UserType.ADMIN){
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
 
         //business logic: applyInfo 데이터 변환 및 변경사항 업데이트
         ApplyInfoData applyInfodata = ApplyConverter.toApplyInfo(applyInfoRequest);
@@ -184,9 +174,6 @@ public class ApplyService {
 
     public ApplyStatisticsResponse getApplyStatistics(User user) {
         //validation: 관리자 권한 확인
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
 
         //business logic: 전체 지원자 수, 각 세션별 지원자 수 조회
         Long totalApplyCount = applyRepository.countByDeletedAtIsNull()

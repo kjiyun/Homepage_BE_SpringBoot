@@ -2,6 +2,8 @@ package kahlua.KahluaProject.controller.adminController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kahlua.KahluaProject.domain.user.UserType;
+import kahlua.KahluaProject.global.aop.checkAdmin.CheckUserType;
 import kahlua.KahluaProject.global.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketListResponse;
 import kahlua.KahluaProject.dto.ticket.response.TicketStatisticsResponse;
@@ -25,6 +27,7 @@ import java.io.IOException;
 @Tag(name = "관리자(예매하기)", description = "관리자(예매하기) 페이지 관련 API")
 @RestController
 @RequiredArgsConstructor
+@CheckUserType(userType = UserType.ADMIN)
 @RequestMapping("/v1/admin/tickets")
 public class AdminTicketController {
 

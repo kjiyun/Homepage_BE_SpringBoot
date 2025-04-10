@@ -1,12 +1,10 @@
 package kahlua.KahluaProject.service;
 
 import kahlua.KahluaProject.domain.performance.Performance;
-import kahlua.KahluaProject.global.aop.checkAdmin.CheckAdmin;
+import kahlua.KahluaProject.global.aop.checkAdmin.CheckUserType;
 import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.PerformanceConverter;
 import kahlua.KahluaProject.domain.performance.PerformanceStatus;
-import kahlua.KahluaProject.domain.user.User;
-import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.performance.request.PerformanceRequest;
 import kahlua.KahluaProject.dto.performance.response.PerformanceListResponse;
 import kahlua.KahluaProject.dto.performance.response.PerformanceResponse;
@@ -77,10 +75,9 @@ public class PerformanceService {
                 .build();
     }
 
-    public PerformanceResponse createPerformance(PerformanceRequest request, User user) {
-        if(user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
+
+    public PerformanceResponse createPerformance(PerformanceRequest request) {
+
         String posterImageUrl = request.posterImageUrl();
         String youtubeUrl = request.youtubeUrl();
         PerformanceData performanceData = PerformanceConverter.toPerformance(request);
@@ -89,8 +86,7 @@ public class PerformanceService {
         return PerformanceConverter.toPerformanceDto(performance);
     }
 
-    @CheckAdmin
-    public void deletePerformance(Long ticketInfoId, AuthDetails authDetails) {
+    public void deletePerformance(Long ticketInfoId) {
         Performance performance=performanceRepository.findById(ticketInfoId)
                 .orElseThrow(()->new GeneralException(ErrorStatus.PERFORMANCE_NOT_FOUND));
 

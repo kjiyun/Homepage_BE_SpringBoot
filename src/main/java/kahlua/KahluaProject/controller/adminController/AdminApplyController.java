@@ -2,6 +2,7 @@ package kahlua.KahluaProject.controller.adminController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kahlua.KahluaProject.global.aop.checkAdmin.CheckUserType;
 import kahlua.KahluaProject.global.apipayload.ApiResponse;
 import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.domain.apply.Preference;
@@ -28,6 +29,7 @@ import java.io.IOException;
 @Tag(name = "관리자(지원하기)", description = "관리자(지원하기) 페이지 관련 API")
 @RestController
 @RequiredArgsConstructor
+@CheckUserType(userType = UserType.ADMIN)
 @RequestMapping("/v1/admin/apply")
 public class AdminApplyController {
 
