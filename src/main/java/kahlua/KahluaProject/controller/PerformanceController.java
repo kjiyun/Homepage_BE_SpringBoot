@@ -39,5 +39,13 @@ public class PerformanceController {
         PerformanceResponse ticketinfoResponse = performanceService.createPerformance(ticketCreateRequest, authDetails.user());
         return ApiResponse.onSuccess(ticketinfoResponse);
     }
+
+    @DeleteMapping("/{performanceId}")
+    @Operation(summary = "공연 삭제 API", description = "공연을 삭제하는 API입니다.")
+    public ApiResponse<Void> deletePerformance(@PathVariable Long performanceId,@AuthenticationPrincipal AuthDetails authDetails){
+        performanceService.deletePerformance(performanceId, authDetails);
+
+        return ApiResponse.onSuccess(null);
+    }
 }
 
