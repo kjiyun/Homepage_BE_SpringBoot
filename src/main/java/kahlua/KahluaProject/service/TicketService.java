@@ -2,6 +2,7 @@ package kahlua.KahluaProject.service;
 
 import jakarta.transaction.Transactional;
 import kahlua.KahluaProject.domain.performance.Performance;
+import kahlua.KahluaProject.global.aop.checkAdmin.CheckUserType;
 import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.TicketConverter;
 import kahlua.KahluaProject.converter.PerformanceConverter;
@@ -72,11 +73,8 @@ public class TicketService {
 
     //티켓 결제 완료한 경우
     @Transactional
-    public TicketUpdateResponse completePayment(User user, Long ticketId) {
-
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
+    @CheckUserType(userType = UserType.ADMIN)
+    public TicketUpdateResponse completePayment(Long ticketId) {
 
         Ticket existingTicket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
@@ -108,11 +106,7 @@ public class TicketService {
 
     //티켓 취소 완료
     @Transactional
-    public TicketUpdateResponse completeCancelTicket(User user, Long ticketId) {
-
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
+    public TicketUpdateResponse completeCancelTicket(Long ticketId) {
 
         Ticket existingTicket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
@@ -136,12 +130,7 @@ public class TicketService {
     }
 
     // 어드민 페이지 티켓 리스트 조회
-    public TicketListResponse getTicketList(User user, String sortBy) {
-
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
-
+    public TicketListResponse getTicketList(String sortBy) {
         List<Ticket> tickets;
 
         if (sortBy != null) {
@@ -213,11 +202,7 @@ public class TicketService {
     }
 
     // 일반 티켓 리스트 조회
-    public TicketListResponse getGeneralTicketList(User user, String sortBy) {
-
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
+    public TicketListResponse getGeneralTicketList(String sortBy) {
 
         List<Ticket> tickets;
 
@@ -267,11 +252,7 @@ public class TicketService {
     }
 
     // 신입생 티켓 리스트 조회
-    public TicketListResponse getFreshmanTicketList(User user, String sortBy) {
-
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
+    public TicketListResponse getFreshmanTicketList(String sortBy) {
 
         List<Ticket> tickets;
 
@@ -354,14 +335,10 @@ public class TicketService {
         return total;
     }
 
-    public PerformanceResponse updatePerformance(Long ticketInfoId, PerformanceRequest ticketUpdateRequest, User user) {
-        //validation: ticketId 존재 여부 확인/ user가 admin인지 확인
+    public PerformanceResponse updatePerformance(Long ticketInfoId, PerformanceRequest ticketUpdateRequest) {
+        //validation: ticketId 존재 여부 확인
         Performance performance = performanceRepository.findById(ticketInfoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
-
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
 
         //business logic: ticket 정보 수정
         String posterImageUrl = ticketUpdateRequest.posterImageUrl();
@@ -384,11 +361,7 @@ public class TicketService {
         return PerformanceConverter.toPerformanceDto(performance);
     }
 
-    public TicketStatisticsResponse getTicketStatistics(User user) {
-        //validation: user가 admin인지 확인
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
+    public TicketStatisticsResponse getTicketStatistics() {
 
         //business logic: 티켓 통계 조회
         Long totalTicket = ticketRepository.countAllByDeletedAtIsNull()

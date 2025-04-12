@@ -2,6 +2,8 @@ package kahlua.KahluaProject.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kahlua.KahluaProject.domain.user.UserType;
+import kahlua.KahluaProject.global.aop.checkAdmin.CheckUserType;
 import kahlua.KahluaProject.global.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.performance.request.PerformanceRequest;
 import kahlua.KahluaProject.dto.performance.response.PerformanceListResponse;
@@ -33,11 +35,21 @@ public class PerformanceController {
         return ApiResponse.onSuccess(performanceService.getPerformanceInfo(performance_id));
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @PostMapping("/create")
     @Operation(summary = "공연정보 생성 API", description = "새로운 공연을 생성하는 API입니다.")
     public ApiResponse<PerformanceResponse> createPerformance(@RequestBody PerformanceRequest ticketCreateRequest, @AuthenticationPrincipal AuthDetails authDetails){
-        PerformanceResponse ticketinfoResponse = performanceService.createPerformance(ticketCreateRequest, authDetails.user());
+        PerformanceResponse ticketinfoResponse = performanceService.createPerformance(ticketCreateRequest);
         return ApiResponse.onSuccess(ticketinfoResponse);
+    }
+
+    @CheckUserType(userType = UserType.ADMIN)
+    @DeleteMapping("/{performanceId}")
+    @Operation(summary = "공연 삭제 API", description = "공연을 삭제하는 API입니다.")
+    public ApiResponse<Void> deletePerformance(@PathVariable Long performanceId,@AuthenticationPrincipal AuthDetails authDetails){
+        performanceService.deletePerformance(performanceId);
+
+        return ApiResponse.onSuccess(null);
     }
 }
 

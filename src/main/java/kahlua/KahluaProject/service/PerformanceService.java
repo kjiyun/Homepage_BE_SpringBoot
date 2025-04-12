@@ -1,15 +1,15 @@
 package kahlua.KahluaProject.service;
 
 import kahlua.KahluaProject.domain.performance.Performance;
+import kahlua.KahluaProject.global.aop.checkAdmin.CheckUserType;
 import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.PerformanceConverter;
 import kahlua.KahluaProject.domain.performance.PerformanceStatus;
-import kahlua.KahluaProject.domain.user.User;
-import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.performance.request.PerformanceRequest;
 import kahlua.KahluaProject.dto.performance.response.PerformanceListResponse;
 import kahlua.KahluaProject.dto.performance.response.PerformanceResponse;
 import kahlua.KahluaProject.global.exception.GeneralException;
+import kahlua.KahluaProject.global.security.AuthDetails;
 import kahlua.KahluaProject.repository.ticket.PerformanceRepository.PerformanceRepository;
 import kahlua.KahluaProject.vo.PerformanceData;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class PerformanceService {
             performances = performanceRepository.findPerformances(limit+1);
         } else {
             Performance cursorPerformance = performanceRepository.findById(cursor)
-                    .orElseThrow(()->new GeneralException(ErrorStatus.TICKETINFO_NOT_FOUND));
+                    .orElseThrow(()->new GeneralException(ErrorStatus.PERFORMANCE_NOT_FOUND));
             LocalDateTime cursorDateTime= cursorPerformance.getPerformanceData().dateTime();
             performances = performanceRepository.findPerformancesOrderByDateTime(cursorDateTime, limit+1);
         }
@@ -67,7 +67,7 @@ public class PerformanceService {
 
     public PerformanceListResponse.performanceInfoDto getPerformanceInfo(Long ticketInfoId){
         Performance performance = performanceRepository.findById(ticketInfoId)
-                .orElseThrow(()->new GeneralException(ErrorStatus.TICKETINFO_NOT_FOUND));
+                .orElseThrow(()->new GeneralException(ErrorStatus.PERFORMANCE_NOT_FOUND));
 
         return PerformanceListResponse.performanceInfoDto.builder()
                 .performanceResponse(PerformanceConverter.toPerformanceDto(performance))
@@ -75,15 +75,21 @@ public class PerformanceService {
                 .build();
     }
 
-    public PerformanceResponse createPerformance(PerformanceRequest request, User user) {
-        if(user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
+
+    public PerformanceResponse createPerformance(PerformanceRequest request) {
+
         String posterImageUrl = request.posterImageUrl();
         String youtubeUrl = request.youtubeUrl();
         PerformanceData performanceData = PerformanceConverter.toPerformance(request);
         Performance performance = Performance.create(posterImageUrl, youtubeUrl, performanceData);
         performanceRepository.save(performance);
         return PerformanceConverter.toPerformanceDto(performance);
+    }
+
+    public void deletePerformance(Long ticketInfoId) {
+        Performance performance=performanceRepository.findById(ticketInfoId)
+                .orElseThrow(()->new GeneralException(ErrorStatus.PERFORMANCE_NOT_FOUND));
+
+        performanceRepository.delete(performance);
     }
 }

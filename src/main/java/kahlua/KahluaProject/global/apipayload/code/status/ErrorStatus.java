@@ -26,6 +26,8 @@ public enum ErrorStatus implements BaseCode {
     ALREADY_EXIST_USER(HttpStatus.BAD_REQUEST, "ALREADY_EXIST_USER", "이미 존재하는 회원입니다."),
     REDIS_NOT_FOUND(HttpStatus.NOT_FOUND, "REDIS_NOT_FOUND", "Redis 설정에 오류가 발생했습니다."),
 
+    //유저 에러
+    INVALID_USER_TYPE(HttpStatus.UNAUTHORIZED, "USER_NOT_ADMIN", "요구한 사용자 타입이 아닙니다."),
 
     // 세션 에러
     SESSION_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "유효하지 않은 세션입니다."),
@@ -54,7 +56,7 @@ public enum ErrorStatus implements BaseCode {
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION_NOT_FOUND", "예약내역을 찾을 수 없습니다."),
 
     //공연 관련 에러
-    TICKETINFO_NOT_FOUND(HttpStatus.NOT_FOUND,"TICKET_INFO<NOT_FOUND","공연 정보를 찾을 수 없습니다."),
+    PERFORMANCE_NOT_FOUND(HttpStatus.NOT_FOUND,"PERFORMANCE_NOT_FOUND","공연 정보를 찾을 수 없습니다."),
 
     ;
 

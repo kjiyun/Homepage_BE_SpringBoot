@@ -2,6 +2,7 @@ package kahlua.KahluaProject.controller.adminController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kahlua.KahluaProject.global.aop.checkAdmin.CheckUserType;
 import kahlua.KahluaProject.global.apipayload.ApiResponse;
 import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.domain.apply.Preference;
@@ -28,6 +29,7 @@ import java.io.IOException;
 @Tag(name = "관리자(지원하기)", description = "관리자(지원하기) 페이지 관련 API")
 @RestController
 @RequiredArgsConstructor
+@CheckUserType(userType = UserType.ADMIN)
 @RequestMapping("/v1/admin/apply")
 public class AdminApplyController {
 
@@ -37,7 +39,7 @@ public class AdminApplyController {
     @GetMapping("/all")
     @Operation(summary = "지원자 리스트 조회", description = "id 기준으로 정렬된 지원자 리스트를 조회합니다")
     public ApiResponse<ApplyListResponse> getApplyList(@AuthenticationPrincipal AuthDetails authDetails) {
-        ApplyListResponse applyListResponse = applyService.getApplyList(authDetails.user());
+        ApplyListResponse applyListResponse = applyService.getApplyList();
         return ApiResponse.onSuccess(applyListResponse);
     }
 
@@ -54,7 +56,7 @@ public class AdminApplyController {
     @GetMapping
     @Operation(summary = "지원자 리스트 세션별 조회", description = "1지망 -> 2지망 악기 순서로 정렬된 지원자 리스트를 조회합니다")
     public ApiResponse<ApplyListResponse> getApplyListByPreference(@AuthenticationPrincipal AuthDetails authDetails, @RequestParam(name = "preference") Preference preference) {
-        ApplyListResponse applyListResponse = applyService.getApplyListByPreference(authDetails.user(), preference);
+        ApplyListResponse applyListResponse = applyService.getApplyListByPreference(preference);
         return ApiResponse.onSuccess(applyListResponse);
     }
 
@@ -74,7 +76,7 @@ public class AdminApplyController {
     @PutMapping("/info/{apply_info_id}")
     @Operation(summary = "지원 정보 수정", description = "지원 정보를 수정합니다")
     public ApiResponse<ApplyInfoResponse> updateApplyInfo(@PathVariable("apply_info_id") Long applyId, @RequestBody ApplyInfoRequest applyInfoRequest, @AuthenticationPrincipal AuthDetails authDetails) {
-        return ApiResponse.onSuccess(applyService.updateApplyInfo(applyId, applyInfoRequest, authDetails.user()));
+        return ApiResponse.onSuccess(applyService.updateApplyInfo(applyId, applyInfoRequest));
     }
 
     @GetMapping("/info/{apply_info_id}")
@@ -86,7 +88,7 @@ public class AdminApplyController {
     @GetMapping("/statistics")
     @Operation(summary = "지원자 통계 조회", description = "지원자 통계를 조회합니다")
     public ApiResponse<ApplyStatisticsResponse> getApplyStatistics(@AuthenticationPrincipal AuthDetails authDetails) {
-        return ApiResponse.onSuccess(applyService.getApplyStatistics(authDetails.user()));
+        return ApiResponse.onSuccess(applyService.getApplyStatistics());
     }
 }
 
