@@ -74,7 +74,7 @@ public class TicketService {
     //티켓 결제 완료한 경우
     @Transactional
     @CheckUserType(userType = UserType.ADMIN)
-    public TicketUpdateResponse completePayment(User user, Long ticketId) {
+    public TicketUpdateResponse completePayment(Long ticketId) {
 
         Ticket existingTicket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
@@ -106,7 +106,7 @@ public class TicketService {
 
     //티켓 취소 완료
     @Transactional
-    public TicketUpdateResponse completeCancelTicket(User user, Long ticketId) {
+    public TicketUpdateResponse completeCancelTicket(Long ticketId) {
 
         Ticket existingTicket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
@@ -130,7 +130,7 @@ public class TicketService {
     }
 
     // 어드민 페이지 티켓 리스트 조회
-    public TicketListResponse getTicketList(User user, String sortBy) {
+    public TicketListResponse getTicketList(String sortBy) {
         List<Ticket> tickets;
 
         if (sortBy != null) {
@@ -202,7 +202,7 @@ public class TicketService {
     }
 
     // 일반 티켓 리스트 조회
-    public TicketListResponse getGeneralTicketList(User user, String sortBy) {
+    public TicketListResponse getGeneralTicketList(String sortBy) {
 
         List<Ticket> tickets;
 
@@ -252,7 +252,7 @@ public class TicketService {
     }
 
     // 신입생 티켓 리스트 조회
-    public TicketListResponse getFreshmanTicketList(User user, String sortBy) {
+    public TicketListResponse getFreshmanTicketList(String sortBy) {
 
         List<Ticket> tickets;
 
@@ -335,7 +335,7 @@ public class TicketService {
         return total;
     }
 
-    public PerformanceResponse updatePerformance(Long ticketInfoId, PerformanceRequest ticketUpdateRequest, User user) {
+    public PerformanceResponse updatePerformance(Long ticketInfoId, PerformanceRequest ticketUpdateRequest) {
         //validation: ticketId 존재 여부 확인
         Performance performance = performanceRepository.findById(ticketInfoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
@@ -361,7 +361,7 @@ public class TicketService {
         return PerformanceConverter.toPerformanceDto(performance);
     }
 
-    public TicketStatisticsResponse getTicketStatistics(User user) {
+    public TicketStatisticsResponse getTicketStatistics() {
 
         //business logic: 티켓 통계 조회
         Long totalTicket = ticketRepository.countAllByDeletedAtIsNull()

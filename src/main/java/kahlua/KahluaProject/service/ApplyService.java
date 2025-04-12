@@ -70,8 +70,7 @@ public class ApplyService {
         return applyAdminGetResponse;
     }
 
-    @CheckUserType(userType = UserType.ADMIN)
-    public ApplyListResponse getApplyList(User user) {
+    public ApplyListResponse getApplyList() {
         List<Apply> applies = applyRepository.findAll();
         List<ApplyItemResponse> applyItemResponses = new ArrayList<>();
         Long total = applyRepository.count();
@@ -100,8 +99,8 @@ public class ApplyService {
         return applyListResponse;
     }
 
-    @CheckUserType(userType = UserType.ADMIN)
-    public ApplyListResponse getApplyListByPreference(User user, Preference preference) {
+
+    public ApplyListResponse getApplyListByPreference(Preference preference) {
         List<Apply> firstPreferenceApplies = applyRepository.findAllByFirstPreference(preference);
         List<Apply> secondPreferenceApplies = applyRepository.findAllBySecondPreference(preference);
 
@@ -148,7 +147,7 @@ public class ApplyService {
     }
 
     @CheckUserType(userType = UserType.ADMIN)
-    public ApplyInfoResponse updateApplyInfo(Long applyInfoId, ApplyInfoRequest applyInfoRequest, User user) {
+    public ApplyInfoResponse updateApplyInfo(Long applyInfoId, ApplyInfoRequest applyInfoRequest) {
         //validation: applyId 유효성, 관리자 권한 확인
         ApplyInfo applyInfo = applyInfoRepository.findById(applyInfoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.APPLY_INFO_NOT_FOUND));
@@ -172,7 +171,7 @@ public class ApplyService {
         return ApplyConverter.toApplyInfoResponse(applyInfo);
     }
 
-    public ApplyStatisticsResponse getApplyStatistics(User user) {
+    public ApplyStatisticsResponse getApplyStatistics() {
         //validation: 관리자 권한 확인
 
         //business logic: 전체 지원자 수, 각 세션별 지원자 수 조회
