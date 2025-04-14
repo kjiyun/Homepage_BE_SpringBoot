@@ -27,13 +27,13 @@ import java.io.IOException;
 @Tag(name = "관리자(예매하기)", description = "관리자(예매하기) 페이지 관련 API")
 @RestController
 @RequiredArgsConstructor
-@CheckUserType(userType = UserType.ADMIN)
 @RequestMapping("/v1/admin/tickets")
 public class AdminTicketController {
 
     private final TicketService ticketService;
     private final ExcelConvertService excelConvertService;
 
+    @CheckUserType(userType = UserType.ADMIN)
     @GetMapping
     @Operation(summary = "전체 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 전체 티켓 리스트를 조회합니다 " +
             "</br> sort-by를 쿼리에 포함시키지 않은 경우 (환불 요청 -> 결제 대기 -> 결제 왼료 -> 환불 완료) 순서로, 같은 결제 상태에 대해서는 최신순으로 정렬합니다")
@@ -43,6 +43,7 @@ public class AdminTicketController {
         return ApiResponse.onSuccess(ticketListResponse);
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @GetMapping("/general")
     @Operation(summary = "일반 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 일반 티켓 리스트를 조회합니다 " +
             "</br> sort-by를 쿼리에 포함시키지 않은 경우 (환불 요청 -> 결제 대기 -> 결제 왼료 -> 환불 완료) 순서로, 같은 결제 상태에 대해서는 최신순으로 정렬합니다")
@@ -52,6 +53,7 @@ public class AdminTicketController {
         return ApiResponse.onSuccess(ticketListResponse);
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @GetMapping("/freshman")
     @Operation(summary = "신입생 티켓 리스트 조회", description = "sort-by에 정의된 티켓 속성 기준으로 정렬된 신입생 티켓 리스트를 조회합니다 " +
             "</br> sort-by를 쿼리에 포함시키지 않은 경우 (환불 요청 -> 결제 대기 -> 결제 왼료 -> 환불 완료) 순서로, 같은 결제 상태에 대해서는 최신순으로 정렬합니다")
@@ -61,6 +63,7 @@ public class AdminTicketController {
         return ApiResponse.onSuccess(ticketListResponse);
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @PatchMapping("/{ticketId}/ticket-complete")
     @Operation(summary = "티켓 결제 완료", description = "티켓 결제를 완료한 뒤 어드민 페이지에서 결제 완료를 클릭하는 경우 결제 완료로 상태가 변합니다." +
             "</br> 추가적으로 티켓 구매자에게 결제 완료 확인 메일을 발송합니다.")
@@ -69,6 +72,7 @@ public class AdminTicketController {
         return ApiResponse.onSuccess(ticketUpdateResponse);
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @PatchMapping("/{ticketId}/cancel-complete")
     @Operation(summary = "티켓 취소 완료", description = "티켓 환불을 완료한 뒤 어드민 페이지에서 취소 완료를 클릭하는 경우 취소가 완료로 상태가 변합니다.")
     public ApiResponse<TicketUpdateResponse> completeCancelForm(@PathVariable(name = "ticketId") Long ticketId, @AuthenticationPrincipal AuthDetails authDetails) {
@@ -76,6 +80,7 @@ public class AdminTicketController {
         return ApiResponse.onSuccess(ticketUpdateResponse);
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @GetMapping("/download")
     @Operation(summary = "티켓 리스트 엑셀 변환", description = "전체 티켓 리스트를 엑셀 파일로 변환하여 다운로드합니다.")
     public ResponseEntity<InputStreamResource> applyListToExcel() throws IOException {
@@ -89,6 +94,7 @@ public class AdminTicketController {
                 .body(new InputStreamResource(in));
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @GetMapping("/participants/download")
     @Operation(summary = "참석자 리스트 엑셀 변환", description = "전체 참석자 리스트를 엑셀 파일로 변환하여 다운로드합니다.")
     public ResponseEntity<InputStreamResource> participantsListToExcel() throws IOException {
@@ -102,6 +108,7 @@ public class AdminTicketController {
                 .body(new InputStreamResource(in));
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @PutMapping("/{performance_id}")
     @Operation(summary = "공연 정보 수정", description = "공연 정보를 수정합니다")
     public ApiResponse<PerformanceResponse> updatePerformance(@PathVariable("performance_id") Long performanceId, @RequestBody PerformanceRequest performanceRequest, @AuthenticationPrincipal AuthDetails authDetails) {
@@ -114,6 +121,7 @@ public class AdminTicketController {
         return ApiResponse.onSuccess(ticketService.getTicketInfo(performanceId));
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @GetMapping("/statistics")
     @Operation(summary = "티켓 통계 조회", description = "티켓 통계를 조회합니다")
     public ApiResponse<TicketStatisticsResponse> getTicketStatistics(@AuthenticationPrincipal AuthDetails authDetails) {

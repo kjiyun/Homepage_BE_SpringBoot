@@ -29,13 +29,13 @@ import java.io.IOException;
 @Tag(name = "관리자(지원하기)", description = "관리자(지원하기) 페이지 관련 API")
 @RestController
 @RequiredArgsConstructor
-@CheckUserType(userType = UserType.ADMIN)
 @RequestMapping("/v1/admin/apply")
 public class AdminApplyController {
 
     private final ApplyService applyService;
     private final ExcelConvertService excelConvertService;
 
+    @CheckUserType(userType = UserType.ADMIN)
     @GetMapping("/all")
     @Operation(summary = "지원자 리스트 조회", description = "id 기준으로 정렬된 지원자 리스트를 조회합니다")
     public ApiResponse<ApplyListResponse> getApplyList(@AuthenticationPrincipal AuthDetails authDetails) {
@@ -43,6 +43,7 @@ public class AdminApplyController {
         return ApiResponse.onSuccess(applyListResponse);
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @GetMapping("/{applyId}")
     @Operation(summary = "지원자 상세정보 조회", description = "지원자 상세정보를 조회합니다")
     public ApiResponse<ApplyAdminGetResponse> getApplyDetail(@PathVariable Long applyId, @AuthenticationPrincipal AuthDetails authDetails) {
@@ -53,6 +54,7 @@ public class AdminApplyController {
         return ApiResponse.onSuccess(applyAdminGetResponse);
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @GetMapping
     @Operation(summary = "지원자 리스트 세션별 조회", description = "1지망 -> 2지망 악기 순서로 정렬된 지원자 리스트를 조회합니다")
     public ApiResponse<ApplyListResponse> getApplyListByPreference(@AuthenticationPrincipal AuthDetails authDetails, @RequestParam(name = "preference") Preference preference) {
@@ -73,6 +75,7 @@ public class AdminApplyController {
                 .body(new InputStreamResource(in));
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @PutMapping("/info/{apply_info_id}")
     @Operation(summary = "지원 정보 수정", description = "지원 정보를 수정합니다")
     public ApiResponse<ApplyInfoResponse> updateApplyInfo(@PathVariable("apply_info_id") Long applyId, @RequestBody ApplyInfoRequest applyInfoRequest, @AuthenticationPrincipal AuthDetails authDetails) {
@@ -85,6 +88,7 @@ public class AdminApplyController {
         return ApiResponse.onSuccess(applyService.getApplyInfo(applyId));
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @GetMapping("/statistics")
     @Operation(summary = "지원자 통계 조회", description = "지원자 통계를 조회합니다")
     public ApiResponse<ApplyStatisticsResponse> getApplyStatistics(@AuthenticationPrincipal AuthDetails authDetails) {
