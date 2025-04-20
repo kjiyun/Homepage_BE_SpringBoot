@@ -27,7 +27,7 @@ public class UserListOneResponse {
                 .approvalStatus(
                         user.getUserType() == UserType.PENDING ? "PENDING" :
                                 (user.getUserType() == UserType.KAHLUA || user.getUserType() == UserType.ADMIN)
-                                        ? "APPROVED" : "UNACCEPTED")
+                                        ? "APROVED" : "UNACCEPTED")
                 .build();
     }
 }

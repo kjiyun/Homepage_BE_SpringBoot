@@ -73,4 +73,15 @@ public class UserService {
         return UserListResponse.of(userPage, pendingCount, approvedCount);
 
     }
+
+    @Transactional
+    public UserResponse changeUserType(Long userId, UserType newType) {
+        User user=userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        user.updateUserType(newType);
+        userRepository.save(user);
+
+        return UserConverter.toUserResDto(user);
+    }
 }
