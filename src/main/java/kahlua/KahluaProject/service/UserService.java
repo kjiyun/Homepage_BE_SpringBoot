@@ -1,5 +1,6 @@
 package kahlua.KahluaProject.service;
 
+import kahlua.KahluaProject.dto.user.response.UserListResponse;
 import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.UserConverter;
 import kahlua.KahluaProject.domain.user.*;
@@ -9,8 +10,13 @@ import kahlua.KahluaProject.dto.user.response.UserResponse;
 import kahlua.KahluaProject.global.exception.GeneralException;
 import kahlua.KahluaProject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,5 +50,27 @@ public class UserService {
         user.updateUserInfo(userInfoRequest);
 
         return UserConverter.toUserResDto(user);
+    }
+
+    @Transactional
+    public UserListResponse getUserList(String approvalStatus, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage;
+
+        if (approvalStatus.equals("PENDING")) {
+            userPage= userRepository.findAllByUserType(UserType.PENDING,pageable);
+        } else if(approvalStatus.equals("APROVED")) {
+            userPage=userRepository.findAllByUserTypeIn(List.of(UserType.KAHLUA, UserType.ADMIN),pageable);
+        }else if (approvalStatus.equals("ALL")) {
+            userPage=userRepository.findAllByUserTypeNot(UserType.GENERAL, pageable);;
+        } else {
+            throw new GeneralException(ErrorStatus.INVALID_USER_TYPE);
+        }
+
+        long pendingCount  = userRepository.countByUserType(UserType.PENDING);
+        long approvedCount = userRepository.countByUserTypeIn(List.of(UserType.KAHLUA, UserType.ADMIN));
+
+        return UserListResponse.of(userPage, pendingCount, approvedCount);
+
     }
 }
