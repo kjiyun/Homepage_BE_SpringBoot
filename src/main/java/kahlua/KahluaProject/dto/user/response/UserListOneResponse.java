@@ -1,11 +1,9 @@
 package kahlua.KahluaProject.dto.user.response;
 
-import kahlua.KahluaProject.domain.user.LoginType;
-import kahlua.KahluaProject.domain.user.Session;
-import kahlua.KahluaProject.domain.user.User;
-import kahlua.KahluaProject.domain.user.UserType;
+import kahlua.KahluaProject.domain.user.*;
 import lombok.Builder;
 import lombok.Getter;
+
 
 @Getter
 @Builder
@@ -27,7 +25,7 @@ public class UserListOneResponse {
                 .approvalStatus(
                         user.getUserType() == UserType.PENDING ? "PENDING" :
                                 (user.getUserType() == UserType.KAHLUA || user.getUserType() == UserType.ADMIN)
-                                        ? "APROVED" : "UNACCEPTED")
+                                        ? "APPROVED" : "UNAPPROVED")
                 .build();
     }
 }

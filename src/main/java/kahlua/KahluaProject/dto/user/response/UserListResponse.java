@@ -18,15 +18,15 @@ public class UserListResponse {
     @Getter
     @Builder
     public static class PageInfo {
-        private int nextPage;
-        private int lastPage;
+        private int totalPages; // 전체 페이지 수
+        private boolean hasNext;
     }
 
     public static UserListResponse of(Page<User> users, long pendingCount, long approvedCount) {
 
         PageInfo pageInfo = PageInfo.builder()
-                .nextPage(users.hasNext() ? users.getNumber() + 1 : -1)
-                .lastPage(Math.max(users.getTotalPages() - 1, 0))
+                .totalPages(users.getTotalPages())
+                .hasNext(users.hasNext())
                 .build();
 
         return UserListResponse.builder()

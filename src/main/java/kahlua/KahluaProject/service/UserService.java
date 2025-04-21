@@ -53,18 +53,20 @@ public class UserService {
     }
 
     @Transactional
-    public UserListResponse getUserList(String approvalStatus, int page, int size) {
+    public UserListResponse getUserList(ApprovalFilter approvalFilter, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> userPage;
 
-        if (approvalStatus.equals("PENDING")) {
-            userPage= userRepository.findAllByUserType(UserType.PENDING,pageable);
-        } else if(approvalStatus.equals("APROVED")) {
-            userPage=userRepository.findAllByUserTypeIn(List.of(UserType.KAHLUA, UserType.ADMIN),pageable);
-        }else if (approvalStatus.equals("ALL")) {
-            userPage=userRepository.findAllByUserTypeNot(UserType.GENERAL, pageable);;
-        } else {
-            throw new GeneralException(ErrorStatus.INVALID_USER_TYPE);
+        switch (approvalFilter) {
+            case PENDING ->
+                    userPage = userRepository.findAllByUserType(UserType.PENDING, pageable);
+            case APPROVED ->
+                    userPage = userRepository.findAllByUserTypeIn(
+                            List.of(UserType.KAHLUA, UserType.ADMIN), pageable);
+            case ALL ->
+                    userPage = userRepository.findAllByUserTypeNot(UserType.GENERAL, pageable);
+            default ->
+                    throw new GeneralException(ErrorStatus.INVALID_USER_TYPE);
         }
 
         long pendingCount  = userRepository.countByUserType(UserType.PENDING);
