@@ -59,4 +59,8 @@ public class User extends BaseEntity {
         this.session = Session.valueOf(userInfoRequest.session());
         this.userType = UserType.PENDING;
     }
+
+    public void updateUserType(UserType newType) {
+        this.userType = newType;
+    }
 }

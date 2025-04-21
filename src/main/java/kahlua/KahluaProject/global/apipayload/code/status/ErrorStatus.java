@@ -27,7 +27,7 @@ public enum ErrorStatus implements BaseCode {
     REDIS_NOT_FOUND(HttpStatus.NOT_FOUND, "REDIS_NOT_FOUND", "Redis 설정에 오류가 발생했습니다."),
 
     //유저 에러
-    INVALID_USER_TYPE(HttpStatus.UNAUTHORIZED, "USER_NOT_ADMIN", "요구한 사용자 타입이 아닙니다."),
+    INVALID_USER_TYPE(HttpStatus.UNAUTHORIZED, "INVALID_USER_TYPE", "요구한 사용자 타입이 아닙니다."),
 
     // 세션 에러
     SESSION_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "유효하지 않은 세션입니다."),
