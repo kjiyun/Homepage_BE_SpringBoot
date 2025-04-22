@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class UserListOneResponse {
+    private Long id;
     private Long term;
     private String name;
     private Session session;
@@ -17,6 +18,7 @@ public class UserListOneResponse {
 
     public static UserListOneResponse from(User user) {
         return UserListOneResponse.builder()
+                .id(user.getId())
                 .term(user.getTerm())
                 .name(user.getName())
                 .session(user.getSession())
