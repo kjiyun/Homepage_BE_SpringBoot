@@ -75,6 +75,15 @@ public class PerformanceService {
                 .build();
     }
 
+    public PerformanceListResponse.performanceInfoDto getLatestPerformanceInfo(){
+        Performance performance = performanceRepository.findTopByOrderByCreatedAtDesc()
+                .orElseThrow(()->new GeneralException(ErrorStatus.PERFORMANCE_NOT_FOUND));
+
+        return PerformanceListResponse.performanceInfoDto.builder()
+                .performanceResponse(PerformanceConverter.toPerformanceDto(performance))
+                .status(checkStatus(performance))
+                .build();
+    }
 
     public PerformanceResponse createPerformance(PerformanceRequest request) {
 
