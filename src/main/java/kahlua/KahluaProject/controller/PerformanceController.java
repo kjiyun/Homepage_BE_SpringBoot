@@ -31,8 +31,14 @@ public class PerformanceController {
 
     @GetMapping("/{performance_id}")
     @Operation(summary = "공연 상세정보 조회 API", description = "특정 공연의 상세정보를 조회하는 API입니다.")
-    public ApiResponse<PerformanceListResponse.performanceInfoDto> getPerformanceInfo(@PathVariable Long performance_id){
+    public ApiResponse<PerformanceListResponse.performanceInfoDto> getLatestPerformanceInfo(@PathVariable Long performance_id){
         return ApiResponse.onSuccess(performanceService.getPerformanceInfo(performance_id));
+    }
+
+    @GetMapping("/latest-performance")
+    @Operation(summary = "최신 공연 상세정보 조회 API", description = "최신 공연의 상세정보를 조회하는 API입니다.")
+    public ApiResponse<PerformanceListResponse.performanceInfoDto> getLatestPerformanceInfo(){
+        return ApiResponse.onSuccess(performanceService.getLatestPerformanceInfo());
     }
 
     @CheckUserType(userType = UserType.ADMIN)
