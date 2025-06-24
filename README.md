@@ -1,7 +1,8 @@
 # Homepage_BE_SpringBoot
-kahluaproject Spring Boot version
+### Kahluaproject Spring Boot version
 
-![Kahlua (1)](https://github.com/kahluaband/Homepage_FE_20th/assets/109282927/0dc8d6f6-08e0-4339-ab41-a0adf53e2b0a)
+<img src="https://github.com/user-attachments/assets/9b42ebb8-a85c-4146-8596-b50f797b02f6" height=70% width=70%>
+
 🧷 https://kahluaband.com
 
 # KAHLUA_BE
