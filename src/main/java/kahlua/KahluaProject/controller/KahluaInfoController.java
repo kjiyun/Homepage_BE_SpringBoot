@@ -18,19 +18,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/kahlua-info")
-@Tag(name = "깔루아 기본정보", description = "담당자/오디션/공연 관련 학회 정보 API")
+@Tag(name = "깔루아 기본정보", description = "담당자/오디션 관련 학회 정보 API")
 public class KahluaInfoController {
     private final KahluaInfoService kahluaInfoService;
 
     @GetMapping("/leader")
-    @Operation(summary = "담당자 정보 조회 API", description = "깔루아 정보 조회")
+    @Operation(summary = "담당자 정보 조회 API", description = "담당자 정보 조회")
     public ApiResponse<LeaderInfoResponse> getLeaderInfo() {
         LeaderInfoResponse response = kahluaInfoService.getLeaderInfo();
         return ApiResponse.onSuccess(response);
     }
 
     @GetMapping("/audition")
-    @Operation(summary = "오디션 정보 조회 API", description = "깔루아 정보 조회")
+    @Operation(summary = "오디션 정보 조회 API", description = "오디션 정보 조회")
     public ApiResponse<AuditionInfoResponse> getAuditionInfo() {
         AuditionInfoResponse response = kahluaInfoService.getAuditionInfo();
         return ApiResponse.onSuccess(response);
