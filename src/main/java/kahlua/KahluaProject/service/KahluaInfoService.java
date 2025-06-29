@@ -7,7 +7,6 @@ import kahlua.KahluaProject.dto.kahluaInfo.request.AuditionInfoRequest;
 import kahlua.KahluaProject.dto.kahluaInfo.request.LeaderInfoRequest;
 import kahlua.KahluaProject.dto.kahluaInfo.response.AuditionInfoResponse;
 import kahlua.KahluaProject.dto.kahluaInfo.response.LeaderInfoResponse;
-import kahlua.KahluaProject.dto.performance.response.PerformanceResponse;
 import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.global.exception.GeneralException;
 import kahlua.KahluaProject.repository.kahluaInfo.AuditionInfoRepository;
@@ -27,6 +26,7 @@ import java.time.LocalDateTime;
 public class KahluaInfoService {
     private final LeaderInfoRepository leaderInfoRepository;
     private final AuditionInfoRepository auditionInfoRepository;
+    private final MailCacheService mailCacheService;
 
     @Transactional
     public LeaderInfoResponse updateLeaderInfo(LeaderInfoRequest request, User user) {
@@ -34,12 +34,11 @@ public class KahluaInfoService {
             throw new GeneralException(ErrorStatus.UNAUTHORIZED);
         }
         LeaderInfo info = getOrCreateLeaderInfo();
-        info.update(
-                request.leaderName(),
-                request.phoneNumber(),
-                request.email()
-        );
-        return KahluaInfoConverter.toLeaderDto(getOrCreateLeaderInfo());
+        LeaderInfo newInfo = KahluaInfoConverter.toLeaderInfo(request);
+
+        info.update(newInfo);
+        mailCacheService.updateLeaderInfo(info);
+        return KahluaInfoConverter.toLeaderDto(info);
     }
 
     @Transactional
@@ -49,14 +48,11 @@ public class KahluaInfoService {
         }
 
         AuditionInfo info = getOrCreateAuditionInfo();
-        info.update(
-                request.documentStartDate(),
-                request.documentDeadline(),
-                request.vocalVideoDeadline(),
-                request.auditionDateTime(),
-                request.announcementDate()
-        );
-        return KahluaInfoConverter.toAuditionDto(getOrCreateAuditionInfo());
+        AuditionInfo newInfo = KahluaInfoConverter.toAuditionInfo(request);
+
+        info.update(newInfo);
+        mailCacheService.updateAuditionInfo(info);
+        return KahluaInfoConverter.toAuditionDto(info);
     }
 
     public LeaderInfoResponse getLeaderInfo() {
@@ -72,24 +68,14 @@ public class KahluaInfoService {
     private LeaderInfo getOrCreateLeaderInfo() {
         return leaderInfoRepository.findTopByOrderByIdDesc()
                 .orElseGet(() -> leaderInfoRepository.save(
-                        LeaderInfo.builder()
-                                .leaderName("")
-                                .phoneNumber("")
-                                .email("")
-                                .build()
+                        KahluaInfoConverter.createEmptyLeaderInfo()
                 ));
     }
 
     private AuditionInfo getOrCreateAuditionInfo() {
         return auditionInfoRepository.findTopByOrderByIdDesc()
                 .orElseGet(() -> auditionInfoRepository.save(
-                        AuditionInfo.builder()
-                                .documentStartDate(LocalDate.now())
-                                .documentDeadline(LocalDateTime.now())
-                                .vocalVideoDeadline(LocalDate.now())
-                                .auditionDateTime(LocalDateTime.now())
-                                .announcementDate(LocalDate.now())
-                                .build()
+                        KahluaInfoConverter.createEmptyAuditionInfo()
                 ));
     }
 }

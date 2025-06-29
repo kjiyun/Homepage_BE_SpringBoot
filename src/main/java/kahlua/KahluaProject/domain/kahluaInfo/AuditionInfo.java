@@ -30,15 +30,11 @@ public class AuditionInfo {
     @Column(name = "announcement_date")
     private LocalDate announcementDate; //합격발표 날짜, 시각
 
-    public void update(LocalDate documentStartDate,
-                       LocalDateTime documentDeadline,
-                       LocalDate vocalVideoDeadline,
-                       LocalDateTime auditionDateTime,
-                       LocalDate announcementDate) {
-        this.documentStartDate = documentStartDate;
-        this.documentDeadline = documentDeadline;
-        this.vocalVideoDeadline = vocalVideoDeadline;
-        this.auditionDateTime = auditionDateTime;
-        this.announcementDate = announcementDate;
+    public void update(AuditionInfo auditionInfo) {
+        this.documentStartDate = auditionInfo.documentStartDate;
+        this.documentDeadline = auditionInfo.documentDeadline;
+        this.vocalVideoDeadline = auditionInfo.vocalVideoDeadline;
+        this.auditionDateTime = auditionInfo.auditionDateTime;
+        this.announcementDate = auditionInfo.announcementDate;
     }
 }
