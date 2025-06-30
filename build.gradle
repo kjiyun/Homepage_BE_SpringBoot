@@ -87,11 +87,6 @@ dependencies {
 	//discord-logback
 	implementation 'com.github.napstr:logback-discord-appender:1.0.0'
 	implementation 'org.springframework.boot:spring-boot-starter-logging'
-
-	//Feign
-	implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
-	implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.1") // BOM
-
 }
 
 tasks.named('test') {
