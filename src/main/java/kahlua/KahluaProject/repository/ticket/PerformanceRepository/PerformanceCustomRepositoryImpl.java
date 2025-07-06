@@ -24,7 +24,7 @@ public class PerformanceCustomRepositoryImpl implements PerformanceCustomReposit
         return jpaQueryFactory
                 .selectFrom(performance)
                 .orderBy(
-                        Expressions.stringTemplate("JSON_UNQUOTE(JSON_EXTRACT({0}, '$.date_time'))", performance.performanceData)
+                        Expressions.stringTemplate("JSON_UNQUOTE(JSON_EXTRACT({0}, '$.performance_start_time'))", performance.performanceData)
                                 .desc()
                 )
                 .limit(limit)
@@ -36,12 +36,12 @@ public class PerformanceCustomRepositoryImpl implements PerformanceCustomReposit
         DateTimeExpression<LocalDateTime> dbDateTimeExpr = Expressions.dateTimeTemplate(
                 LocalDateTime.class,
                 "STR_TO_DATE(CONCAT("
-                        + "CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.date_time[0]'))), '-',"
-                        + "LPAD(CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.date_time[1]'))), 2, '0'), '-',"
-                        + "LPAD(CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.date_time[2]'))), 2, '0'), ' ',"
-                        + "LPAD(CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.date_time[3]'))), 2, '0'), ':',"
-                        + "LPAD(CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.date_time[4]'))), 2, '0'), ':',"
-                        + "LPAD(CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.date_time[5]'))), 2, '0')"
+                        + "CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.performance_start_time[0]'))), '-',"
+                        + "LPAD(CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.performance_start_time[1]'))), 2, '0'), '-',"
+                        + "LPAD(CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.performance_start_time[2]'))), 2, '0'), ' ',"
+                        + "LPAD(CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.performance_start_time[3]'))), 2, '0'), ':',"
+                        + "LPAD(CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.performance_start_time[4]'))), 2, '0'), ':',"
+                        + "LPAD(CONCAT('', JSON_UNQUOTE(JSON_EXTRACT({0}, '$.performance_start_time[5]'))), 2, '0')"
                         + "), '%Y-%m-%d %H:%i:%s')",
                 performance.performanceData
         );
@@ -54,7 +54,6 @@ public class PerformanceCustomRepositoryImpl implements PerformanceCustomReposit
                 Expressions.constant(cursorFormatted)
         );
 
-        //cursorDateTime보다 과거, 최신순, 페이징
         return jpaQueryFactory
                 .selectFrom(performance)
                 .where(dbDateTimeExpr.lt(cursorDateTimeExpr))
