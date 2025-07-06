@@ -21,10 +21,7 @@ public class KahluaInfoService {
     private final MailCacheService mailCacheService;
 
     @Transactional
-    public LeaderInfoResponse updateLeaderInfo(LeaderInfoRequest request, User user) {
-        if (user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
+    public LeaderInfoResponse updateLeaderInfo(LeaderInfoRequest request) {
         LeaderInfo info = getOrCreateLeaderInfo();
         LeaderInfo newInfo = KahluaInfoConverter.toLeaderInfo(request);
 
