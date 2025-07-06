@@ -1,14 +1,8 @@
 package kahlua.KahluaProject.converter;
 
-import kahlua.KahluaProject.domain.kahluaInfo.AuditionInfo;
 import kahlua.KahluaProject.domain.kahluaInfo.LeaderInfo;
-import kahlua.KahluaProject.dto.kahluaInfo.request.AuditionInfoRequest;
 import kahlua.KahluaProject.dto.kahluaInfo.request.LeaderInfoRequest;
-import kahlua.KahluaProject.dto.kahluaInfo.response.AuditionInfoResponse;
 import kahlua.KahluaProject.dto.kahluaInfo.response.LeaderInfoResponse;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class KahluaInfoConverter {
 
@@ -17,6 +11,7 @@ public class KahluaInfoConverter {
                 .leaderName(request.leaderName())
                 .leaderPhoneNum(request.phoneNumber())
                 .leaderEmail(request.email())
+                .term(request.term())
                 .build();
     }
 
@@ -25,6 +20,7 @@ public class KahluaInfoConverter {
                 .leaderName(info.getLeaderName())
                 .phoneNumber(info.getLeaderPhoneNum())
                 .email(info.getLeaderEmail())
+                .term(info.getTerm())
                 .build();
     }
 
@@ -33,39 +29,7 @@ public class KahluaInfoConverter {
                 .leaderName("")
                 .leaderPhoneNum("")
                 .leaderEmail("")
-                .build();
-    }
-
-    public static AuditionInfo toAuditionInfo(AuditionInfoRequest request) {
-        return AuditionInfo.builder()
-                .documentStartDate(request.documentStartDate())
-                .documentDeadline(request.documentDeadline())
-                .vocalVideoDeadline(request.vocalVideoDeadline())
-                .auditionDateTime(request.auditionDateTime())
-                .announcementDate(request.announcementDate())
-                .build();
-    }
-
-    public static AuditionInfoResponse toAuditionDto(AuditionInfo info) {
-        return AuditionInfoResponse.builder()
-                .documentStartDate(info.getDocumentStartDate())
-                .documentDeadline(info.getDocumentDeadline())
-                .vocalVideoDeadline(info.getVocalVideoDeadline())
-                .auditionDateTime(info.getAuditionDateTime())
-                .announcementDate(info.getAnnouncementDate())
-                .build();
-    }
-
-    public static AuditionInfo createEmptyAuditionInfo() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDate today = LocalDate.now();
-
-        return AuditionInfo.builder()
-                .documentStartDate(today)
-                .documentDeadline(now)
-                .vocalVideoDeadline(today)
-                .auditionDateTime(now)
-                .announcementDate(today)
+                .term(0L)
                 .build();
     }
 }

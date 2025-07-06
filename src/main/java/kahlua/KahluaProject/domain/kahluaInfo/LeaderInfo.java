@@ -23,9 +23,13 @@ public class LeaderInfo {
     @Column(nullable = false)
     private String leaderEmail; //기장 이메일
 
+    @Column(nullable = false)
+    private Long term; // 기수
+
     public void update(LeaderInfo leaderInfo) {
         this.leaderName = leaderInfo.leaderName;
         this.leaderPhoneNum = leaderInfo.leaderPhoneNum;
         this.leaderEmail = leaderInfo.leaderEmail;
+        this.term = leaderInfo.term;
     }
 }

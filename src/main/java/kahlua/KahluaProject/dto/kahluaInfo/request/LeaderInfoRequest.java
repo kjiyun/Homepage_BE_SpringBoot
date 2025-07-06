@@ -6,5 +6,6 @@ import lombok.Builder;
 public record LeaderInfoRequest(
         String leaderName,
         String phoneNumber,
-        String email
+        String email,
+        Long term
 ) {}
