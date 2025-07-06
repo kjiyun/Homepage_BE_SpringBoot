@@ -18,7 +18,7 @@ import kahlua.KahluaProject.domain.user.UserType;
 @Transactional
 public class KahluaInfoService {
     private final LeaderInfoRepository leaderInfoRepository;
-    private final MailCacheService mailCacheService;
+    //private final MailCacheService mailCacheService;
 
     @Transactional
     public LeaderInfoResponse updateLeaderInfo(LeaderInfoRequest request) {
@@ -26,7 +26,7 @@ public class KahluaInfoService {
         LeaderInfo newInfo = KahluaInfoConverter.toLeaderInfo(request);
 
         info.update(newInfo);
-        mailCacheService.updateLeaderInfo(info);
+        //mailCacheService.updateLeaderInfo(info);
         return KahluaInfoConverter.toLeaderDto(info);
     }
 
