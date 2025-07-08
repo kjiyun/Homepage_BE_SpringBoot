@@ -60,7 +60,8 @@ public class WebSocketEventListener {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 
         String email = (String)getValue(accessor, "email");
-        String reservationDate = (String)getValue(accessor, "reservationDate");
+        String destination = accessor.getDestination();
+        String reservationDate = destination.substring(destination.lastIndexOf('/') + 1);
 
         logger.info("User: {} Disconnected ReservationDate : {}", email, reservationDate);
 
