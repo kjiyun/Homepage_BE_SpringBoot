@@ -41,6 +41,7 @@ public class WebSocketEventListener {
         String email = (String)getValue(accessor, "email");
         String destination = accessor.getDestination();
         String reservationDate = destination.substring(destination.lastIndexOf('/') + 1);
+        accessor.getSessionAttributes().put("reservationDate", reservationDate);
 
         logger.info("User: {} Subscribe ReservationDate : {}", email, reservationDate);
 
@@ -60,8 +61,7 @@ public class WebSocketEventListener {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
 
         String email = (String)getValue(accessor, "email");
-        String destination = accessor.getDestination();
-        String reservationDate = destination.substring(destination.lastIndexOf('/') + 1);
+        String reservationDate = (String)getValue(accessor, "reservationDate");
 
         logger.info("User: {} Disconnected ReservationDate : {}", email, reservationDate);
 
