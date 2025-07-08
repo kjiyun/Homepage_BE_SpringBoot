@@ -1,4 +1,4 @@
-package kahlua.KahluaProject.repository.ticket.TicketRepository;
+package kahlua.KahluaProject.repository.ticket;
 
 
 import com.querydsl.core.types.dsl.CaseBuilder;

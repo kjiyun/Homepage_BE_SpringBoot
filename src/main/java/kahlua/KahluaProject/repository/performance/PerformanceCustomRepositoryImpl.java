@@ -1,4 +1,4 @@
-package kahlua.KahluaProject.repository.ticket.PerformanceRepository;
+package kahlua.KahluaProject.repository.performance;
 
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.Expressions;

@@ -1,4 +1,4 @@
-package kahlua.KahluaProject.repository.ticket.PerformanceRepository;
+package kahlua.KahluaProject.repository.performance;
 
 import kahlua.KahluaProject.domain.performance.Performance;
 import org.springframework.data.jpa.repository.JpaRepository;
