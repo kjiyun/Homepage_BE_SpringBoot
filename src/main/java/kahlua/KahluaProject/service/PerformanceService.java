@@ -1,7 +1,6 @@
 package kahlua.KahluaProject.service;
 
 import kahlua.KahluaProject.domain.performance.Performance;
-import kahlua.KahluaProject.global.aop.checkAdmin.CheckUserType;
 import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.PerformanceConverter;
 import kahlua.KahluaProject.domain.performance.PerformanceStatus;
@@ -9,8 +8,7 @@ import kahlua.KahluaProject.dto.performance.request.PerformanceRequest;
 import kahlua.KahluaProject.dto.performance.response.PerformanceListResponse;
 import kahlua.KahluaProject.dto.performance.response.PerformanceResponse;
 import kahlua.KahluaProject.global.exception.GeneralException;
-import kahlua.KahluaProject.global.security.AuthDetails;
-import kahlua.KahluaProject.repository.ticket.PerformanceRepository.PerformanceRepository;
+import kahlua.KahluaProject.repository.performance.PerformanceRepository;
 import kahlua.KahluaProject.vo.PerformanceData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +24,7 @@ import static kahlua.KahluaProject.domain.performance.PerformanceStatus.OPEN;
 @RequiredArgsConstructor
 public class PerformanceService {
     private final PerformanceRepository performanceRepository;
+    //private final MailCacheService mailCacheService;
 
     public PerformanceListResponse.performanceListDto getPerformances(Long cursor, int limit){
 
@@ -92,6 +91,7 @@ public class PerformanceService {
         PerformanceData performanceData = PerformanceConverter.toPerformance(request);
         Performance performance = Performance.create(posterImageUrl, youtubeUrl, performanceData);
         performanceRepository.save(performance);
+        //mailCacheService.updatePerformance(performance);
         return PerformanceConverter.toPerformanceDto(performance);
     }
 
