@@ -4,14 +4,10 @@ import kahlua.KahluaProject.converter.KahluaInfoConverter;
 import kahlua.KahluaProject.domain.kahluaInfo.LeaderInfo;
 import kahlua.KahluaProject.dto.kahluaInfo.request.LeaderInfoRequest;
 import kahlua.KahluaProject.dto.kahluaInfo.response.LeaderInfoResponse;
-import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
-import kahlua.KahluaProject.global.exception.GeneralException;
 import kahlua.KahluaProject.repository.kahluaInfo.LeaderInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import kahlua.KahluaProject.domain.user.User;
-import kahlua.KahluaProject.domain.user.UserType;
 
 @Service
 @RequiredArgsConstructor
