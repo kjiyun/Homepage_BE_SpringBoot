@@ -8,7 +8,7 @@ import kahlua.KahluaProject.domain.ticket.Type;
 import kahlua.KahluaProject.global.exception.GeneralException;
 import kahlua.KahluaProject.repository.ApplyRepository;
 import kahlua.KahluaProject.repository.ParticipantsRepository;
-import kahlua.KahluaProject.repository.ticket.TicketRepository.TicketRepository;
+import kahlua.KahluaProject.repository.ticket.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
