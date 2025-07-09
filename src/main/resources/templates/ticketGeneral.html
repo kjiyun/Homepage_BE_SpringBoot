@@ -5,14 +5,14 @@
     <title>홍익대학교 깔루아 공연 예매 확인</title>
 </head>
 <body style="line-height: 160%">
-<h3>깔루아 9월 공연 일반 예매 확인</h3>
+<h3>깔루아 [[${performanceMonth}]] 공연 일반 예매 확인</h3>
 <hr color="#5770F4" size="3" />
 <p>
-    안녕하세요! 홍익대 깔루아 학회장 김준한입니다! 우선 저희 깔루아 공연에 참석해주셔서 감사합니다.<br />
+    안녕하세요! 홍익대 깔루아 학회장 [[${leaderName}]]입니다! 우선 저희 깔루아 공연에 참석해주셔서 감사합니다.<br />
     예매해주신 티켓 정보 및 공연 정보 전달드립니다!
 </p>
 <div>
-    <strong>▪ Welcome to the show ▪</strong>
+    <strong>▪ OH MY 가르뎅.. ▪</strong>
     <hr color="#CBCDD7" size="2" />
     <p style="padding-left: 8px">
         이름 : [[${buyer}]]<br />
@@ -25,16 +25,16 @@
     <strong>▪ KAHLUA 공연 안내 ▪</strong>
     <hr color="#CBCDD7" size="2" />
     <p style="padding-left: 8px">
-        날짜 : 3월 4일 월요일<br />
-        공연시간 : 오후 7시 ~ 9시<br />
-        입장시간 : 오후 6시 30분 ~ (중도입장 가능)<br />
-        장소 : 001클럽 (서울 마포구 와우산로18길 20)<br />
+        날짜 : [[${performanceStartDate}]] 월요일<br />
+        공연시간 : 오후 [[${performanceStartTime}]] ~ 오후 [[${performanceEndTime}]]<br />
+        입장시간 : 오후 [[${entranceTime}]] ~ (중도입장 가능)<br />
+        장소 : [[${venue}]] ([[${address}]])<br />
     </p>
 </div>
 <p>기타 모든 문의사항은 학회장 연락처 또는 깔루아 SNS로 문의 주시면 빠르게 답변드리겠습니다.</p>
 <p>감사합니다 :)</p>
 <p style="background-color: #e8e9ed; padding: 16px; border-radius: 8px">
-    학회장 연락처 : 010-5307-1944 <br />
+    학회장 연락처 : [[${leaderPhoneNum}]] <br />
     <a href="https://www.instagram.com/kahlua_band_/?igshid=MzRlODBiNWFlZA%3D%3D">
         깔루아 인스타그램 @kahlua_band_
     </a>
