@@ -30,7 +30,7 @@ public class KahluaInfoController {
     @CheckUserType(userType = UserType.ADMIN)
     @PatchMapping("/leader/update")
     @Operation(summary = "담당자 정보 수정 API", description = "담당자 이름, 연락처, 이메일 수정")
-    public ApiResponse<LeaderInfoResponse> updateLeaderInfo(@RequestBody LeaderInfoRequest request) {
+    public ApiResponse<LeaderInfoResponse> updateLeaderInfo(@RequestBody LeaderInfoRequest request,@AuthenticationPrincipal AuthDetails authDetails) {
         LeaderInfoResponse response = kahluaInfoService.updateLeaderInfo(request);
         return ApiResponse.onSuccess(response);
     }

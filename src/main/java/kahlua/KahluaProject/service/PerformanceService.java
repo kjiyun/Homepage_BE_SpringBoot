@@ -24,7 +24,7 @@ import static kahlua.KahluaProject.domain.performance.PerformanceStatus.OPEN;
 @RequiredArgsConstructor
 public class PerformanceService {
     private final PerformanceRepository performanceRepository;
-    //private final MailCacheService mailCacheService;
+    private final MailCacheService mailCacheService;
 
     public PerformanceListResponse.performanceListDto getPerformances(Long cursor, int limit){
 
@@ -91,7 +91,7 @@ public class PerformanceService {
         PerformanceData performanceData = PerformanceConverter.toPerformance(request);
         Performance performance = Performance.create(posterImageUrl, youtubeUrl, performanceData);
         performanceRepository.save(performance);
-        //mailCacheService.updatePerformance(performance);
+        mailCacheService.updatePerformance(performance);
         return PerformanceConverter.toPerformanceDto(performance);
     }
 
