@@ -34,6 +34,7 @@ public class ApplyService {
     private final ApplyRepository applyRepository;
     private final MailService mailService;
     private final ApplyInfoRepository applyInfoRepository;
+    private final MailCacheService mailCacheService;
 
     @Transactional
     public ApplyCreateResponse createApply(ApplyCreateRequest applyCreateRequest) {
@@ -146,7 +147,6 @@ public class ApplyService {
         return applyListResponse;
     }
 
-    @CheckUserType(userType = UserType.ADMIN)
     public ApplyInfoResponse updateApplyInfo(Long applyInfoId, ApplyInfoRequest applyInfoRequest) {
         //validation: applyId 유효성, 관리자 권한 확인
         ApplyInfo applyInfo = applyInfoRepository.findById(applyInfoId)
@@ -155,6 +155,7 @@ public class ApplyService {
         //business logic: applyInfo 데이터 변환 및 변경사항 업데이트
         ApplyInfoData applyInfodata = ApplyConverter.toApplyInfo(applyInfoRequest);
         applyInfo.update(applyInfodata);
+        mailCacheService.updateApplyInfo(applyInfo);
 
         applyInfoRepository.save(applyInfo);
 

@@ -3,6 +3,9 @@ package kahlua.KahluaProject.service;
 import jakarta.mail.internet.MimeMessage;
 import kahlua.KahluaProject.domain.apply.Apply;
 import kahlua.KahluaProject.domain.apply.Preference;
+import kahlua.KahluaProject.domain.applyInfo.ApplyInfo;
+import kahlua.KahluaProject.domain.kahluaInfo.LeaderInfo;
+import kahlua.KahluaProject.domain.performance.Performance;
 import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.domain.ticket.Type;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -24,16 +29,20 @@ public class MailService {
     private final JavaMailSender javaMailSender;
     private final SpringTemplateEngine templateEngine;
     private final ParticipantsService participantsService;
+    private final MailCacheService mailCacheService;
 
     @Async
     public void sendApplicantEmail(Apply apply){
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        LeaderInfo leaderInfo = mailCacheService.getLeaderInfo();
+        ApplyInfo applyInfo = mailCacheService.getApplyInfo();
+
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setTo(apply.getEmail()); // 메일 수신자
             mimeMessageHelper.setSubject("kahluaband.com 에서 발송한 메일입니다."); // 메일 제목
-            mimeMessageHelper.setText(setApplicantContext(apply), true); // 메일 본문 내용, HTML 여부
+            mimeMessageHelper.setText(setApplicantContext(apply, leaderInfo, applyInfo), true); // 메일 본문 내용, HTML 여부
             javaMailSender.send(mimeMessage);
 
             log.info("Succeeded to send Email");
@@ -44,13 +53,19 @@ public class MailService {
     }
 
     // thymeleaf를 통한 html 적용
-    public String setApplicantContext(Apply apply) {
+    public String setApplicantContext(Apply apply, LeaderInfo leaderInfo, ApplyInfo applyInfo) {
 
         Context context = new Context();
         context.setVariable("name", apply.getName());
         context.setVariable("phoneNum", apply.getPhoneNum());
+        context.setVariable("leaderName", leaderInfo.getLeaderName());
+        context.setVariable("leaderEmail", leaderInfo.getLeaderEmail());
+        context.setVariable("leaderPhoneNum", leaderInfo.getLeaderPhoneNum());
+        context.setVariable("yearLevel", leaderInfo.getTerm());
+        context.setVariable("auditionDate", applyInfo.getApplyInfoData().interviewSchedule().format(DateTimeFormatter.ofPattern("M월 d일")));
 
         if (apply.getFirstPreference() == Preference.VOCAL) {
+            context.setVariable("vocalVideoDeadline", applyInfo.getApplyInfoData().vocalEndDate().format(DateTimeFormatter.ofPattern("M월 d일")));
             return templateEngine.process("applicantVocal", context);
         }
         else {
@@ -62,11 +77,14 @@ public class MailService {
     public void sendTicketEmail(Ticket ticket){
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        LeaderInfo leaderInfo = mailCacheService.getLeaderInfo();
+        Performance performance = mailCacheService.getPerformance();
+
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             mimeMessageHelper.setTo(ticket.getEmail()); // 메일 수신자
             mimeMessageHelper.setSubject("kahluaband.com 에서 발송한 메일입니다."); // 메일 제목
-            mimeMessageHelper.setText(setTicketContext(ticket), true); // 메일 본문 내용, HTML 여부
+            mimeMessageHelper.setText(setTicketContext(ticket, leaderInfo, performance), true); // 메일 본문 내용, HTML 여부
             javaMailSender.send(mimeMessage);
 
             log.info("Succeeded to send Email");
@@ -77,12 +95,21 @@ public class MailService {
     }
 
     // thymeleaf를 통한 html 적용
-    public String setTicketContext(Ticket ticket) {
+    public String setTicketContext(Ticket ticket, LeaderInfo leaderInfo, Performance performance) {
 
         Context context = new Context();
         context.setVariable("buyer", ticket.getBuyer());
         context.setVariable("phoneNum", ticket.getPhone_num());
         context.setVariable("reservationId", ticket.getReservationId());
+        context.setVariable("leaderName", leaderInfo.getLeaderName());
+        context.setVariable("leaderPhoneNum", leaderInfo.getLeaderPhoneNum());
+        context.setVariable("performanceMonth", performance.getPerformanceData().performanceStartTime().format(DateTimeFormatter.ofPattern("M")));
+        context.setVariable("performanceStartDate", performance.getPerformanceData().performanceStartTime().format(DateTimeFormatter.ofPattern("M월 d일")));
+        context.setVariable("performanceStartTime", performance.getPerformanceData().performanceStartTime().format(DateTimeFormatter.ofPattern("HH시 mm분")));
+        context.setVariable("performanceEndTime", performance.getPerformanceData().performanceEndTime().format(DateTimeFormatter.ofPattern("HH시 mm분")));
+        context.setVariable("entranceTime", performance.getPerformanceData().entranceTime().format(DateTimeFormatter.ofPattern("HH시 mm분")));
+        context.setVariable("venue", performance.getPerformanceData().venue());
+        context.setVariable("address", performance.getPerformanceData().address());
 
         if (ticket.getType() == Type.GENERAL) {
             context.setVariable("count", participantsService.getTotalGeneralTicket(ticket.getId()));
