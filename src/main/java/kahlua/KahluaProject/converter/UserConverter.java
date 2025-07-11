@@ -1,6 +1,7 @@
 package kahlua.KahluaProject.converter;
 
 import kahlua.KahluaProject.domain.user.*;
+import kahlua.KahluaProject.dto.user.response.UserProfileResponse;
 import kahlua.KahluaProject.dto.user.response.UserResponse;
 
 public class UserConverter {
@@ -13,6 +14,13 @@ public class UserConverter {
                 .name(user.getName())
                 .term(user.getTerm())
                 .session(String.valueOf(user.getSession()))
+                .build();
+    }
+
+    public static UserProfileResponse toUserProfileResDto(User user) {
+        return UserProfileResponse.builder()
+                .id(user.getId())
+                .userProfileImageUrl(user.getProfileImageUrl())
                 .build();
     }
 }

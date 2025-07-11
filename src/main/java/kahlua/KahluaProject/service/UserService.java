@@ -1,6 +1,8 @@
 package kahlua.KahluaProject.service;
 
+import kahlua.KahluaProject.dto.user.request.UserProfileRequest;
 import kahlua.KahluaProject.dto.user.response.UserListResponse;
+import kahlua.KahluaProject.dto.user.response.UserProfileResponse;
 import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.UserConverter;
 import kahlua.KahluaProject.domain.user.*;
@@ -85,5 +87,36 @@ public class UserService {
         userRepository.save(user);
 
         return UserConverter.toUserResDto(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserProfileResponse getUserProfileImage(Long userId) {
+        User user = userRepository.findByIdAndDeletedAtIsNull(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        return UserConverter.toUserProfileResDto(user);
+    }
+
+    @Transactional
+    public UserProfileResponse updateUserProfileImage(Long userId, UserProfileRequest request) {
+        User user = userRepository.findByIdAndDeletedAtIsNull(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        user.updateUserProfileImageUrl(request.getProfileImageUrl());
+
+        return UserConverter.toUserProfileResDto(user);
+    }
+
+    @Transactional
+    public UserProfileResponse deleteUserProfileImage(Long userId) {
+        User user = userRepository.findByIdAndDeletedAtIsNull(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        if (user.getProfileImageUrl() == null) {
+            throw new GeneralException(ErrorStatus.ALREADY_DELETED_PROFILE_IMAGE);
+        }
+        user.updateUserProfileImageUrl((String) null);
+
+        return UserConverter.toUserProfileResDto(user);
     }
 }

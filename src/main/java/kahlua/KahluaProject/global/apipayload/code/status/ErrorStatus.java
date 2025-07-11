@@ -28,6 +28,7 @@ public enum ErrorStatus implements BaseCode {
 
     //유저 에러
     INVALID_USER_TYPE(HttpStatus.UNAUTHORIZED, "INVALID_USER_TYPE", "요구한 사용자 타입이 아닙니다."),
+    ALREADY_DELETED_PROFILE_IMAGE(HttpStatus.BAD_REQUEST, "ALREADY_DELETED_PROFILE_IMAGE" , "프로필이 존재하지 않습니다." ),
 
     // 세션 에러
     SESSION_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "유효하지 않은 세션입니다."),
@@ -59,7 +60,6 @@ public enum ErrorStatus implements BaseCode {
     PERFORMANCE_NOT_FOUND(HttpStatus.NOT_FOUND,"PERFORMANCE_NOT_FOUND","공연 정보를 찾을 수 없습니다."),
 
     ;
-
 
     private final HttpStatus httpStatus;
     private final String code;
