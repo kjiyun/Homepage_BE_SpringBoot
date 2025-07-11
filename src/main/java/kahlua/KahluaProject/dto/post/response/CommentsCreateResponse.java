@@ -19,6 +19,9 @@ public class CommentsCreateResponse {
     @Schema(description = "댓글 작성자", example = "깔루아 홍길동")
     private String user;
 
+    @Schema(description = "댓글 작성자 프로필", example = "https://bucketname.s3.region.amazonaws.com/image1.jpg")
+    private String profileImageUrl;
+
     @Schema(description = "댓글 내용", example = "감사합니다.")
     private String content;
 
