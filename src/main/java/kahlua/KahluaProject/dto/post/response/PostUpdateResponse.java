@@ -24,6 +24,9 @@ public class PostUpdateResponse {
     @Schema(description = "게시글 작성자", example = "관리자")
     private String writer;
 
+    @Schema(description = "게시글 작성자 프로필", example = "https://bucketname.s3.region.amazonaws.com/image1.jpg")
+    private String profileImageUrl;
+
     @Schema(description = "게시글 좋아요 수", example = "13")
     private int likes;
 
