@@ -2,6 +2,7 @@ package kahlua.KahluaProject.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kahlua.KahluaProject.dto.post.response.PostListResponse;
 import kahlua.KahluaProject.global.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.post.request.PostCreateRequest;
 import kahlua.KahluaProject.dto.post.request.PostUpdateRequest;
@@ -9,13 +10,17 @@ import kahlua.KahluaProject.dto.post.response.PostCreateResponse;
 import kahlua.KahluaProject.dto.post.response.PostGetResponse;
 import kahlua.KahluaProject.dto.post.response.PostUpdateResponse;
 import kahlua.KahluaProject.global.security.AuthDetails;
-import kahlua.KahluaProject.service.PostService;
+import kahlua.KahluaProject.service.PostSerivce.PostSearchService;
+import kahlua.KahluaProject.service.PostSerivce.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Tag(name = "게시판", description = "게시판 관련 API")
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     private final PostService postService;
+    private final PostSearchService postSearchService;
 
     @PostMapping("/notice/create") 
     @Operation(summary = "공지사항 작성", description = "창립제, 악기 구비 등 깔루아 전체 공지 내용을 작성합니다.")
@@ -70,5 +76,16 @@ public class PostController {
                                                            @RequestParam(value = "search_word", required = false) String searchWord,
                                                            Pageable pageable) {
         return ApiResponse.onSuccess(postService.viewPostList(authDetails.user(), searchType, searchWord, pageable));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<PostListResponse> searchPosts(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        PostListResponse result = postSearchService.searchPosts(query, page, size);
+
+        return ResponseEntity.ok(result);
     }
 }

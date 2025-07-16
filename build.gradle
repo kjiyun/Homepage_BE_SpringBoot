@@ -84,9 +84,10 @@ dependencies {
 	//netty
 	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.100.Final:osx-aarch_64'
 
-	//discord-logback
-	implementation 'com.github.napstr:logback-discord-appender:1.0.0'
-	implementation 'org.springframework.boot:spring-boot-starter-logging'
+	//검색기능
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
+
 }
 
 tasks.named('test') {

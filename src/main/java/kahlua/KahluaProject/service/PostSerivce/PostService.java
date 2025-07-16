@@ -1,4 +1,4 @@
-package kahlua.KahluaProject.service;
+package kahlua.KahluaProject.service.PostSerivce;
 
 import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.converter.PostConverter;
