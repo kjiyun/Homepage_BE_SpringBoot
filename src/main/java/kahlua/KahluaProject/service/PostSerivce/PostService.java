@@ -43,14 +43,7 @@ public class PostService {
         // 공지사항인 경우 admin인지 확인
         if (postCreateRequest.getPostType() == NOTICE) {
             if (user.getUserType() != UserType.ADMIN) {
-                throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-            }
-        }
-
-        // 깔깔깔인 경우 kahlua 또는 admin인지 확인
-        if (postCreateRequest.getPostType() == KAHLUA_TIME) {
-            if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
-                throw new GeneralException(ErrorStatus.UNAUTHORIZED);
+                throw new GeneralException(ErrorStatus.INVALID_USER_TYPE);
             }
         }
 
@@ -78,13 +71,6 @@ public class PostService {
         // 공지사항인 경우 admin인지 확인
         if (postUpdateRequest.getPostType() == NOTICE) {
             if (user.getUserType() != UserType.ADMIN) {
-                throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-            }
-        }
-
-        // 깔깔깔인 경우 kahlua 또는 admin인지 확인
-        if (postUpdateRequest.getPostType() == KAHLUA_TIME) {
-            if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
                 throw new GeneralException(ErrorStatus.UNAUTHORIZED);
             }
         }
@@ -146,11 +132,6 @@ public class PostService {
     @Transactional
     public PostGetResponse viewPost(Long post_id, User user) {
 
-        // 공지사항 조회의 경우 kahlua 혹은 ADMIN인지 확인
-        if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
-
         // 선택한 게시글이 존재하는 지 확인
         Post existingPost = postRepository.findById(post_id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));
@@ -161,12 +142,7 @@ public class PostService {
     }
 
     @Transactional
-    public Page<PostGetResponse> viewPostList(User user, String postType, String searchWord, Pageable pageable) {
-
-        // 공지사항 조회의 경우 kahlua 혹은 ADMIN인지 확인
-        if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
+    public Page<PostGetResponse> viewPostList(String postType, String searchWord, Pageable pageable) {
 
         return postRepository.findPostListByPagination(postType, searchWord, pageable);
     }
@@ -179,12 +155,7 @@ public class PostService {
     }
 
     @Transactional
-    public void delete(Long post_id, User user) {
-
-        // 공지사항 삭제의 경우 kahlua 혹은 ADMIN인지 확인
-        if (user.getUserType() != UserType.KAHLUA && user.getUserType() != UserType.ADMIN) {
-            throw new GeneralException(ErrorStatus.UNAUTHORIZED);
-        }
+    public void delete(Long post_id) {
 
         Post post = postRepository.findById(post_id)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.POST_NOT_FOUND));

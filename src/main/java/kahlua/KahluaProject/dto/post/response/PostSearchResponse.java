@@ -37,7 +37,7 @@ public class PostSearchResponse {
     public PostSearchResponse(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
-        this.writer = post.getUser().getEmail();
+        this.writer = post.getUser() != null ? post.getUser().getName() : null;
         this.createdAt = post.getCreatedAt();
         this.likes = post.getLikes();
         this.commentsCount = post.getComments().size();
