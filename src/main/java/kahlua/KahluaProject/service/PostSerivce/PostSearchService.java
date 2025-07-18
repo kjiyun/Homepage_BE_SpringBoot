@@ -1,6 +1,7 @@
 package kahlua.KahluaProject.service.PostSerivce;
 
 import kahlua.KahluaProject.domain.post.Post;
+import kahlua.KahluaProject.domain.post.PostType;
 import kahlua.KahluaProject.dto.post.response.PostListResponse;
 import kahlua.KahluaProject.global.utils.KoreanUtils;
 import kahlua.KahluaProject.repository.post.PostRepository;
@@ -23,19 +24,23 @@ import java.util.stream.Collectors;
 public class PostSearchService {
 
     private final PostRepository postRepository;
-    private final AutoCompleteService autoCompleteService;
-    private final RedisTemplate<String, Object> redisTemplate;
     private final KoreanUtils koreanUtils;
 
-    private static final String SEARCH_CACHE_KEY_PREFIX = "search:";
-
-    public PostListResponse searchPosts(String query, int page, int size) {
+    public PostListResponse searchPosts(String query, PostType postType, int page, int size) {
         Page<Post> posts;
         Pageable pageable = PageRequest.of(page, size);
 
         if (koreanUtils.isChosungQuery(query)) {
             // 초성 검색
-            List<Post> allPosts = postRepository.findAll();
+
+            List<Post> allPosts;
+
+            if (postType != null) {
+                allPosts = postRepository.findByPostType(postType);
+            } else {
+                allPosts = postRepository.findAll();
+            }
+
             List<Post> filteredPosts = allPosts.stream()
                     .filter(post -> koreanUtils.matchesChosung(post.getTitle(), query))
                     .sorted(Comparator.comparing(Post::getCreatedAt).reversed())
@@ -48,7 +53,11 @@ public class PostSearchService {
             posts = new PageImpl<>(pagedPosts, pageable, filteredPosts.size());
         } else {
             // 일반 검색
-            posts = postRepository.findByTitleContainingIgnoreCase(query, pageable);
+            if (postType != null) {
+                posts = postRepository.findByTitleContainingIgnoreCaseAndPostType(query, postType, pageable);
+            } else {
+                posts = postRepository.findByTitleContainingIgnoreCase(query, pageable);
+            }
         }
 
         return PostListResponse.of(posts);
