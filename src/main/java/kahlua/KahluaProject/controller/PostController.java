@@ -2,7 +2,9 @@ package kahlua.KahluaProject.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kahlua.KahluaProject.domain.user.UserType;
 import kahlua.KahluaProject.dto.post.response.PostListResponse;
+import kahlua.KahluaProject.global.aop.checkAdmin.CheckUserType;
 import kahlua.KahluaProject.global.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.post.request.PostCreateRequest;
 import kahlua.KahluaProject.dto.post.request.PostUpdateRequest;
@@ -79,7 +81,9 @@ public class PostController {
     }
 
     @GetMapping("/search")
+    @CheckUserType(userType = UserType.KAHLUA)
     public ResponseEntity<PostListResponse> searchPosts(
+            @AuthenticationPrincipal AuthDetails authDetails,
             @RequestParam String query,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
