@@ -19,7 +19,9 @@ public class PostCreateRequest {
     @Schema(description = "게시글 내용", example = "안녕하세요 깔루아 기장입니다. 감사합니다.")
     private String content;
 
-    @Schema(description = "게시글 사진 리스트", example = "['https://bucketname.s3.region.amazonaws.com/image1.jpg']")
+    @Schema(description = "게시글 사진 리스트", example = "[\n" +
+            "    \"https://bucketname.s3.region.amazonaws.com/image1.jpg\"\n" +
+            "  ]")
     private List<PostImageCreateRequest> imageUrls;
 
     @Schema(description = "게시판 구분", example = "NOTICE")
