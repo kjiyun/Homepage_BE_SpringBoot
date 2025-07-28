@@ -24,7 +24,7 @@ public class MyPageController {
     private final PostService postService;
 
     @GetMapping("/reservation")
-    @Operation(summary = "사용자 예약내역 조회", description = "사용자의 전체 예약내역을 예약 날짜 오름차순으로 조회합니다." +
+    @Operation(summary = "사용자 예약내역 조회", description = "사용자의 전체 예약내역을 예약 날짜 내림차순으로 조회합니다." +
             "<br> 같은 날짜에 대해서는 시작 시간 오름차순으로 정렬합니다.")
     public ApiResponse<ReservationListResponse> getReservationList(@AuthenticationPrincipal AuthDetails authDetails) {
 
