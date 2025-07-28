@@ -73,8 +73,7 @@ public class ReservationService {
 
     public ReservationListResponse getByUser(User user) {
 
-        List<Reservation> reservationList = reservationRepository.findByUser(user);
-
+        List<Reservation> reservationList = reservationRepository.findByUserOrderByReservationDateDescStartTimeAsc(user);
         List<ReservationResponse> reservationResponseList = reservationList.stream()
                 .map(reservation -> toReservationResponse(reservation, user.getEmail()))
                 .collect(Collectors.toList());
