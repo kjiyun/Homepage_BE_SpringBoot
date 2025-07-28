@@ -11,6 +11,7 @@ import org.hibernate.annotations.SQLDelete;
 @Entity
 @Getter
 @SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id = ?")
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
@@ -44,7 +45,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
-    @Column(columnDefinition = "string")
+    @Column(columnDefinition = "varchar(255)")
     private String profileImageUrl;
 
     @Builder

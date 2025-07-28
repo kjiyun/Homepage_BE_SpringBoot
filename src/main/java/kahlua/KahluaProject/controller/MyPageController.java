@@ -6,7 +6,7 @@ import kahlua.KahluaProject.global.apipayload.ApiResponse;
 import kahlua.KahluaProject.dto.post.response.PostGetResponse;
 import kahlua.KahluaProject.dto.reservation.response.ReservationListResponse;
 import kahlua.KahluaProject.global.security.AuthDetails;
-import kahlua.KahluaProject.service.PostService;
+import kahlua.KahluaProject.service.PostSerivce.PostService;
 import kahlua.KahluaProject.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
