@@ -8,6 +8,7 @@ import kahlua.KahluaProject.domain.kahluaInfo.LeaderInfo;
 import kahlua.KahluaProject.domain.performance.Performance;
 import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.domain.ticket.Type;
+import kahlua.KahluaProject.vo.PerformanceData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,6 +20,8 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 @Service
 @RequiredArgsConstructor
@@ -103,13 +106,25 @@ public class MailService {
         context.setVariable("reservationId", ticket.getReservationId());
         context.setVariable("leaderName", leaderInfo.getLeaderName());
         context.setVariable("leaderPhoneNum", leaderInfo.getLeaderPhoneNum());
-        context.setVariable("performanceMonth", performance.getPerformanceData().performanceStartTime().format(DateTimeFormatter.ofPattern("M")));
-        context.setVariable("performanceStartDate", performance.getPerformanceData().performanceStartTime().format(DateTimeFormatter.ofPattern("M월 d일")));
-        context.setVariable("performanceStartTime", performance.getPerformanceData().performanceStartTime().format(DateTimeFormatter.ofPattern("HH시 mm분")));
-        context.setVariable("performanceEndTime", performance.getPerformanceData().performanceEndTime().format(DateTimeFormatter.ofPattern("HH시 mm분")));
-        context.setVariable("entranceTime", performance.getPerformanceData().entranceTime().format(DateTimeFormatter.ofPattern("HH시 mm분")));
-        context.setVariable("venue", performance.getPerformanceData().venue());
-        context.setVariable("address", performance.getPerformanceData().address());
+
+        ZoneId seoulZone = ZoneId.of("Asia/Seoul");
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("M");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M월 d일");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH시 mm분");
+
+        PerformanceData data = performance.getPerformanceData();
+
+        ZonedDateTime startZdt = data.performanceStartTime().atZone(ZoneId.systemDefault()).withZoneSameInstant(seoulZone);
+        ZonedDateTime endZdt   = data.performanceEndTime().atZone(ZoneId.systemDefault()).withZoneSameInstant(seoulZone);
+        ZonedDateTime entZdt   = data.entranceTime().atZone(ZoneId.systemDefault()).withZoneSameInstant(seoulZone);
+
+        context.setVariable("performanceMonth", startZdt.format(monthFormatter));
+        context.setVariable("performanceStartDate", startZdt.format(dateFormatter));
+        context.setVariable("performanceStartTime", startZdt.format(timeFormatter));
+        context.setVariable("performanceEndTime", endZdt.format(timeFormatter));
+        context.setVariable("entranceTime", entZdt.format(timeFormatter));
+        context.setVariable("venue", data.venue());
+        context.setVariable("address", data.address());
 
         if (ticket.getType() == Type.GENERAL) {
             context.setVariable("count", participantsService.getTotalGeneralTicket(ticket.getId()));
