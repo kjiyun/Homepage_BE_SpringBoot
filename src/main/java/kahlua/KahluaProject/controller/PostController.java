@@ -36,7 +36,7 @@ public class PostController {
     private final PostSearchService postSearchService;
 
     @PostMapping("/create")
-    @CheckUserType(userType = UserType.KAHLUA)
+    @CheckUserType(userType = {UserType.KAHLUA, UserType.ADMIN})
     @Operation(summary = "게시글 작성", description = """
             공지사항/깔브리타임 게시글을 작성합니다.
             공지사항 작성은 어드민만 가능합니다.""")
@@ -46,7 +46,7 @@ public class PostController {
     }
 
     @PatchMapping("/{post_id}/update")
-    @CheckUserType(userType = UserType.KAHLUA)
+    @CheckUserType(userType = {UserType.KAHLUA, UserType.ADMIN})
     @Operation(summary = "게시글 수정", description = """
             게시글 내용을 수정합니다. 이미지의 경우, 기존 이미지를 삭제하고 싶은 경우 빈 리스트로 전달하고 
             기존 이미지를 유지하고 싶은 경우 null 값으로 데이터를 전송합니다.
@@ -57,7 +57,7 @@ public class PostController {
     }
 
     @PostMapping("/{post_id}/create_like")
-    @CheckUserType(userType = UserType.KAHLUA)
+    @CheckUserType(userType = {UserType.KAHLUA, UserType.ADMIN})
     @Operation(summary = "좋아요 생성/삭제", description = "게시글의 좋아요 생성/삭제를 진행합니다.")
     public ResponseEntity<?> cratePostLike(@PathVariable("post_id") Long post_id, @AuthenticationPrincipal AuthDetails authDetails) {
         boolean result = postService.createPostLike(authDetails.user(), post_id);
@@ -66,7 +66,7 @@ public class PostController {
     }
 
     @GetMapping("/{post_id}/detail")
-    @CheckUserType(userType = UserType.KAHLUA)
+    @CheckUserType(userType = {UserType.KAHLUA, UserType.ADMIN})
     @Operation(summary = "게시글 내용 조회", description = "게시글 내용을 조회합니다.")
     public ApiResponse<PostGetResponse> viewPost(@PathVariable("post_id") Long post_id, @AuthenticationPrincipal AuthDetails authDetails) {
         PostGetResponse postGetResponse = postService.viewPost(post_id, authDetails.user());
@@ -74,7 +74,7 @@ public class PostController {
     }
 
     @DeleteMapping("{post_id}/delete")
-    @CheckUserType(userType = UserType.KAHLUA)
+    @CheckUserType(userType = {UserType.KAHLUA, UserType.ADMIN})
     @Operation(summary = "게시글 삭제", description = "선택한 게시글을 삭제합니다.")
     public ApiResponse<?> deletePost(@PathVariable("post_id") Long post_id, @AuthenticationPrincipal AuthDetails authDetails) {
         postService.delete(post_id);
@@ -82,7 +82,7 @@ public class PostController {
     }
 
     @GetMapping("/list")
-    @CheckUserType(userType = UserType.KAHLUA)
+    @CheckUserType(userType = {UserType.KAHLUA, UserType.ADMIN})
     @Operation(summary = "게시판 목록 조회", description = "공지사항/깔브리타임 목록을 조회합니다.")
     public ApiResponse<Page<PostGetResponse>> viewPostList(@AuthenticationPrincipal AuthDetails authDetails,
                                                            @RequestParam(value = "post_type", required = false) String searchType,
@@ -92,7 +92,7 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    @CheckUserType(userType = UserType.KAHLUA)
+    @CheckUserType(userType = {UserType.KAHLUA, UserType.ADMIN})
     @Operation(summary = "게시판 검색 결과 조회 (초성 검색 포함)", description = "공지사항/깔브리타임에서 글 제목을 검색할 경우, 그 결과를 반환합니다.")
     public ResponseEntity<PostListResponse> searchPosts(
             @AuthenticationPrincipal AuthDetails authDetails,
