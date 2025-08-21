@@ -109,8 +109,6 @@ public class MailService {
         context.setVariable("leaderName", leaderInfo.getLeaderName());
         context.setVariable("leaderPhoneNum", leaderInfo.getLeaderPhoneNum());
 
-        performance = mailCacheService.getPerformance();
-
         if (performance == null || performance.getPerformanceData() == null) {
             performance = performanceService.getLatestPerformance(); // 캐시에 공연 정보가 없을 경우 최신 공연 정보로 대체
         }

@@ -65,7 +65,7 @@ public class PerformanceService {
     }
 
     public Performance getLatestPerformance() {
-        return performanceRepository.findTopByOrderByCreatedAtDesc()
+        return performanceRepository.findTopByOrderByIdDesc()
                 .orElse(null);
     }
 

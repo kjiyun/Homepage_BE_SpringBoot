@@ -36,6 +36,7 @@ public class TicketService {
     private final ParticipantsRepository participantsRepository;
     private final MailService mailService;
     private final PerformanceRepository performanceRepository;
+    private final MailCacheService mailCacheService;
 
 
     @Transactional
@@ -335,11 +336,9 @@ public class TicketService {
     }
 
     public PerformanceResponse updatePerformance(Long ticketInfoId, PerformanceRequest ticketUpdateRequest) {
-        //validation: ticketId 존재 여부 확인
         Performance performance = performanceRepository.findById(ticketInfoId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TICKET_NOT_FOUND));
 
-        //business logic: ticket 정보 수정
         String posterImageUrl = ticketUpdateRequest.posterImageUrl();
         String youtubeUrl = ticketUpdateRequest.youtubeUrl();
         PerformanceData performanceData = PerformanceConverter.toPerformance(ticketUpdateRequest);
@@ -347,7 +346,9 @@ public class TicketService {
 
         Performance updatedPerformance = performanceRepository.save(performance);
 
-        //return: 수정된 ticket 정보 반환
+        // cache update
+        mailCacheService.updatePerformance(updatedPerformance);
+
         return PerformanceConverter.toPerformanceDto(updatedPerformance);
     }
 
