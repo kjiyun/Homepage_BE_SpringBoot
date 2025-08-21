@@ -11,6 +11,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @Slf4j
 @Aspect
 @Component
@@ -18,20 +20,23 @@ public class UserTypeCheckAspect {
 
     @Before("@within(checkUserType) || @annotation(checkUserType)")
     public void checkUserType(JoinPoint joinPoint, CheckUserType checkUserType) {
-        UserType requiredUserType = checkUserType.userType();
+        UserType[] requiredUserType = checkUserType.userType();
 
         for (Object arg : joinPoint.getArgs()) {
 
             if (arg instanceof AuthDetails authDetails) {
                 UserType actualType = authDetails.user().getUserType();
-                if (actualType != requiredUserType) {
+                boolean match = Arrays.asList(requiredUserType).contains(actualType);
+                if (!match) {
                     throw new GeneralException(ErrorStatus.INVALID_USER_TYPE);
                 }
                 return;
             }
 
             if (arg instanceof User user) {
-                if (user.getUserType() != requiredUserType) {
+                UserType actualType = user.getUserType();
+                boolean match = Arrays.asList(requiredUserType).contains(actualType); // ← 핵심 수정
+                if (!match) {
                     throw new GeneralException(ErrorStatus.INVALID_USER_TYPE);
                 }
                 return;
