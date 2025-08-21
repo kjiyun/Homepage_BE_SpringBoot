@@ -64,6 +64,11 @@ public class PerformanceService {
         } else{return OPEN;}
     }
 
+    public Performance getLatestPerformance() {
+        return performanceRepository.findTopByOrderByCreatedAtDesc()
+                .orElse(null);
+    }
+
     public PerformanceListResponse.performanceInfoDto getPerformanceInfo(Long ticketInfoId){
         Performance performance = performanceRepository.findById(ticketInfoId)
                 .orElseThrow(()->new GeneralException(ErrorStatus.PERFORMANCE_NOT_FOUND));
