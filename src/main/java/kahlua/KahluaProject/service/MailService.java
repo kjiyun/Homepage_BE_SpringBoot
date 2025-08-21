@@ -34,6 +34,7 @@ public class MailService {
     private final SpringTemplateEngine templateEngine;
     private final ParticipantsService participantsService;
     private final MailCacheService mailCacheService;
+    private final PerformanceService performanceService;
 
     @Async
     public void sendApplicantEmail(Apply apply){
@@ -108,8 +109,12 @@ public class MailService {
         context.setVariable("leaderName", leaderInfo.getLeaderName());
         context.setVariable("leaderPhoneNum", leaderInfo.getLeaderPhoneNum());
 
-        PerformanceData data = performance.getPerformanceData();
+        performance = mailCacheService.getPerformance();
 
+        if (performance == null || performance.getPerformanceData() == null) {
+            performance = performanceService.getLatestPerformance(); // 캐시에 공연 정보가 없을 경우 최신 공연 정보로 대체
+        }
+        PerformanceData data = performance.getPerformanceData();
         context.setVariable("performanceMonth", TimeFormatUtils.toMonthKST(data.performanceStartTime()));
         context.setVariable("performanceStartDate", TimeFormatUtils.toDateKST(data.performanceStartTime()));
         context.setVariable("performanceStartTime", TimeFormatUtils.toTimeKST(data.performanceStartTime()));
