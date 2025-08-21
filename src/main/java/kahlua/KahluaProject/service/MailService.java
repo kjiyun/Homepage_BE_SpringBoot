@@ -8,6 +8,8 @@ import kahlua.KahluaProject.domain.kahluaInfo.LeaderInfo;
 import kahlua.KahluaProject.domain.performance.Performance;
 import kahlua.KahluaProject.domain.ticket.Ticket;
 import kahlua.KahluaProject.domain.ticket.Type;
+import kahlua.KahluaProject.global.utils.TimeFormatUtils;
+import kahlua.KahluaProject.vo.PerformanceData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,6 +21,8 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 @Service
 @RequiredArgsConstructor
@@ -103,13 +107,16 @@ public class MailService {
         context.setVariable("reservationId", ticket.getReservationId());
         context.setVariable("leaderName", leaderInfo.getLeaderName());
         context.setVariable("leaderPhoneNum", leaderInfo.getLeaderPhoneNum());
-        context.setVariable("performanceMonth", performance.getPerformanceData().performanceStartTime().format(DateTimeFormatter.ofPattern("M")));
-        context.setVariable("performanceStartDate", performance.getPerformanceData().performanceStartTime().format(DateTimeFormatter.ofPattern("M월 d일")));
-        context.setVariable("performanceStartTime", performance.getPerformanceData().performanceStartTime().format(DateTimeFormatter.ofPattern("HH시 mm분")));
-        context.setVariable("performanceEndTime", performance.getPerformanceData().performanceEndTime().format(DateTimeFormatter.ofPattern("HH시 mm분")));
-        context.setVariable("entranceTime", performance.getPerformanceData().entranceTime().format(DateTimeFormatter.ofPattern("HH시 mm분")));
-        context.setVariable("venue", performance.getPerformanceData().venue());
-        context.setVariable("address", performance.getPerformanceData().address());
+
+        PerformanceData data = performance.getPerformanceData();
+
+        context.setVariable("performanceMonth", TimeFormatUtils.toMonthKST(data.performanceStartTime()));
+        context.setVariable("performanceStartDate", TimeFormatUtils.toDateKST(data.performanceStartTime()));
+        context.setVariable("performanceStartTime", TimeFormatUtils.toTimeKST(data.performanceStartTime()));
+        context.setVariable("performanceEndTime", TimeFormatUtils.toTimeKST(data.performanceEndTime()));
+        context.setVariable("entranceTime", TimeFormatUtils.toTimeKST(data.entranceTime()));
+        context.setVariable("venue", data.venue());
+        context.setVariable("address", data.address());
 
         if (ticket.getType() == Type.GENERAL) {
             context.setVariable("count", participantsService.getTotalGeneralTicket(ticket.getId()));

@@ -72,7 +72,7 @@ public class TicketService {
 
     //티켓 결제 완료한 경우
     @Transactional
-    @CheckUserType(userType = UserType.ADMIN)
+    //@CheckUserType(userType = UserType.ADMIN)
     public TicketUpdateResponse completePayment(Long ticketId) {
 
         Ticket existingTicket = ticketRepository.findById(ticketId)
