@@ -83,7 +83,7 @@ public class AdminTicketController {
     @CheckUserType(userType = UserType.ADMIN)
     @GetMapping("/download")
     @Operation(summary = "티켓 리스트 엑셀 변환", description = "전체 티켓 리스트를 엑셀 파일로 변환하여 다운로드합니다.")
-    public ResponseEntity<InputStreamResource> applyListToExcel() throws IOException {
+    public ResponseEntity<InputStreamResource> applyListToExcel(@AuthenticationPrincipal AuthDetails authDetails) throws IOException {
         ByteArrayInputStream in = excelConvertService.ticketListToExcel();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=tickets.xlsx");
@@ -97,7 +97,7 @@ public class AdminTicketController {
     @CheckUserType(userType = UserType.ADMIN)
     @GetMapping("/participants/download")
     @Operation(summary = "참석자 리스트 엑셀 변환", description = "전체 참석자 리스트를 엑셀 파일로 변환하여 다운로드합니다.")
-    public ResponseEntity<InputStreamResource> participantsListToExcel() throws IOException {
+    public ResponseEntity<InputStreamResource> participantsListToExcel(@AuthenticationPrincipal AuthDetails authDetails) throws IOException {
         ByteArrayInputStream in = excelConvertService.participantListToExcel();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=participants.xlsx");

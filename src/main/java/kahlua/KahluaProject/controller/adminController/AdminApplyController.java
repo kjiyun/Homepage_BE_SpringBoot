@@ -62,9 +62,10 @@ public class AdminApplyController {
         return ApiResponse.onSuccess(applyListResponse);
     }
 
+    @CheckUserType(userType = UserType.ADMIN)
     @GetMapping("/download")
     @Operation(summary = "지원자 리스트 엑셀 변환", description = "전체 지원자 리스트를 엑셀 파일로 변환하여 다운로드합니다.")
-    public ResponseEntity<InputStreamResource> applyListToExcel() throws IOException {
+    public ResponseEntity<InputStreamResource> applyListToExcel(@AuthenticationPrincipal AuthDetails authDetails) throws IOException {
         ByteArrayInputStream in = excelConvertService.applyListToExcel();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=applicants.xlsx");
