@@ -1,0 +1,21 @@
+name: Spring Boot & Gradle CD
+
+on:
+  workflow_run:
+    workflows: ["Spring Boot & Gradle CI"]
+    types: [completed]
+
+jobs:
+  ci:
+    uses: kjiyun/CI-CD-pipeline-standard/.github/workflows/java-gradle-cd.yml@master
+    with:
+      java-version: "17"
+      distribution: "temurin"
+      image-name: kahlua-web
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+      HOST_ID: ${{ secrets.HOST_ID }}
+      USERNAME: ${{ secrets.USERNAME }}
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
