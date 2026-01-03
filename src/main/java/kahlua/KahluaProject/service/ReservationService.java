@@ -1,7 +1,7 @@
 package kahlua.KahluaProject.service;
 
 import jakarta.transaction.Transactional;
-import kahlua.KahluaProject.apipayload.code.status.ErrorStatus;
+import kahlua.KahluaProject.global.apipayload.code.status.ErrorStatus;
 import kahlua.KahluaProject.domain.reservation.Reservation;
 import kahlua.KahluaProject.domain.reservation.ReservationStatus;
 import kahlua.KahluaProject.domain.user.User;
@@ -9,9 +9,9 @@ import kahlua.KahluaProject.dto.reservation.request.ReservationProceedRequest;
 import kahlua.KahluaProject.dto.reservation.request.ReservationRequest;
 import kahlua.KahluaProject.dto.reservation.response.ReservationListResponse;
 import kahlua.KahluaProject.dto.reservation.response.ReservationResponse;
-import kahlua.KahluaProject.exception.GeneralException;
+import kahlua.KahluaProject.global.exception.GeneralException;
 import kahlua.KahluaProject.repository.reservation.ReservationRepository;
-import kahlua.KahluaProject.websocket.WebSocketException;
+import kahlua.KahluaProject.global.websocket.WebSocketException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -73,8 +73,7 @@ public class ReservationService {
 
     public ReservationListResponse getByUser(User user) {
 
-        List<Reservation> reservationList = reservationRepository.findByUser(user);
-
+        List<Reservation> reservationList = reservationRepository.findByUserOrderByReservationDateDescStartTimeAsc(user);
         List<ReservationResponse> reservationResponseList = reservationList.stream()
                 .map(reservation -> toReservationResponse(reservation, user.getEmail()))
                 .collect(Collectors.toList());

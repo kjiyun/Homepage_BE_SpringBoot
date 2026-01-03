@@ -2,15 +2,16 @@ package kahlua.KahluaProject.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kahlua.KahluaProject.apipayload.ApiResponse;
+import kahlua.KahluaProject.dto.user.request.UserProfileRequest;
+import kahlua.KahluaProject.dto.user.response.UserProfileResponse;
+import kahlua.KahluaProject.global.apipayload.ApiResponse;
 import kahlua.KahluaProject.converter.UserConverter;
 import kahlua.KahluaProject.domain.user.User;
 import kahlua.KahluaProject.dto.user.request.UserInfoRequest;
 import kahlua.KahluaProject.dto.user.response.UserResponse;
-import kahlua.KahluaProject.security.AuthDetails;
+import kahlua.KahluaProject.global.security.AuthDetails;
 import kahlua.KahluaProject.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,5 +36,25 @@ public class UserController {
     public ApiResponse<UserResponse> getUser(@AuthenticationPrincipal AuthDetails authDetails) {
         User user = authDetails.user();
         return ApiResponse.onSuccess(UserConverter.toUserResDto(user));
+    }
+
+    @GetMapping("/profile")
+    @Operation(summary = "프로필 이미지 조회", description = "로그인한 사용자의 프로필 이미지를 조회합니다.")
+    public ApiResponse<UserProfileResponse> getUserProfileImage(
+            @AuthenticationPrincipal AuthDetails authDetails) {
+        return ApiResponse.onSuccess(userService.getUserProfileImage(authDetails.user().getId()));
+    }
+
+    @PatchMapping("/profile")
+    @Operation(summary = "프로필 이미지 수정", description = "사용자의 프로필 이미지를 수정합니다.")
+    public ApiResponse<UserProfileResponse> updateUserProfileImage(@AuthenticationPrincipal AuthDetails authDetails,
+                                                                   @RequestBody UserProfileRequest request) {
+        return ApiResponse.onSuccess(userService.updateUserProfileImage(authDetails.user().getId(), request));
+    }
+
+    @DeleteMapping("/profile")
+    @Operation(summary = "프로필 이미지 삭제", description = "프로필 이미지를 삭제(기본 이미지로 초기화)합니다.")
+    public ApiResponse<UserProfileResponse> deleteUserProfileImage(@AuthenticationPrincipal AuthDetails authDetails) {
+        return ApiResponse.onSuccess(userService.deleteUserProfileImage(authDetails.user().getId()));
     }
 }

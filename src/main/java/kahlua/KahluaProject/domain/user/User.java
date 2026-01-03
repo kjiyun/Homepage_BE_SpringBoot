@@ -3,12 +3,15 @@ package kahlua.KahluaProject.domain.user;
 import jakarta.persistence.*;
 import kahlua.KahluaProject.domain.BaseEntity;
 import kahlua.KahluaProject.dto.user.request.UserInfoRequest;
+import kahlua.KahluaProject.dto.user.request.UserProfileRequest;
+import kahlua.KahluaProject.dto.user.response.UserProfileResponse;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Getter
 @SQLDelete(sql = "UPDATE user SET deleted_at = NOW() where id = ?")
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
@@ -42,8 +45,11 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
+    @Column(columnDefinition = "varchar(255)")
+    private String profileImageUrl;
+
     @Builder
-    public User(String email, Credential credential, String name, UserType userType, Session session, Long term, LoginType loginType) {
+    public User(String email, Credential credential, String name, UserType userType, Session session, Long term, LoginType loginType, String profileImageUrl) {
         this.email = email;
         this.credential = credential;
         this.name = name;
@@ -51,6 +57,7 @@ public class User extends BaseEntity {
         this.session = session;
         this.term = term;
         this.loginType = loginType;
+        this.profileImageUrl = profileImageUrl;
     }
 
     public void updateUserInfo(UserInfoRequest userInfoRequest) {
@@ -58,5 +65,13 @@ public class User extends BaseEntity {
         this.term = userInfoRequest.term();
         this.session = Session.valueOf(userInfoRequest.session());
         this.userType = UserType.PENDING;
+    }
+
+    public void updateUserProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public void updateUserType(UserType newType) {
+        this.userType = newType;
     }
 }
