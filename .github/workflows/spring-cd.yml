@@ -6,7 +6,11 @@ on:
     types: [completed]
 
 jobs:
-  ci:
+  cd:
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.event == 'push'
     uses: kjiyun/CI-CD-pipeline-standard/.github/workflows/java-gradle-cd.yml@master
     with:
       java-version: "17"
