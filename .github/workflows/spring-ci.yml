@@ -7,7 +7,7 @@ on:
 
 jobs:
   ci:
-    uses: kjiyun/CI-CD-pipeline-standard/.github/workflows/java-ci-standard.yml@eb9496c
+    uses: kjiyun/CI-CD-pipeline-standard/.github/workflows/java-ci-standard.yml@master
     with:
       java-version: "17"
       distribution: "temurin"
