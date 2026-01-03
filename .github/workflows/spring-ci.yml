@@ -14,5 +14,6 @@ jobs:
       build-command: "false"
       test-command: "false"
       upload-artifacts: true
+      write-application-yml: true
     secrets:
       APPLICATION: ${{ secrets.APPLICATION }}
