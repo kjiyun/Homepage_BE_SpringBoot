@@ -7,6 +7,7 @@ on:
 jobs:
   ci:
     uses: kjiyun/CI-CD-pipeline-standard/.github/workflows/java-gradle-ci.yml@master
+    # 참고: https://github.com/kjiyun/CI-CD-pipeline-standard
     with:
       java-version: "17"
       distribution: "temurin"
