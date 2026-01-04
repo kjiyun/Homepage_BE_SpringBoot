@@ -2,7 +2,6 @@ name: Spring Boot & Gradle CI
 
 on:
   pull_request:
-  push:
     branches: [ "main" ]
 
 jobs:
