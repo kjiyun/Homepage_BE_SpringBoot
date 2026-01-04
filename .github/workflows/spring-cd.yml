@@ -3,9 +3,6 @@ name: Spring Boot & Gradle CD
 on:
   push:
     branches: [ "main" ]
-#  workflow_run:
-#    workflows: ["Spring Boot & Gradle CI"]
-#    types: [completed]
 
 jobs:
   cd:
