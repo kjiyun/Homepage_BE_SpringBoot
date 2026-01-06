@@ -17,4 +17,3 @@ jobs:
       write-application-yml: true
     secrets:
       APPLICATION: ${{ secrets.APPLICATION }}
-
