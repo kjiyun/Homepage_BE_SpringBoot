@@ -1,0 +1,23 @@
+name: Spring Boot & Gradle CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  cd:
+    uses: kjiyun/CI-CD-pipeline-standard/.github/workflows/java-gradle-cd.yml@master
+    # 참고: https://github.com/kjiyun/CI-CD-pipeline-standard
+    with:
+      java-version: "17"
+      distribution: "temurin"
+      image-name: kahlua-web
+      write-application-yml: true
+    secrets:
+      APPLICATION: ${{ secrets.APPLICATION }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
+      HOST_ID: ${{ secrets.HOST_ID }}
+      USERNAME: ${{ secrets.USERNAME }}
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
